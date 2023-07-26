@@ -20,7 +20,6 @@
 package me.knighthat.interactivedeck.ui;
 
 import lombok.Getter;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.utils.Status;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,9 +47,6 @@ public class ConnectionStatusIndicator extends JPanel {
 
         add(indicator);
         add(label);
-
-        Log.info(label.getText());
-        Log.info(indicator.getBackground().toString());
     }
 
     public void setStatus( Status status ) {

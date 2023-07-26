@@ -4,12 +4,12 @@
     <!-- Path to log file -->
     <!-- <property name="LOGS" value="./logs"/> -->
 
-    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
             <Pattern>
                 %white(%d{HH:mm:ss}) %highlight(%-5level) %yellow([%c]) %msg%n%throwable
             </Pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <!--    <appender name="RollingFile"-->
@@ -36,6 +36,6 @@
     <!-- LOG everything at INFO level -->
     <root level="info">
         <!--        <appender-ref ref="RollingFile"/>-->
-        <appender-ref ref="Console"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
