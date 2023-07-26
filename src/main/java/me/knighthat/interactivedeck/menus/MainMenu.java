@@ -3,7 +3,7 @@
  * All rights reserved.
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
  *
@@ -21,9 +21,10 @@ package me.knighthat.interactivedeck.menus;
 
 import java.awt.Color;
 import java.awt.KeyboardFocusManager;
-import me.knighthat.interactivedeck.ui.customs.StatusIndicator;
+import me.knighthat.interactivedeck.ui.ConnectionStatusIndicator;
 import me.knighthat.interactivedeck.utils.ColorConverter;
 import me.knighthat.interactivedeck.utils.GlobalVars;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -38,6 +39,7 @@ public class MainMenu extends javax.swing.JFrame {
         super(GlobalVars.name() + " - " + GlobalVars.version());
         setLocationRelativeTo(null);
         initComponents();
+        setVisible(true);
     }
 
     /**
@@ -78,9 +80,7 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         iBtnBgColor = new javax.swing.JTextField();
         statusSection = new javax.swing.JPanel();
-        indicator = new StatusIndicator(statusLabel);
-        statusLabel = new javax.swing.JLabel();
-        statusLabel.setText(((StatusIndicator) indicator).getStatus().getStatus());
+        connectionStatusIndicator = new me.knighthat.interactivedeck.ui.ConnectionStatusIndicator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -339,16 +339,18 @@ public class MainMenu extends javax.swing.JFrame {
         statusSection.setAlignmentY(0.0F);
         statusSection.setPreferredSize(new java.awt.Dimension(1000, 30));
 
-        indicator.setMaximumSize(new java.awt.Dimension(30, 30));
-        indicator.setMinimumSize(new java.awt.Dimension(30, 30));
-        indicator.setPreferredSize(new java.awt.Dimension(15, 30));
+        connectionStatusIndicator.setPreferredSize(new java.awt.Dimension(115, 30));
 
-        statusLabel.setFont(new java.awt.Font("Open Sans", 0, 14)); // NOI18N
-        statusLabel.setForeground(new java.awt.Color(255, 255, 255));
-        statusLabel.setAlignmentY(0.0F);
-        statusLabel.setMaximumSize(new java.awt.Dimension(100, 30));
-        statusLabel.setMinimumSize(new java.awt.Dimension(100, 30));
-        statusLabel.setPreferredSize(new java.awt.Dimension(100, 30));
+        javax.swing.GroupLayout connectionStatusIndicatorLayout = new javax.swing.GroupLayout(connectionStatusIndicator);
+        connectionStatusIndicator.setLayout(connectionStatusIndicatorLayout);
+        connectionStatusIndicatorLayout.setHorizontalGroup(
+            connectionStatusIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 115, Short.MAX_VALUE)
+        );
+        connectionStatusIndicatorLayout.setVerticalGroup(
+            connectionStatusIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 30, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout statusSectionLayout = new javax.swing.GroupLayout(statusSection);
         statusSection.setLayout(statusSectionLayout);
@@ -356,19 +358,17 @@ public class MainMenu extends javax.swing.JFrame {
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(indicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(connectionStatusIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(855, Short.MAX_VALUE))
         );
         statusSectionLayout.setVerticalGroup(
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
-                .addGroup(statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(indicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(statusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(connectionStatusIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        connectionStatusIndicator.initComponents();
 
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
@@ -394,6 +394,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JPanel btnLayoutSection;
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JLabel btnNameModifier;
+    private me.knighthat.interactivedeck.ui.ConnectionStatusIndicator connectionStatusIndicator;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
@@ -409,7 +410,6 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JTextField iBtnBgColor;
     private javax.swing.JTextField iBtnFgColor;
     private javax.swing.JTextField iBtnName;
-    private javax.swing.JLabel indicator;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
@@ -417,49 +417,52 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel profilesSection;
-    private javax.swing.JLabel statusLabel;
     private javax.swing.JPanel statusSection;
     // End of variables declaration//GEN-END:variables
 
     private javax.swing.JButton target;
-    
+
     public void setTarget(javax.swing.JButton target) {
         this.target = target;
         iBtnName.setText(target.getText());
-        
+
         Color fgColor = target.getForeground();
         String fgHex = ColorConverter.toHex(fgColor);
         iBtnFgColor.setText(fgHex);
         iBtnFgColor.setBackground(fgColor);
-        
-        
+
+
         Color bgColor = target.getBackground();
         String bgHex = ColorConverter.toHex(bgColor);
         iBtnBgColor.setText(bgHex);
         iBtnBgColor.setBackground(bgColor);
     }
-    
+
     void updateButton(javax.swing.JTextField modifier) {
         if (target == null) return;
-        
-        String content = modifier.getText();        
-        
+
+        String content = modifier.getText();
+
         if (modifier == iBtnName) {
-            
+
             target.setText(content);
-            
+
         } else if (modifier == iBtnFgColor) {
-            
+
             Color fg = ColorConverter.parse(content);
             target.setForeground(fg);
             modifier.setBackground(fg);
-            
+
         } else if (modifier == iBtnBgColor) {
-            
+
             Color bg = ColorConverter.parse(content);
             target.setBackground(bg);
             modifier.setBackground(bg);
-            
-        }  
+
+        }
+    }
+    
+    public @NotNull ConnectionStatusIndicator getConnectionStatusIndicator() {
+        return this.connectionStatusIndicator;
     }
 }
