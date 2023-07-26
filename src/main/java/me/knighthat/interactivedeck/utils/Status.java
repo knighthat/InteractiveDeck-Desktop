@@ -4,32 +4,31 @@
  */
 package me.knighthat.interactivedeck.utils;
 
-import java.awt.Color;
-import java.util.jar.Attributes;
+import java.awt.*;
 
 /**
- *
  * @author knighthat
  */
 public enum Status {
-    
-    DISCONNECTED(Color.RED, "Disconnected"),
+
+    DISCONNECTED(Color.GRAY, "Disconnected"),
     CONNECTED(Color.GREEN, "Connected"),
-    UNKNOWN(Color.GRAY, "ERROR");
-    
+    ERROR(Color.RED, "ERROR"),
+    UNKNOWN(Color.ORANGE, "UNKNOWN");
+
     private final Color color;
     private final String status;
-    
-    Status(Color color, String status) {
+
+    Status( Color color, String status ) {
         this.color = color;
         this.status = status;
     }
-    
+
     public final Color getColor() {
         return this.color;
     }
 
     public final String getStatus() {
         return this.status;
-    }    
+    }
 }
