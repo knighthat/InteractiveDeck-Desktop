@@ -11,7 +11,10 @@
 package me.knighthat.interactivedeck.vars;
 
 import me.knighthat.interactivedeck.file.yaml.YamlImpl;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
 
 public class Settings {
 
@@ -21,12 +24,15 @@ public class Settings {
 
     public static byte[] BUFFER = new byte[1024];
 
+    // UI
+    public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
+
     public static void loadSettings( @Nullable YamlImpl yaml ) {
         if (yaml == null) return;
 
-        ADDRESS = (String) yaml.getData().get("address");
-        PORT = (int) yaml.getData().get("port");
-        int bSize = (int) yaml.getData().get("buffer_size");
+        ADDRESS = (String) yaml.get("address");
+        PORT = (int) yaml.get("port");
+        int bSize = (int) yaml.get("buffer_size");
         BUFFER = new byte[bSize];
     }
 }
