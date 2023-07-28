@@ -52,4 +52,8 @@ public class ColorConverter {
         double y = ( 299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue() ) / 1000;
         return y >= 128 ? Color.black : Color.white;
     }
+
+    public static @NotNull java.util.List<Integer> rgb(@NotNull Color color) {
+        return java.util.List.of(color.getRed(), color.getGreen(), color.getBlue());
+    }
 }

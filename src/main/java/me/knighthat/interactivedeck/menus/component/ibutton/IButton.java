@@ -10,27 +10,34 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import static me.knighthat.interactivedeck.utils.ColorConverter.TRANSPARENT;
 import static me.knighthat.interactivedeck.vars.Settings.SELECTED_COLOR;
 
-public class IButton extends JComponent {
+public class IButton extends JComponent implements JsonSerializable {
+
+    private final @NotNull UUID uuid;
+
 
     private final @NotNull BIcon icon;
     private final @NotNull BLabel label;
 
     private boolean isSelected = false;
 
-    {
-        icon = new BIcon();
-        label = new BLabel("Placeholder");
-    }
-
     public IButton() {
+        this.uuid = UUID.randomUUID();
+        this.icon = new BIcon();
+        this.label = new BLabel("Placeholder");
+
         setOpaque(false);
         setForeground(TRANSPARENT);
 
@@ -38,6 +45,8 @@ public class IButton extends JComponent {
         add(label, 0);
         add(icon, 1);
     }
+
+    public @NotNull UUID uuid() {return this.uuid;}
 
     public void select() {
         this.isSelected = true;
@@ -52,7 +61,6 @@ public class IButton extends JComponent {
     public void background( @NotNull Color bg ) {
         this.icon.repaint(null, bg);
     }
-
 
     public @NotNull Color background() {
         return this.icon.inner();
@@ -72,6 +80,15 @@ public class IButton extends JComponent {
 
     public @NotNull String text() {
         return this.label.text();
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        Map<String, Object> content = new LinkedHashMap<>(2);
+        content.put("label", this.label.serialize());
+        content.put("icon", this.icon.serialize());
+
+        return Map.of(uuid().toString(), content);
     }
 }
 

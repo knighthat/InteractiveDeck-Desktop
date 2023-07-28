@@ -10,14 +10,18 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.utils.ColorConverter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Map;
 
 import static me.knighthat.interactivedeck.utils.ColorConverter.DEFAULT_DARK;
+import static me.knighthat.interactivedeck.utils.ColorConverter.rgb;
 
-class BIcon extends BChild {
+class BIcon extends BChild implements JsonSerializable {
 
     final @NotNull Dimension arcs;
     final @NotNull Color defOuter;
@@ -70,5 +74,16 @@ class BIcon extends BChild {
         g2d.drawRoundRect(0, 0, width, height, arcs.width, arcs.height);
 
         super.paintComponent(g);
+    }
+
+    @Override
+    public @NotNull Map<String, Object> serialize() {
+        /*
+         * {
+         *      "outer":[r, g, b]
+         *      "inner":[r, g, b]
+         * }
+         */
+        return Map.of("outer", ColorConverter.rgb(outer()), "inner", ColorConverter.rgb(inner()));
     }
 }
