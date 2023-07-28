@@ -3,7 +3,7 @@
  * All rights reserved.
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
  *
@@ -20,23 +20,36 @@
 
 package me.knighthat.interactivedeck.utils;
 
-import java.awt.Color;
+import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 /**
- *
  * @author knighthat
  */
 public class ColorConverter {
-    
-    public static String toHex(Color color) {
+
+    public static @NotNull Color TRANSPARENT = new Color(0, 0, 0, 0);
+    public static @NotNull Color DEFAULT_DARK = new Color(36, 36, 36);
+
+    public static String toHex( Color color ) {
         return toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
-    
-    public static String toHex(int r, int g, int b) {
+
+    public static String toHex( int r, int g, int b ) {
         return String.format("#%02x%02x%02x", r, g, b);
     }
-    
-    public static Color parse(String hex) {
+
+    public static Color parse( String hex ) {
         return Color.decode(hex);
+    }
+
+    /*
+     * Thanks brimborium for providing this piece of code
+     * For details, visit https://stackoverflow.com/questions/4672271/reverse-opposing-colors
+     */
+    public static Color getContrast( @NotNull Color color ) {
+        double y = ( 299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue() ) / 1000;
+        return y >= 128 ? Color.black : Color.white;
     }
 }
