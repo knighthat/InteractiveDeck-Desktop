@@ -10,7 +10,6 @@
 
 package me.knighthat.interactivedeck.file.yaml;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ public abstract class YamlImpl {
 
     protected final @NotNull File FILE;
 
-    @Getter
     private final @NotNull Map<String, Object> data = new HashMap<>();
 
     public YamlImpl( @NotNull File file ) {
@@ -50,5 +48,9 @@ public abstract class YamlImpl {
             e.printStackTrace();
 
         }
+    }
+
+    public @NotNull Object get( @NotNull String k ) {
+        return this.data.get(k);
     }
 }

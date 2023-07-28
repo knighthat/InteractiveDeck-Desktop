@@ -10,7 +10,7 @@
 package me.knighthat.interactivedeck.connection.wireless;
 
 import me.knighthat.interactivedeck.connection.ClientInfo;
-import me.knighthat.interactivedeck.ui.ConnectionStatusIndicator;
+import me.knighthat.interactivedeck.menus.component.indicator.ConnectionStatusIndicator;
 import me.knighthat.interactivedeck.utils.Status;
 import me.knighthat.interactivedeck.vars.Settings;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public class InetListener extends Thread {
                 InetAddress inet = InetAddress.getByAddress(ip);
                 ServerSocket socket = new ServerSocket(PORT, 1, inet);
                 LOGGER.info("Binding on: " + fullAddr);
-                indicator.setStatus(Status.DISCONNECTED);
+                indicator.status(Status.DISCONNECTED);
                 this.setupConnection(socket.accept());
                 socket.close();
             } catch (IOException e) {
@@ -58,7 +58,7 @@ public class InetListener extends Thread {
                 if (e instanceof UnknownHostException)
                     msg = "Invalid IP address:" + ADDRESS;
                 LOGGER.error(msg);
-                indicator.setStatus(Status.ERROR);
+                indicator.status(Status.ERROR);
                 running = false;
             }
         }
@@ -111,7 +111,7 @@ public class InetListener extends Thread {
     }
 
     private void finalizeSetup( @NotNull Socket client ) {
-        indicator.setStatus(Status.CONNECTED);
+        indicator.status(Status.CONNECTED);
         try (InputStream inStream = client.getInputStream()) {
             int bytesRead;
             while (( bytesRead = inStream.read(BUFFER) ) != -1) {
