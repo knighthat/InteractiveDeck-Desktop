@@ -7,9 +7,8 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package me.knighthat.interactivedeck.menus.components;
+package me.knighthat.interactivedeck.menus.component.indicator;
 
-import lombok.Getter;
 import me.knighthat.interactivedeck.utils.Status;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,11 +18,10 @@ import java.awt.*;
 /**
  * @author knighthat
  */
-public class ConnectionStatusIndicator extends JPanel {
+public class ConnectionStatusIndicator extends JComponent {
 
     private final @NotNull Indicator indicator = new Indicator();
     private final @NotNull Label label = new Label();
-    @Getter
     private @NotNull Status status = Status.UNKNOWN;
 
     public ConnectionStatusIndicator() {
@@ -39,15 +37,19 @@ public class ConnectionStatusIndicator extends JPanel {
         add(label);
     }
 
-    public void setStatus( Status status ) {
+    public void status( @NotNull Status status ) {
         this.status = status;
         indicator.setBackground(status.getColor());
         label.setText(status.getStatus());
         label.setForeground(status.getColor());
     }
+
+    public @NotNull Status status() {
+        return this.status;
+    }
 }
 
-class Indicator extends JLabel {
+class Indicator extends JComponent {
 
     public Indicator() {
         Dimension dimension = new Dimension(15, 30);

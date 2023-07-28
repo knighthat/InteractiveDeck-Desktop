@@ -21,16 +21,22 @@ package me.knighthat.interactivedeck.menus;
 
 import java.awt.Color;
 import java.awt.KeyboardFocusManager;
-import me.knighthat.interactivedeck.ui.ConnectionStatusIndicator;
+import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.menus.component.indicator.ConnectionStatusIndicator;
 import me.knighthat.interactivedeck.utils.ColorConverter;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author knighthat
  */
 public class MainMenu extends javax.swing.JFrame {
+    
+    public static final @NotNull Logger LOGGER = LoggerFactory.getLogger("MENU");
+    
 
     /**
      * Creates new form MainMenu
@@ -62,14 +68,14 @@ public class MainMenu extends javax.swing.JFrame {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
         btnContainer = new javax.swing.JPanel();
         btnContainer.setBackground(new Color(0,0,0,0));
-        iBtn1 = new javax.swing.JButton();
-        iBtn2 = new javax.swing.JButton();
-        iBtn3 = new javax.swing.JButton();
-        iBtn4 = new javax.swing.JButton();
-        iBtn5 = new javax.swing.JButton();
-        iBtn6 = new javax.swing.JButton();
-        iBtn7 = new javax.swing.JButton();
-        iBtn8 = new javax.swing.JButton();
+        iBtn1 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn2 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn3 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn4 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn5 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn6 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn7 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
+        iBtn8 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
         filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
         filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         btnModifierSection = new javax.swing.JPanel();
@@ -80,7 +86,7 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         iBtnBgColor = new javax.swing.JTextField();
         statusSection = new javax.swing.JPanel();
-        connectionStatusIndicator = new me.knighthat.interactivedeck.ui.ConnectionStatusIndicator();
+        connectionStatusIndicator = new me.knighthat.interactivedeck.menus.component.indicator.ConnectionStatusIndicator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -161,8 +167,6 @@ public class MainMenu extends javax.swing.JFrame {
         btnContainer.setPreferredSize(new java.awt.Dimension(510, 250));
         btnContainer.setLayout(new java.awt.GridLayout(2, 4, 5, 5));
 
-        iBtn1.setText("IButton 1");
-        iBtn1.setAlignmentY(0.0F);
         iBtn1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -170,8 +174,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn1);
 
-        iBtn2.setText("IButton 2");
-        iBtn2.setAlignmentY(0.0F);
         iBtn2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -179,8 +181,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn2);
 
-        iBtn3.setText("IButton 3");
-        iBtn3.setAlignmentY(0.0F);
         iBtn3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -188,8 +188,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn3);
 
-        iBtn4.setText("IButton 4");
-        iBtn4.setAlignmentY(0.0F);
         iBtn4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -197,8 +195,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn4);
 
-        iBtn5.setText("IButton 5");
-        iBtn5.setAlignmentY(0.0F);
         iBtn5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -206,8 +202,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn5);
 
-        iBtn6.setText("IButton 6");
-        iBtn6.setAlignmentY(0.0F);
         iBtn6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -215,8 +209,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn6);
 
-        iBtn7.setText("IButton 7");
-        iBtn7.setAlignmentY(0.0F);
         iBtn7.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -224,8 +216,6 @@ public class MainMenu extends javax.swing.JFrame {
         });
         btnContainer.add(iBtn7);
 
-        iBtn8.setText("IButton 8");
-        iBtn8.setAlignmentY(0.0F);
         iBtn8.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 iBtnClickEvent(evt);
@@ -339,18 +329,9 @@ public class MainMenu extends javax.swing.JFrame {
         statusSection.setAlignmentY(0.0F);
         statusSection.setPreferredSize(new java.awt.Dimension(1000, 30));
 
+        connectionStatusIndicator.setMaximumSize(new java.awt.Dimension(115, 30));
+        connectionStatusIndicator.setMinimumSize(new java.awt.Dimension(115, 30));
         connectionStatusIndicator.setPreferredSize(new java.awt.Dimension(115, 30));
-
-        javax.swing.GroupLayout connectionStatusIndicatorLayout = new javax.swing.GroupLayout(connectionStatusIndicator);
-        connectionStatusIndicator.setLayout(connectionStatusIndicatorLayout);
-        connectionStatusIndicatorLayout.setHorizontalGroup(
-            connectionStatusIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 115, Short.MAX_VALUE)
-        );
-        connectionStatusIndicatorLayout.setVerticalGroup(
-            connectionStatusIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout statusSectionLayout = new javax.swing.GroupLayout(statusSection);
         statusSection.setLayout(statusSectionLayout);
@@ -364,19 +345,15 @@ public class MainMenu extends javax.swing.JFrame {
         statusSectionLayout.setVerticalGroup(
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addComponent(connectionStatusIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         connectionStatusIndicator.initComponents();
 
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void iBtnClickEvent(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iBtnClickEvent
-        javax.swing.JButton clicked = (javax.swing.JButton) evt.getComponent();
-        setTarget(clicked);
-    }//GEN-LAST:event_iBtnClickEvent
 
     private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
         javax.swing.JTextField modifier = (javax.swing.JTextField) evt.getComponent();
@@ -388,25 +365,36 @@ public class MainMenu extends javax.swing.JFrame {
         updateButton((javax.swing.JTextField) component);
     }//GEN-LAST:event_modifierEnterKeyPressedEvent
 
+    private void iBtnClickEvent(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_iBtnClickEvent
+        if (bSelected != null) 
+            bSelected.unselect();
+        bSelected = (IButton) evt.getComponent();
+        bSelected.select();
+        
+        iBtnName.setText(bSelected.text());
+        updateModifiers(iBtnFgColor, bSelected.foreground());
+        updateModifiers(iBtnBgColor, bSelected.background());
+    }//GEN-LAST:event_iBtnClickEvent
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnContainer;
     private javax.swing.JPanel btnLayoutSection;
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JLabel btnNameModifier;
-    private me.knighthat.interactivedeck.ui.ConnectionStatusIndicator connectionStatusIndicator;
+    private me.knighthat.interactivedeck.menus.component.indicator.ConnectionStatusIndicator connectionStatusIndicator;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
-    private javax.swing.JButton iBtn1;
-    private javax.swing.JButton iBtn2;
-    private javax.swing.JButton iBtn3;
-    private javax.swing.JButton iBtn4;
-    private javax.swing.JButton iBtn5;
-    private javax.swing.JButton iBtn6;
-    private javax.swing.JButton iBtn7;
-    private javax.swing.JButton iBtn8;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn1;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn2;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn3;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn4;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn5;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn6;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn7;
+    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn8;
     private javax.swing.JTextField iBtnBgColor;
     private javax.swing.JTextField iBtnFgColor;
     private javax.swing.JTextField iBtnName;
@@ -420,45 +408,29 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JPanel statusSection;
     // End of variables declaration//GEN-END:variables
 
-    private javax.swing.JButton target;
-
-    public void setTarget(javax.swing.JButton target) {
-        this.target = target;
-        iBtnName.setText(target.getText());
-
-        Color fgColor = target.getForeground();
-        String fgHex = ColorConverter.toHex(fgColor);
-        iBtnFgColor.setText(fgHex);
-        iBtnFgColor.setBackground(fgColor);
-
-
-        Color bgColor = target.getBackground();
-        String bgHex = ColorConverter.toHex(bgColor);
-        iBtnBgColor.setText(bgHex);
-        iBtnBgColor.setBackground(bgColor);
+    private @NotNull IButton bSelected;
+    
+    void updateModifiers(@NotNull javax.swing.JTextField modifier, @NotNull Color bgColor) {
+        String bgHex = ColorConverter.toHex(bgColor);        
+        modifier.setText(bgHex);
+        modifier.setBackground(bgColor);
+        modifier.setForeground(ColorConverter.getContrast(bgColor));
     }
 
     void updateButton(javax.swing.JTextField modifier) {
-        if (target == null) return;
-
+        if (bSelected == null) return;
+        
         String content = modifier.getText();
-
         if (modifier == iBtnName) {
-
-            target.setText(content);
-
+            bSelected.text(content);
         } else if (modifier == iBtnFgColor) {
-
             Color fg = ColorConverter.parse(content);
-            target.setForeground(fg);
-            modifier.setBackground(fg);
-
+            bSelected.foreground(fg);
+            updateModifiers(modifier, fg);
         } else if (modifier == iBtnBgColor) {
-
             Color bg = ColorConverter.parse(content);
-            target.setBackground(bg);
-            modifier.setBackground(bg);
-
+            bSelected.background(bg);
+            updateModifiers(modifier, bg);
         }
     }
     
