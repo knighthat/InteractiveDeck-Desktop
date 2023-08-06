@@ -20,7 +20,7 @@ public class Settings {
 
     public static String ADDRESS = "0.0.0.0";
 
-    public static int PORT = 9219;
+    public static int PORT = 9129;
 
     public static byte[] BUFFER = new byte[1024];
 
@@ -34,5 +34,9 @@ public class Settings {
         PORT = (int) yaml.get("port");
         int bSize = (int) yaml.get("buffer_size");
         BUFFER = new byte[bSize];
+    }
+
+    public static @NotNull String address() {
+        return ADDRESS + ":" + PORT;
     }
 }
