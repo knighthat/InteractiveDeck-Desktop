@@ -7,7 +7,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>
-                %white(%d{HH:mm:ss}) %highlight(%-5level) [%yellow(%c)] %msg%n%throwable
+                %white(%d{HH:mm:ss}) %cyan(%-5t) %highlight(%-5level) %msg%n%throwable
             </Pattern>
         </encoder>
     </appender>
@@ -32,8 +32,8 @@
     <!--            </timeBasedFileNamingAndTriggeringPolicy>-->
     <!--        </rollingPolicy>-->
     <!--    </appender>-->
-
-    <!-- LOG everything at INFO level -->
+    
+    <!-- LOG everything at INFO or at "-Dlog.level=" level -->
     <root level="${log.level:-info}">
         <!--        <appender-ref ref="RollingFile"/>-->
         <appender-ref ref="CONSOLE"/>

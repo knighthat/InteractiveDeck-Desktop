@@ -23,4 +23,8 @@ public class Log {
     public static void err( @NotNull String s ) {
         LOGGER.error(s);
     }
+
+    public static void deb( @NotNull String s ) {
+        LOGGER.debug(s);
+    }
 }
