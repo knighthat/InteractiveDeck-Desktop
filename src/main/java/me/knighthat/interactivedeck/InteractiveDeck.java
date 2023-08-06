@@ -19,12 +19,13 @@
  */
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.connection.wireless.InetListener;
+import me.knighthat.interactivedeck.connection.Client;
+import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.yaml.SettingsFile;
 import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.vars.Settings;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
 
 import static me.knighthat.interactivedeck.vars.SysVars.*;
 
@@ -33,9 +34,15 @@ import static me.knighthat.interactivedeck.vars.SysVars.*;
  */
 public class InteractiveDeck {
 
-    public static @NotNull MainMenu MAIN_MENU;
+    public static @Nullable Client client = null;
+
+    static {
+        Thread.currentThread().setName("MAIN");
+    }
 
     public static void main( String[] args ) {
+//        Log.deb("Debug logging is enabled!");
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -59,8 +66,10 @@ public class InteractiveDeck {
         }
         //</editor-fold>
 
-        MAIN_MENU = new MainMenu();
+        SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
 
+        Log.deb("DEBUG mode is enabled!");
+        
         Log.info("Java runtime version: " + JRE);
         Log.info("Running on: " + PLATFORM);
         Log.info("Working directory: " + WORK_DIR);
@@ -73,9 +82,10 @@ public class InteractiveDeck {
             }
         }
 
-        SettingsFile settings = SettingsFile.init();
-        Settings.loadSettings(settings);
+        // Temporary suspend custom settings
+        // SettingsFile settings = SettingsFile.init();
+        // Settings.loadSettings(settings);
 
-        new InetListener(MAIN_MENU.getConnectionStatusIndicator()).start();
+        new WirelessController().start();
     }
 }
