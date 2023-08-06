@@ -8,12 +8,14 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.json;
+package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;
 
-public interface JsonSerializable {
+public final class RemoveRequest extends Request {
 
-    @NotNull JsonObject json();
+    public RemoveRequest( @NotNull JsonElement content ) {
+        super(RequestType.REMOVE, content);
+    }
 }

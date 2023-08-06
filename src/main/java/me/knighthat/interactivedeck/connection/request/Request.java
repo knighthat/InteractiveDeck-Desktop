@@ -8,12 +8,46 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.json;
+package me.knighthat.interactivedeck.connection.request;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
-public interface JsonSerializable {
+public class Request {
 
-    @NotNull JsonObject json();
+    private final @NotNull RequestType type;
+    private final @NotNull JsonElement content;
+
+    public Request( @NotNull RequestType type, @NotNull JsonElement content ) {
+        this.type = type;
+        this.content = content;
+    }
+
+    public static @NotNull Request parse( @NotNull JsonObject json ) {
+        String typeStr = json.get("type").getAsString();
+        RequestType type = RequestType.valueOf(typeStr);
+
+        boolean hasContent = json.has("content");
+        JsonElement content = !hasContent ? JsonNull.INSTANCE : json.get("content");
+
+        return new Request(type, content);
+    }
+
+    public @NotNull RequestType type() {
+        return this.type;
+    }
+
+    public @NotNull JsonElement content() {
+        return this.content;
+    }
+
+    public @NotNull String serialize() {
+        JsonObject json = new JsonObject();
+        json.add("type", type().json());
+        json.add("content", content());
+
+        return json.toString();
+    }
 }

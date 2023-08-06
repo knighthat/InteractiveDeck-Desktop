@@ -8,11 +8,28 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection;
+package me.knighthat.interactivedeck.exception;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
+import java.io.Serial;
 
-public record ClientInfo(@NotNull String ip, @Range ( from = 0x0, to = 0xffff ) int port, @NotNull String device, @NotNull String android) {
+public class RequestFormatException extends IllegalArgumentException {
 
+    @Serial
+    private static final long serialVersionUID = -2136584685216485945L;
+
+    public RequestFormatException() {
+        super();
+    }
+
+    public RequestFormatException( String s ) {
+        super(s);
+    }
+
+    public RequestFormatException( String message, Throwable cause ) {
+        super(message, cause);
+    }
+
+    public RequestFormatException( Throwable cause ) {
+        super(cause);
+    }
 }

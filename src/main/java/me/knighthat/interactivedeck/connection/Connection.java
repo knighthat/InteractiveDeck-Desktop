@@ -8,12 +8,33 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.json;
+package me.knighthat.interactivedeck.connection;
 
-import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.menus.component.netstatus.ConStatus;
+import me.knighthat.interactivedeck.utils.Status;
 import org.jetbrains.annotations.NotNull;
 
-public interface JsonSerializable {
+import javax.swing.*;
 
-    @NotNull JsonObject json();
+public class Connection {
+
+    private static final @NotNull ConStatus COMPONENT = new ConStatus();
+    private static @NotNull Status status = Status.UNKNOWN;
+
+    public static void status(@NotNull Status status) {
+        Connection.status = status;
+        COMPONENT.update(status);
+    }
+
+    public static @NotNull Status status() {
+        return Connection.status;
+    }
+
+    public static @NotNull JComponent component() {
+        return Connection.COMPONENT;
+    }
+
+    public static boolean isConnected() {
+        return status.equals(Status.CONNECTED);
+    }
 }
