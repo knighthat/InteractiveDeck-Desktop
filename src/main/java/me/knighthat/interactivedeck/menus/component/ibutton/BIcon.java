@@ -10,18 +10,19 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
-import me.knighthat.interactivedeck.utils.ColorConverter;
+import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Map;
+import java.util.List;
 
-import static me.knighthat.interactivedeck.utils.ColorConverter.DEFAULT_DARK;
-import static me.knighthat.interactivedeck.utils.ColorConverter.rgb;
+import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
-class BIcon extends BChild implements JsonSerializable {
+final class BIcon extends BChild implements JsonSerializable {
 
     final @NotNull Dimension arcs;
     final @NotNull Color defOuter;
@@ -77,13 +78,20 @@ class BIcon extends BChild implements JsonSerializable {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @NotNull JsonObject json() {
         /*
          * {
          *      "outer":[r, g, b]
          *      "inner":[r, g, b]
          * }
          */
-        return Map.of("outer", ColorConverter.rgb(outer()), "inner", ColorConverter.rgb(inner()));
+        List<Integer> outer = ColorUtils.rgb(outer());
+        List<Integer> inner = ColorUtils.rgb(inner());
+
+        JsonObject json = new JsonObject();
+        json.add("outer", Json.parse(outer));
+        json.add("inner", Json.parse(inner));
+
+        return json;
     }
 }

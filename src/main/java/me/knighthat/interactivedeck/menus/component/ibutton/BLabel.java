@@ -10,18 +10,21 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
-import me.knighthat.interactivedeck.utils.ColorConverter;
+import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-class BLabel extends BChild implements JsonSerializable {
+final class BLabel extends BChild implements JsonSerializable {
 
     @NotNull
     String text = "";
@@ -47,7 +50,7 @@ class BLabel extends BChild implements JsonSerializable {
         return this.text;
     }
 
-    private @NotNull Map<String, String> font() {
+    private @NotNull Map<String, Object> font() {
         String weight = switch (font.getStyle()) {
             case Font.PLAIN -> "plain";
             case Font.BOLD -> "bold";
@@ -55,10 +58,10 @@ class BLabel extends BChild implements JsonSerializable {
             default -> "unknown";
         };
 
-        Map<String, String> font = new LinkedHashMap<>(3);
+        Map<String, Object> font = new LinkedHashMap<>(3);
         font.put("name", this.font.getName());
         font.put("weight", weight);
-        font.put("size", String.valueOf(this.font.getSize()));
+        font.put("size", this.font.getSize());
 
         return font;
     }
@@ -78,9 +81,9 @@ class BLabel extends BChild implements JsonSerializable {
 
         super.paintComponent(g);
     }
-
+    
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public @NotNull JsonObject json() {
         /* Template
          * {
          *      "text":"placeholder",
@@ -93,6 +96,30 @@ class BLabel extends BChild implements JsonSerializable {
          *      }
          * }
          */
-        return Map.of("text", text(), "color", ColorConverter.rgb(getForeground()), "font", font());
+        JsonElement text = new JsonPrimitive(this.text);
+
+        List<Integer> rgb = ColorUtils.rgb(getForeground());
+        JsonArray color = Json.parse(rgb);
+
+        JsonObject font = new JsonObject();
+        JsonElement fName = new JsonPrimitive(this.font.getName());
+        font.add("name", fName);
+        JsonElement fSize = new JsonPrimitive(this.font.getSize());
+        font.add("size", fSize);
+        JsonElement fWeight = new JsonPrimitive(
+                switch (this.font.getStyle()) {
+                    case Font.BOLD -> "bold";
+                    case Font.ITALIC -> "italic";
+                    default -> "plain";
+                }
+        );
+        font.add("weight", fWeight);
+
+        JsonObject json = new JsonObject();
+        json.add("text", text);
+        json.add("color", color);
+        json.add("font", font);
+
+        return json;
     }
 }

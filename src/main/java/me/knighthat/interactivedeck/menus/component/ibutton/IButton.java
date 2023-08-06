@@ -10,17 +10,17 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 
-import static me.knighthat.interactivedeck.utils.ColorConverter.TRANSPARENT;
+import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 import static me.knighthat.interactivedeck.vars.Settings.SELECTED_COLOR;
 
 public class IButton extends JComponent implements JsonSerializable {
@@ -30,8 +30,6 @@ public class IButton extends JComponent implements JsonSerializable {
 
     private final @NotNull BIcon icon;
     private final @NotNull BLabel label;
-
-    private boolean isSelected = false;
 
     public IButton() {
         this.uuid = UUID.randomUUID();
@@ -46,15 +44,15 @@ public class IButton extends JComponent implements JsonSerializable {
         add(icon, 1);
     }
 
-    public @NotNull UUID uuid() {return this.uuid;}
+    public @NotNull UUID uuid() {
+        return this.uuid;
+    }
 
     public void select() {
-        this.isSelected = true;
         this.icon.repaint(SELECTED_COLOR, this.icon.inner());
     }
 
     public void unselect() {
-        this.isSelected = false;
         this.icon.repaint(this.icon.inner(), this.icon.inner());
     }
 
@@ -83,23 +81,27 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
-        Map<String, Object> content = new LinkedHashMap<>(2);
-        content.put("label", this.label.serialize());
-        content.put("icon", this.icon.serialize());
+    public @NotNull JsonObject json() {
+        /* Template
+         * {
+         *      "uuid": "UUID",
+         *      "icon":
+         *      {
+         *          BIcon.json()
+         *      }
+         *      "label":
+         *      {
+         *          BLabel.json()
+         *      }
+         * }
+         */
+        JsonObject json = new JsonObject();
 
-        return Map.of(uuid().toString(), content);
-    }
-}
+        JsonElement uuid = new JsonPrimitive(this.uuid.toString());
+        json.add("uuid", uuid);
+        json.add("icon", this.icon.json());
+        json.add("label", this.label.json());
 
-class BChild extends JComponent {
-
-    public BChild() {
-        Dimension dimension = new Dimension(120, 120);
-        setPreferredSize(dimension);
-        setMinimumSize(dimension);
-        setMaximumSize(dimension);
-
-        setOpaque(false);
+        return json;
     }
 }
