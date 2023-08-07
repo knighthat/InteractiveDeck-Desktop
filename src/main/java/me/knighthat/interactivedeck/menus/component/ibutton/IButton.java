@@ -15,9 +15,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.UUID;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
@@ -26,10 +28,9 @@ import static me.knighthat.interactivedeck.vars.Settings.SELECTED_COLOR;
 public class IButton extends JComponent implements JsonSerializable {
 
     private final @NotNull UUID uuid;
-
-
     private final @NotNull BIcon icon;
     private final @NotNull BLabel label;
+    private @Nullable File script;
 
     public IButton() {
         this.uuid = UUID.randomUUID();
@@ -78,6 +79,14 @@ public class IButton extends JComponent implements JsonSerializable {
 
     public @NotNull String text() {
         return this.label.text();
+    }
+
+    public void script( @NotNull File script ) {
+        this.script = script;
+    }
+
+    public @Nullable File script() {
+        return this.script;
     }
 
     @Override
