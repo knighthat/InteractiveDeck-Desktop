@@ -23,11 +23,17 @@ import java.awt.Color;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;import java.io.FileNotFoundException;import java.io.IOException;import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.console.Log;import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
+import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
@@ -40,9 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author knighthat
  */
 public class MainMenu extends javax.swing.JFrame {
-    
-    public static final @NotNull Logger LOGGER = LoggerFactory.getLogger("MENU");
-    
+
     private static @NotNull Map<UUID, IButton> iButtons = new HashMap<>();
 
     /**
@@ -104,8 +108,7 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         iBtnScript = new javax.swing.JTextField();
         statusSection = new javax.swing.JPanel();
-        Connection.component();
-        conStatus1 = new me.knighthat.interactivedeck.menus.component.netstatus.ConStatus();
+        conStatus = Connection.component();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
@@ -340,13 +343,13 @@ public class MainMenu extends javax.swing.JFrame {
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(conStatus1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(conStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(855, Short.MAX_VALUE))
         );
         statusSectionLayout.setVerticalGroup(
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
-                .addComponent(conStatus1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(conStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -372,13 +375,13 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
     }
-    
+
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
-        if (bSelected != null) 
+        if (bSelected != null)
             bSelected.unselect();
         bSelected = (IButton) evt.getComponent();
         bSelected.select();
-        
+
         iBtnName.setText(bSelected.text());
         updateModifiers(iBtnFgColor, bSelected.foreground());
         updateModifiers(iBtnBgColor, bSelected.background());
@@ -392,14 +395,13 @@ public class MainMenu extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnContainer;
     private javax.swing.JPanel btnLayoutSection;
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JLabel btnNameModifier;
-    private me.knighthat.interactivedeck.menus.component.netstatus.ConStatus conStatus1;
+    private me.knighthat.interactivedeck.menus.component.netstatus.ConStatus conStatus;
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
@@ -428,9 +430,9 @@ public class MainMenu extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private @Nullable IButton bSelected;
-    
+
     void updateModifiers(@NotNull javax.swing.JTextField modifier, @NotNull Color bgColor) {
-        String bgHex = ColorUtils.toHex(bgColor);        
+        String bgHex = ColorUtils.toHex(bgColor);
         modifier.setText(bgHex);
         modifier.setBackground(bgColor);
         modifier.setForeground(ColorUtils.getContrast(bgColor));
@@ -438,7 +440,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     void updateButton(javax.swing.JTextField modifier) {
         if (bSelected == null) return;
-        
+
         String content = modifier.getText();
         if (modifier == iBtnName) {
             bSelected.text(content);
@@ -462,8 +464,18 @@ public class MainMenu extends javax.swing.JFrame {
 
             bSelected.script(script);
         }
+
+        if (!Connection.isConnected()) return;
+
+        Request request = new UpdateRequest(bSelected);
+        try {
+            WirelessSender.send(request);
+        } catch (InterruptedException e) {
+            Log.err("Failed to send update to client");
+            e.printStackTrace();
+        }
     }
-    
+
     public static @NotNull Map<UUID, IButton> iButtons() {
         return MainMenu.iButtons;
     }
