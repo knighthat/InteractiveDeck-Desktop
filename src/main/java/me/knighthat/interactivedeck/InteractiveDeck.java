@@ -64,7 +64,10 @@ public class InteractiveDeck {
         }
         //</editor-fold>
 
-        SwingUtilities.invokeLater(() -> new MainMenu().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            Thread.currentThread().setName("GUI");
+            new MainMenu().setVisible(true);
+        });
 
         Log.deb("DEBUG mode is enabled!");
 
