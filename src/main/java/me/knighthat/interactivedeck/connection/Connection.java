@@ -14,24 +14,18 @@ import me.knighthat.interactivedeck.menus.component.netstatus.ConStatus;
 import me.knighthat.interactivedeck.utils.Status;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-
 public class Connection {
 
     private static final @NotNull ConStatus COMPONENT = new ConStatus();
     private static @NotNull Status status = Status.UNKNOWN;
 
-    public static void status(@NotNull Status status) {
+    public static void status( @NotNull Status status ) {
         Connection.status = status;
         COMPONENT.update(status);
     }
 
-    public static @NotNull Status status() {
-        return Connection.status;
-    }
-
-    public static @NotNull JComponent component() {
-        return Connection.COMPONENT;
+    public static @NotNull ConStatus component() {
+        return COMPONENT;
     }
 
     public static boolean isConnected() {
