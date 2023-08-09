@@ -31,9 +31,9 @@ public class SysVars {
         String defaultHome = System.getProperty("user.home").concat("/");
         String path = defaultHome.concat(".config/InteractiveDeck");
 
-        if (PLATFORM.startsWith("Windows")) {
+        if (osName.startsWith("Windows")) {
             path = defaultHome.concat("InteractiveDeck");
-        } else if (PLATFORM.startsWith("Mac")) {
+        } else if (osName.startsWith("Mac")) {
             path = defaultHome.concat(".InteractiveDeck");
         }
         WORK_DIR = new File(path);
