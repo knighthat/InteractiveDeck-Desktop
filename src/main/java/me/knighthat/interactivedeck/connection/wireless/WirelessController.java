@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -31,8 +32,14 @@ public class WirelessController extends Thread {
 
     @Override
     public void run() {
+        InetAddress IP = WirelessAddress.get();
+        if (IP == null) {
+            Connection.status(Status.ERROR);
+            interrupt();
+        }
+
         while (!Thread.interrupted())
-            try (ServerSocket socket = new ServerSocket(PORT)) {
+            try (ServerSocket socket = new ServerSocket(PORT, 1, IP)) {
                 resetConnection();
 
                 this.handleConnection(socket.accept());
@@ -42,7 +49,7 @@ public class WirelessController extends Thread {
                 setName("NET");
                 //TODO Implement proper handler
 
-                Log.err("Could not start on port " + PORT);
+                Log.err("Could not start listening on " + address());
                 Log.err(e.getMessage());
 
                 Connection.status(Status.ERROR);
