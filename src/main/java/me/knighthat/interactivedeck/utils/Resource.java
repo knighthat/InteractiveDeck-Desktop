@@ -10,25 +10,17 @@
 
 package me.knighthat.interactivedeck.utils;
 
+import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
 public class Resource {
 
-    private static final @NotNull Logger LOGGER = LoggerFactory.getLogger("FILE");
-
     private static final @NotNull ClassLoader LOADER = Resource.class.getClassLoader();
 
-    public static @Nullable InputStream get( @NotNull String name ) {
-        return LOADER.getResourceAsStream(name);
-    }
-
-    public static void save( @NotNull String name, @NotNull File to ) {
-        try (InputStream inStream = get(name) ;
+    public static void save( @NotNull String name, @NotNull File to ) throws IOException {
+        try (InputStream inStream = LOADER.getResourceAsStream(name) ;
              FileWriter writer = new FileWriter(to)) {
             int i;
             while (( i = inStream.read() ) != -1)
@@ -36,14 +28,12 @@ public class Resource {
 
             writer.flush();
         } catch (FileNotFoundException e) {
-            LOGGER.error("Couldn't access " + name);
+            Log.err(name + " could not be found!");
             e.printStackTrace();
         } catch (IOException e) {
-            LOGGER.error("Failed to copy default settings to " + to.getName());
-            e.printStackTrace();
+            throw new IOException(e);
         } catch (NullPointerException e) {
-            LOGGER.error(name + " does not exist!");
-            e.printStackTrace();
+            Log.warn("file's name is null!");
         }
     }
 }
