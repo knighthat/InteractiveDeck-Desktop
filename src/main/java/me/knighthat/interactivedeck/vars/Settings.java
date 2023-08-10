@@ -28,6 +28,12 @@ public class Settings {
 
     public static byte[] BUFFER = new byte[1024];
 
+    public static int COLUMNS = 4;
+
+    public static int ROWS = 2;
+
+    public static int BUTTON_GAP = 4;
+
     // UI
     public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
 
