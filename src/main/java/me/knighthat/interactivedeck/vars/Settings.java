@@ -10,13 +10,17 @@
 
 package me.knighthat.interactivedeck.vars;
 
-import me.knighthat.interactivedeck.file.yaml.YamlImpl;
+import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.file.SettingsFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class Settings {
+
+    public static @Nullable SettingsFile FILE;
 
     public static String ADDRESS = "0.0.0.0";
 
@@ -27,13 +31,35 @@ public class Settings {
     // UI
     public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
 
-    public static void loadSettings( @Nullable YamlImpl yaml ) {
-        if (yaml == null) return;
+    public static void loadSettings() {
+        if (FILE == null) return;
 
-        ADDRESS = (String) yaml.get("address");
-        PORT = (int) yaml.get("port");
-        int bSize = (int) yaml.get("buffer_size");
+        ADDRESS = FILE.string("address", "0.0.0.0");
+        PORT = FILE.integer("port", 9129);
+        int bSize = FILE.integer("buffer_size", 1024);
         BUFFER = new byte[bSize];
+        COLUMNS = FILE.integer("column_count", 4);
+        ROWS = FILE.integer("row_count", 2);
+        BUTTON_GAP = FILE.integer("button_gap", 4);
+    }
+
+    public static void dump() {
+        if (FILE == null) return;
+
+        Log.info("Dumping settings to file");
+
+        FILE.set("address", ADDRESS);
+        FILE.set("port", PORT);
+        FILE.set("buffer_size", BUFFER.length);
+        FILE.set("column_count", COLUMNS);
+        FILE.set("row_count", ROWS);
+        FILE.set("button_gap", BUTTON_GAP);
+
+        try {
+            FILE.save();
+        } catch (IOException e) {
+            Log.err("Failed to save settings file!");
+        }
     }
 
     public static @NotNull String address() {
