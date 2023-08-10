@@ -22,6 +22,7 @@ package me.knighthat.interactivedeck;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.file.SettingsFile;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,6 +42,8 @@ public class InteractiveDeck {
     }
 
     public static void main( String[] args ) {
+        SettingsFile.init();
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -82,10 +85,6 @@ public class InteractiveDeck {
                 return;
             }
         }
-
-        // Temporary suspend custom settings
-        // SettingsFile settings = SettingsFile.init();
-        // Settings.loadSettings(settings);
 
         new WirelessController().start();
     }
