@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.awt.event.WindowAdapter;import java.awt.event.WindowEvent;import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +36,9 @@ import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
+import me.knighthat.interactivedeck.vars.Settings;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.Nullable;import static me.knighthat.interactivedeck.vars.Settings.*;
 
 /**
  *
@@ -47,7 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MainMenu extends javax.swing.JFrame {
 
-    private static @NotNull Map<UUID, IButton> iButtons = new HashMap<>();
+    private static @NotNull Map<UUID, IButton> iButtons = new LinkedHashMap<>();
 
     /**
      * Creates new form MainMenu
@@ -57,7 +56,16 @@ public class MainMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setAlwaysOnTop(false);
         initComponents();
+        addButtons();
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing( WindowEvent e ) {
+                Settings.dump();
+                super.windowClosing(e);
+            }});
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,29 +83,7 @@ public class MainMenu extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        btnLayoutSection = new javax.swing.JPanel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0));
-        btnContainer = new javax.swing.JPanel();
-        btnContainer.setBackground(new Color(0,0,0,0));
-        iBtn1 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn1);
-        iBtn2 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn2);
-        iBtn3 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn3);
-        iBtn4 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn4);
-        iBtn5 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn5);
-        iBtn6 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn6);
-        iBtn7 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn7);
-        iBtn8 = new me.knighthat.interactivedeck.menus.component.ibutton.IButton();
-        registerButton(iBtn8);
-        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
         iBtnName = new javax.swing.JTextField();
         iBtnFgColor = new javax.swing.JTextField();
@@ -174,33 +160,22 @@ public class MainMenu extends javax.swing.JFrame {
 
         getContentPane().add(profilesSection, java.awt.BorderLayout.NORTH);
 
-        btnLayoutSection.setBackground(new java.awt.Color(51, 51, 51));
-        btnLayoutSection.setDoubleBuffered(false);
-        btnLayoutSection.setPreferredSize(new java.awt.Dimension(750, 0));
-        btnLayoutSection.setLayout(new java.awt.GridBagLayout());
-        btnLayoutSection.add(filler1, new java.awt.GridBagConstraints());
-        btnLayoutSection.add(filler2, new java.awt.GridBagConstraints());
+        iBtnSection.setBackground(new java.awt.Color(51, 51, 51));
+        iBtnSection.setDoubleBuffered(false);
+        iBtnSection.setPreferredSize(new java.awt.Dimension(750, 0));
 
-        btnContainer.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btnContainer.setDoubleBuffered(false);
-        btnContainer.setMaximumSize(new java.awt.Dimension(510, 250));
-        btnContainer.setName(""); // NOI18N
-        btnContainer.setPreferredSize(new java.awt.Dimension(510, 250));
-        btnContainer.setLayout(new java.awt.GridLayout(2, 4, 5, 5));
-        btnContainer.add(iBtn1);
-        btnContainer.add(iBtn2);
-        btnContainer.add(iBtn3);
-        btnContainer.add(iBtn4);
-        btnContainer.add(iBtn5);
-        btnContainer.add(iBtn6);
-        btnContainer.add(iBtn7);
-        btnContainer.add(iBtn8);
+        javax.swing.GroupLayout iBtnSectionLayout = new javax.swing.GroupLayout(iBtnSection);
+        iBtnSection.setLayout(iBtnSectionLayout);
+        iBtnSectionLayout.setHorizontalGroup(
+            iBtnSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 750, Short.MAX_VALUE)
+        );
+        iBtnSectionLayout.setVerticalGroup(
+            iBtnSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 520, Short.MAX_VALUE)
+        );
 
-        btnLayoutSection.add(btnContainer, new java.awt.GridBagConstraints());
-        btnLayoutSection.add(filler4, new java.awt.GridBagConstraints());
-        btnLayoutSection.add(filler3, new java.awt.GridBagConstraints());
-
-        getContentPane().add(btnLayoutSection, java.awt.BorderLayout.WEST);
+        getContentPane().add(iBtnSection, java.awt.BorderLayout.WEST);
 
         btnModifierSection.setBackground(new java.awt.Color(36, 36, 36));
         btnModifierSection.setDoubleBuffered(false);
@@ -356,6 +331,35 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addButtons() {
+        GridBagLayout layout = new GridBagLayout();
+        iBtnSection.setLayout(layout);
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = COLUMNS > 6 ? 1d : 0d;
+        constraints.weighty = ROWS > 4 ? 1d : 0d;
+        constraints.ipadx = BUTTON_GAP;
+        constraints.ipady = BUTTON_GAP;
+
+        for (int y = 0; y < ROWS ; y++)
+            for (int x = 0 ; x < COLUMNS ; x++) {
+                IButton button = new IButton();
+                iButtons.put(button.uuid(), button);
+                button.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                iBtnClickEvent(e);
+                            }
+                    });
+
+                constraints.gridx = x;
+                constraints.gridy = y;
+                iBtnSection.add(button, constraints);
+            }
+    }
+
     private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
         javax.swing.JTextField modifier = (javax.swing.JTextField) evt.getComponent();
         updateButton(modifier);
@@ -365,16 +369,6 @@ public class MainMenu extends javax.swing.JFrame {
         java.awt.Component component = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
         updateButton((javax.swing.JTextField) component);
     }//GEN-LAST:event_modifierEnterKeyPressedEvent
-
-    void registerButton(@NotNull IButton button) {
-        iButtons.put(button.uuid(), button);
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                iBtnClickEvent(e);
-            }
-        });
-    }
 
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         if (bSelected != null)
@@ -397,27 +391,14 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel btnContainer;
-    private javax.swing.JPanel btnLayoutSection;
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JLabel btnNameModifier;
     private me.knighthat.interactivedeck.menus.component.netstatus.ConStatus conStatus;
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.Box.Filler filler3;
-    private javax.swing.Box.Filler filler4;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn1;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn2;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn3;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn4;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn5;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn6;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn7;
-    private me.knighthat.interactivedeck.menus.component.ibutton.IButton iBtn8;
     private javax.swing.JTextField iBtnBgColor;
     private javax.swing.JTextField iBtnFgColor;
     private javax.swing.JTextField iBtnName;
     private javax.swing.JTextField iBtnScript;
+    private javax.swing.JPanel iBtnSection;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
