@@ -8,36 +8,39 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.file.yaml;
+package me.knighthat.interactivedeck.file;
 
+import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.utils.Resource;
+import me.knighthat.interactivedeck.vars.Settings;
 import me.knighthat.interactivedeck.vars.SysVars;
+import me.knighthat.interactivedeck.yaml.YamlFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class SettingsFile extends YamlImpl {
+public class SettingsFile extends YamlFile {
 
-    public static final @NotNull String NAME = "settings.yml";
-
-    SettingsFile( @NotNull File file ) {
+    SettingsFile( @NotNull File file ) throws FileNotFoundException {
         super(file);
     }
 
-    public static SettingsFile init() {
-        File file = new File(SysVars.WORK_DIR, NAME);
-        if (!file.exists()) {
-            LOGGER.info("No settings file found! Generating one...");
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                LOGGER.error("Couldn't generate settings.yml. Perhaps permission error?");
-                e.printStackTrace();
-                return null;
-            }
-            Resource.save(NAME, file);
+    public static void init() {
+        String name = "settings.yml";
+        File file = new File(SysVars.WORK_DIR, name);
+
+        try {
+            if (file.createNewFile())
+                Resource.save(name, file);
+
+            Settings.FILE = new SettingsFile(file);
+        } catch (FileNotFoundException ignored) {
+        } catch (IOException e) {
+            Log.err("Couldn't generate settings.yml. Perhaps permission error?");
+        } finally {
+            Settings.loadSettings();
         }
-        return new SettingsFile(file);
     }
 }
