@@ -14,8 +14,8 @@ import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
 
 public final class UpdateRequest extends Request {
+
     public UpdateRequest( @NotNull IButton button ) {
         super(RequestType.UPDATE, button.json());
     }
-
 }
