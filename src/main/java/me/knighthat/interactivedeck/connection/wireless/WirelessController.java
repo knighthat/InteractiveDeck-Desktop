@@ -11,12 +11,13 @@
 package me.knighthat.interactivedeck.connection.wireless;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.InteractiveDeck;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.RequestHandler;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.utils.Status;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +27,13 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static me.knighthat.interactivedeck.vars.Settings.*;
+import static me.knighthat.interactivedeck.file.Settings.*;
 
 public class WirelessController extends Thread {
+
+    public WirelessController() {
+        setName("NET");
+    }
 
     @Override
     public void run() {
@@ -67,7 +72,7 @@ public class WirelessController extends Thread {
         Log.info("Listening on: " + address());
     }
 
-    void handleConnection( @NotNull Socket client ) throws IOException {
+    void handleConnection(@NotNull Socket client) throws IOException {
         String cInfo = client.getInetAddress().getHostAddress() + ":" + client.getPort();
         Log.info("Connection from " + cInfo);
 
@@ -75,12 +80,12 @@ public class WirelessController extends Thread {
         setupReceiver(client.getInputStream());
     }
 
-    void setupReceiver( @NotNull InputStream inStream ) throws IOException {
+    void setupReceiver(@NotNull InputStream inStream) throws IOException {
         setName("NET/I");
 
         int bytesRead;
         String finalStr = "";
-        while (( bytesRead = inStream.read(BUFFER) ) != 1) {
+        while ((bytesRead = inStream.read(BUFFER)) != 1) {
             String decoded;
             try {
                 decoded = new String(BUFFER, 0, bytesRead);
@@ -92,11 +97,13 @@ public class WirelessController extends Thread {
 
             finalStr = finalStr.concat(decoded);
 
-            JsonObject json;
-            if (( json = Json.validate(finalStr) ) != null) {
+            try {
+                JsonObject json = JsonParser.parseString(finalStr).getAsJsonObject();
                 Request request = Request.parse(json);
                 RequestHandler.process(request);
                 finalStr = "";
+
+            } catch (JsonParseException ignored) {
             }
         }
     }
