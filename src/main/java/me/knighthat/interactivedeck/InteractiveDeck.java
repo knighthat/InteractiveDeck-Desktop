@@ -22,13 +22,11 @@ package me.knighthat.interactivedeck;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.SettingsFile;
+import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.menus.MainMenu;
+import me.knighthat.interactivedeck.profile.Profiles;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-
-import static me.knighthat.interactivedeck.vars.SysVars.*;
 
 /**
  * @author knighthat
@@ -41,8 +39,16 @@ public class InteractiveDeck {
         Thread.currentThread().setName("MAIN");
     }
 
-    public static void main( String[] args ) {
-        SettingsFile.init();
+    public static void main(String[] args) {
+        Log.deb("DEBUG mode is enabled!");
+
+        WorkingDirectory.init();
+        Settings.init();
+        Profiles.init();
+
+        printSysConfig();
+
+        new WirelessController().start();
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -56,36 +62,34 @@ public class InteractiveDeck {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainMenu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            Log.err("Error occurs while loading graphical interface - Look&Feel");
+            Log.err("Reason: " + e.getMessage());
+            e.printStackTrace();
         }
         //</editor-fold>
 
-        SwingUtilities.invokeLater(() -> {
-            Thread.currentThread().setName("GUI");
-            new MainMenu().setVisible(true);
-        });
+        new MainMenu().setVisible(true);
+    }
 
-        Log.deb("DEBUG mode is enabled!");
+    static void printSysConfig() {
+        Log.info("Java runtime version: " + jre());
+        Log.info("Running on: " + platform());
+        Log.info("Working directory: " + WorkingDirectory.absPath());
+    }
 
-        Log.info("Java runtime version: " + JRE);
-        Log.info("Running on: " + PLATFORM);
-        Log.info("Working directory: " + WORK_DIR);
+    static @NotNull String platform() {
+        String osName = System.getProperty("os.name");
+        String osVer = System.getProperty("os.version");
+        String osArch = System.getProperty("os.arch");
 
-        if (!WORK_DIR.exists()) {
-            Log.info("Working folder is not exist! Making one..");
-            if (!WORK_DIR.mkdirs()) {
-                Log.err("Couldn't create working directory at " + WORK_DIR.getAbsolutePath());
-                return;
-            }
-        }
+        return String.format("%s %s %s", osArch, osName, osVer);
+    }
 
-        new WirelessController().start();
+    static @NotNull String jre() {
+        String vmName = System.getProperty("java.vm.name");
+        String vmVer = System.getProperty("java.vm.version");
+
+        return String.format("%s %s", vmName, vmVer);
     }
 }
