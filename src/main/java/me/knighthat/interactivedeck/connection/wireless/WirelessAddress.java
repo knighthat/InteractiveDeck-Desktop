@@ -20,7 +20,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import static me.knighthat.interactivedeck.vars.Settings.ADDRESS;
+import static me.knighthat.interactivedeck.file.Settings.ADDRESS;
 
 public class WirelessAddress {
 
@@ -58,7 +58,7 @@ public class WirelessAddress {
     static byte[] addressToByteArray() {
         byte[] address = new byte[4];
         String[] splitAddr = ADDRESS.split("\\.");
-        for (int i = 0 ; i < 4 ; i++)
+        for (int i = 0; i < 4; i++)
             address[i] = Byte.parseByte(splitAddr[i]);
 
         String debStr = "Address in bytes array: [%s,%s,%s,%s]";

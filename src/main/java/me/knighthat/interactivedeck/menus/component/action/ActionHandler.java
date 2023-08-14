@@ -11,9 +11,9 @@
 package me.knighthat.interactivedeck.menus.component.action;
 
 import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
-import me.knighthat.interactivedeck.vars.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -23,7 +23,7 @@ import java.util.UUID;
 
 public class ActionHandler {
 
-    public static void process( @NotNull ActionType type, @NotNull UUID uuid ) {
+    public static void process(@NotNull ActionType type, @NotNull UUID uuid) {
         if (!type.equals(ActionType.PRESS)) return;
 
         IButton button = MainMenu.iButtons().get(uuid);
@@ -42,7 +42,7 @@ public class ActionHandler {
 
             InputStream inStream = process.getInputStream();
             int bytesRead;
-            while (( bytesRead = inStream.read(Settings.BUFFER) ) != -1) {
+            while ((bytesRead = inStream.read(Settings.BUFFER)) != -1) {
                 String decoded = new String(Settings.BUFFER, 0, bytesRead);
                 Log.info(decoded);
             }
