@@ -8,26 +8,20 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.vars;
+package me.knighthat.interactivedeck;
 
+import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-public class SysVars {
+public class WorkingDirectory {
 
-    public static final @NotNull String PLATFORM;
-    public static final @NotNull File WORK_DIR;
-    public static final @NotNull String JRE;
+    private static @NotNull File WORK_DIR;
 
-    static {
-        // Platform
+    public static void init() {
         String osName = System.getProperty("os.name");
-        String osVer = System.getProperty("os.version");
-        String osArch = System.getProperty("os.arch");
-        PLATFORM = String.format("%s %s %s", osArch, osName, osVer);
-
-        // Working directory
         String defaultHome = System.getProperty("user.home").concat("/");
         String path = defaultHome.concat(".config/InteractiveDeck");
 
@@ -38,10 +32,22 @@ public class SysVars {
         }
         WORK_DIR = new File(path);
 
-        // JRE information
-        String vmName = System.getProperty("java.vm.name");
-        String vmVer = System.getProperty("java.vm.version");
+        if (WORK_DIR.exists()) return;
 
-        JRE = String.format("%s %s", vmName, vmVer);
+        Log.info("Working folder is not exist! Making one..");
+        if (!WORK_DIR.mkdirs())
+            Log.err("Couldn't create working directory at " + WORK_DIR.getAbsolutePath());
+    }
+
+    public static @NotNull File get() {
+        return WORK_DIR;
+    }
+
+    public static @NotNull String absPath() {
+        return WORK_DIR.getAbsolutePath();
+    }
+
+    public static @Nullable File[] listDir() {
+        return WORK_DIR.listFiles();
     }
 }
