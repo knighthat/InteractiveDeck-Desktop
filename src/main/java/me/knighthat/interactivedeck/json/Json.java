@@ -11,26 +11,37 @@
 package me.knighthat.interactivedeck.json;
 
 import com.google.gson.*;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Json {
 
-    public static @Nullable JsonObject validate( @NotNull String s ) {
-        try {
-            return JsonParser.parseString(s).getAsJsonObject();
-        } catch (JsonParseException e) {
-            return null;
-        }
+    private static final @NotNull Gson GSON;
+
+    static {
+        GSON = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    public static <T> @NotNull JsonArray parse( @NotNull Iterable<T> iterable ) {
+    public static <T> @NotNull JsonArray parse(@NotNull Iterable<T> iterable) {
         JsonArray array = new JsonArray();
-        iterable.forEach(e -> array.add(parse(e)));
+        iterable.forEach(element -> {
+            if (element instanceof JsonSerializable serializable) {
+                array.add(serializable.json());
+            } else {
+                array.add(parse(element));
+            }
+        });
         return array;
     }
 
-    public static @NotNull JsonElement parse( @Nullable Object obj ) {
+    public static @NotNull JsonElement parse(@Nullable Object obj) {
         JsonElement element;
         if (obj == null) {
             element = JsonNull.INSTANCE;
@@ -38,9 +49,19 @@ public class Json {
             element = new JsonPrimitive(numb);
         } else if (obj instanceof Boolean bool) {
             element = new JsonPrimitive(bool);
+        } else if (obj instanceof Color color) {
+            element = ColorUtils.toJson(color);
+        } else if (obj instanceof Font font) {
+            element = FontUtils.toJson(font);
         } else {
             element = new JsonPrimitive(String.valueOf(obj));
         }
         return element;
+    }
+
+    public static void save(@NotNull JsonObject json, @NotNull File file) throws IOException {
+        FileWriter writer = new FileWriter(file);
+        GSON.toJson(json, writer);
+        writer.close();
     }
 }
