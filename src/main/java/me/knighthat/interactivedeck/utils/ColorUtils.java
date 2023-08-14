@@ -10,7 +10,9 @@
 
 package me.knighthat.interactivedeck.utils;
 
+import com.google.gson.JsonArray;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.awt.*;
 import java.util.List;
@@ -23,28 +25,54 @@ public class ColorUtils {
     public static @NotNull Color TRANSPARENT = new Color(0, 0, 0, 0);
     public static @NotNull Color DEFAULT_DARK = new Color(36, 36, 36);
 
-    public static String toHex( Color color ) {
+    public static @NotNull String toHex(@NotNull Color color) {
         return toHex(color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    public static String toHex( int r, int g, int b ) {
+    public static @NotNull String toHex(@Range(from = 0x0, to = 0xff) int r,
+                                        @Range(from = 0x0, to = 0xff) int g,
+                                        @Range(from = 0x0, to = 0xff) int b) {
         return String.format("#%02x%02x%02x", r, g, b);
     }
 
-    public static Color fromHex( String hex ) {
+    public static @NotNull Color fromHex(@NotNull String hex) {
         return Color.decode(hex);
+    }
+
+    public static @NotNull Color fromJson(@NotNull JsonArray array) {
+        int r = array.get(0).getAsInt();
+        int g = array.get(1).getAsInt();
+        int b = array.get(2).getAsInt();
+
+        if (r < 0 || r > 255)
+            r = 0;
+        if (g < 0 || g > 255)
+            g = 0;
+        if (b < 0 || b > 255)
+            b = 0;
+
+        return new Color(r, g, b);
+    }
+
+    public static @NotNull JsonArray toJson(@NotNull Color color) {
+        JsonArray array = new JsonArray(3);
+        array.add(color.getRed());
+        array.add(color.getGreen());
+        array.add(color.getBlue());
+
+        return array;
     }
 
     /*
      * Thanks brimborium for providing this piece of code
      * For details, visit https://stackoverflow.com/questions/4672271/reverse-opposing-colors
      */
-    public static Color getContrast( @NotNull Color color ) {
-        double y = ( 299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue() ) / 1000;
+    public static Color getContrast(@NotNull Color color) {
+        double y = (299 * color.getRed() + 587 * color.getGreen() + 114 * color.getBlue()) / 1000;
         return y >= 128 ? Color.black : Color.white;
     }
 
-    public static @NotNull List<Integer> rgb( @NotNull Color color ) {
+    public static @NotNull List<Integer> rgb(@NotNull Color color) {
         return List.of(color.getRed(), color.getGreen(), color.getBlue());
     }
 }
