@@ -10,6 +10,7 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
@@ -18,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.List;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
@@ -39,7 +39,24 @@ final class BIcon extends BChild implements JsonSerializable {
         defInner = DEFAULT_DARK;
     }
 
-    public void repaint( @Nullable Color outer, @Nullable Color inner ) {
+    BIcon() {
+        super();
+    }
+
+    static @NotNull BIcon fromJson(@NotNull JsonObject json) {
+        BIcon icon = new BIcon();
+
+        JsonArray outerArray = json.getAsJsonArray("outer");
+        Color outer = ColorUtils.fromJson(outerArray);
+        JsonArray innerArray = json.getAsJsonArray("inner");
+        Color inner = ColorUtils.fromJson(innerArray);
+
+        icon.repaint(outer, inner);
+
+        return icon;
+    }
+
+    public void repaint(@Nullable Color outer, @Nullable Color inner) {
         if (outer != null)
             this.outer = outer;
         if (inner != null)
@@ -56,7 +73,7 @@ final class BIcon extends BChild implements JsonSerializable {
     }
 
     @Override
-    protected void paintComponent( Graphics g ) {
+    protected void paintComponent(Graphics g) {
         int width = getWidth() - 1, height = getHeight() - 1;
 
         /*
@@ -85,12 +102,9 @@ final class BIcon extends BChild implements JsonSerializable {
          *      "inner":[r, g, b]
          * }
          */
-        List<Integer> outer = ColorUtils.rgb(outer());
-        List<Integer> inner = ColorUtils.rgb(inner());
-
         JsonObject json = new JsonObject();
-        json.add("outer", Json.parse(outer));
-        json.add("inner", Json.parse(inner));
+        json.add("outer", Json.parse(this.outer()));
+        json.add("inner", Json.parse(this.inner()));
 
         return json;
     }

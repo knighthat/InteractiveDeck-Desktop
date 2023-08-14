@@ -10,9 +10,10 @@
 
 package me.knighthat.interactivedeck.menus.component.ibutton;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
+import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,20 +23,29 @@ import java.awt.*;
 import java.io.File;
 import java.util.UUID;
 
+import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
-import static me.knighthat.interactivedeck.vars.Settings.SELECTED_COLOR;
 
 public class IButton extends JComponent implements JsonSerializable {
 
     private final @NotNull UUID uuid;
     private final @NotNull BIcon icon;
     private final @NotNull BLabel label;
+    private final int x;
+    private final int y;
     private @Nullable File script;
 
-    public IButton() {
-        this.uuid = UUID.randomUUID();
-        this.icon = new BIcon();
-        this.label = new BLabel("Placeholder");
+    IButton(@NotNull UUID uuid,
+            @NotNull BIcon icon,
+            @NotNull BLabel label,
+            int x, int y,
+            @Nullable File script) {
+        this.uuid = uuid;
+        this.icon = icon;
+        this.label = label;
+        this.x = x;
+        this.y = y;
+        this.script = script;
 
         setOpaque(false);
         setForeground(TRANSPARENT);
@@ -45,8 +55,54 @@ public class IButton extends JComponent implements JsonSerializable {
         add(icon, 1);
     }
 
+    public IButton(int x, int y) {
+        this(UUID.randomUUID(), new BIcon(), new BLabel(), x, y, null);
+    }
+
+    public IButton() {
+        this(1, 1);
+    }
+
+    public static @NotNull IButton fromJson(@NotNull JsonObject json) throws JsonSyntaxException {
+        if (!json.has("uuid") ||
+                !json.has("icon") ||
+                !json.has("label"))
+            throw new JsonSyntaxException("Not enough argument");
+
+        String idStr = json.get("uuid").getAsString();
+        UUID uuid = UUID.fromString(idStr);
+
+        JsonObject iconJson = json.getAsJsonObject("icon");
+        BIcon icon = BIcon.fromJson(iconJson);
+
+        JsonObject labelJson = json.getAsJsonObject("label");
+        BLabel label = BLabel.fromJson(labelJson);
+
+        JsonPrimitive xPrim = json.getAsJsonPrimitive("x");
+        int x = xPrim.getAsInt();
+
+        JsonPrimitive yPrim = json.getAsJsonPrimitive("y");
+        int y = yPrim.getAsInt();
+
+        File script = null;
+        if (json.has("script")) {
+            JsonPrimitive scriptPath = json.getAsJsonPrimitive("script");
+            script = new File(scriptPath.getAsString());
+        }
+
+        return new IButton(uuid, icon, label, x, y, script);
+    }
+
     public @NotNull UUID uuid() {
         return this.uuid;
+    }
+
+    public int x() {
+        return this.x;
+    }
+
+    public int y() {
+        return this.y;
     }
 
     public void select() {
@@ -57,7 +113,7 @@ public class IButton extends JComponent implements JsonSerializable {
         this.icon.repaint(this.icon.inner(), this.icon.inner());
     }
 
-    public void background( @NotNull Color bg ) {
+    public void background(@NotNull Color bg) {
         this.icon.repaint(null, bg);
     }
 
@@ -65,7 +121,7 @@ public class IButton extends JComponent implements JsonSerializable {
         return this.icon.inner();
     }
 
-    public void foreground( @NotNull Color fg ) {
+    public void foreground(@NotNull Color fg) {
         this.label.setForeground(fg);
     }
 
@@ -73,7 +129,7 @@ public class IButton extends JComponent implements JsonSerializable {
         return this.label.getForeground();
     }
 
-    public void text( @NotNull String text ) {
+    public void text(@NotNull String text) {
         this.label.text(text);
     }
 
@@ -81,7 +137,7 @@ public class IButton extends JComponent implements JsonSerializable {
         return this.label.text();
     }
 
-    public void script( @NotNull File script ) {
+    public void script(@NotNull File script) {
         this.script = script;
     }
 
@@ -94,6 +150,9 @@ public class IButton extends JComponent implements JsonSerializable {
         /* Template
          * {
          *      "uuid": "UUID",
+         *      "x": x,
+         *      "y": y,
+         *      "script": script.path
          *      "icon":
          *      {
          *          BIcon.json()
@@ -106,8 +165,11 @@ public class IButton extends JComponent implements JsonSerializable {
          */
         JsonObject json = new JsonObject();
 
-        JsonElement uuid = new JsonPrimitive(this.uuid.toString());
-        json.add("uuid", uuid);
+        json.add("uuid", Json.parse(this.uuid));
+        json.add("x", Json.parse(this.x));
+        json.add("y", Json.parse(this.y));
+        if (this.script != null)
+            json.add("script", Json.parse(this.script.getAbsolutePath()));
         json.add("icon", this.icon.json());
         json.add("label", this.label.json());
 

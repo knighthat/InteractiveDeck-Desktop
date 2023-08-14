@@ -19,26 +19,26 @@
  */
 package me.knighthat.interactivedeck.menus;
 
-import java.awt.Color;
-import java.awt.KeyboardFocusManager;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;import java.awt.event.WindowEvent;import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import javax.swing.DefaultComboBoxModel;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
-import me.knighthat.interactivedeck.vars.Settings;
+import me.knighthat.interactivedeck.file.Settings;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;import static me.knighthat.interactivedeck.vars.Settings.*;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -46,7 +46,11 @@ import org.jetbrains.annotations.Nullable;import static me.knighthat.interactive
  */
 public class MainMenu extends javax.swing.JFrame {
 
-    private static @NotNull Map<UUID, IButton> iButtons = new LinkedHashMap<>();
+    private static final @NotNull Map<UUID, IButton> iButtons = new LinkedHashMap<>();
+
+    static {
+        Thread.currentThread().setName("GUI");
+    }
 
     /**
      * Creates new form MainMenu
@@ -56,16 +60,16 @@ public class MainMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setAlwaysOnTop(false);
         initComponents();
-        addButtons();
+        addProfiles();
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing( WindowEvent e ) {
                 Settings.dump();
+                Profiles.list().forEach(Profile::dump);
                 super.windowClosing(e);
             }});
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -108,7 +112,8 @@ public class MainMenu extends javax.swing.JFrame {
         profilesSection.setPreferredSize(new java.awt.Dimension(1000, 50));
 
         jComboBox2.setBackground(new java.awt.Color(51, 51, 51));
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        String[] tempItems = new String[0];
+        jComboBox2.setModel(new DefaultComboBoxModel<>(tempItems));
         jComboBox2.setPreferredSize(new java.awt.Dimension(300, 30));
 
         jButton4.setBackground(new java.awt.Color(51, 51, 51));
@@ -331,33 +336,37 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addButtons() {
+    void addProfiles() {
         GridBagLayout layout = new GridBagLayout();
         iBtnSection.setLayout(layout);
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = COLUMNS > 6 ? 1d : 0d;
-        constraints.weighty = ROWS > 4 ? 1d : 0d;
-        constraints.ipadx = BUTTON_GAP;
-        constraints.ipady = BUTTON_GAP;
+        Profiles.list().forEach(p -> {
+            Log.deb(p.uuid() + " is default profile: " + p.isDefault);
 
-        for (int y = 0; y < ROWS ; y++)
-            for (int x = 0 ; x < COLUMNS ; x++) {
-                IButton button = new IButton();
-                iButtons.put(button.uuid(), button);
-                button.addMouseListener(new MouseAdapter() {
+            GridBagConstraints constraints = new GridBagConstraints();
+                    constraints.anchor = GridBagConstraints.CENTER;
+                    constraints.fill = GridBagConstraints.BOTH;
+                    constraints.weightx = p.column() > 6 ? 1d : 0d;
+                    constraints.weighty = p.row() > 4 ? 1d : 0d;
+                    constraints.ipadx = p.gap();
+                    constraints.ipady = p.gap();
+
+            if (p.isDefault)
+                p.buttons().forEach(button -> {
+                    iButtons.put(button.uuid(), button);
+                    button.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
                                 iBtnClickEvent(e);
                             }
                     });
 
-                constraints.gridx = x;
-                constraints.gridy = y;
-                iBtnSection.add(button, constraints);
-            }
+                    constraints.gridx = button.x();
+                    constraints.gridy = button.y();
+
+                    iBtnSection.add(button, constraints);
+                });
+        });
     }
 
     private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
