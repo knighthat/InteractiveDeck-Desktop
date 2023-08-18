@@ -28,40 +28,34 @@ public class Json {
     static {
         GSON = new GsonBuilder().setPrettyPrinting().create();
     }
-
-    public static <T> @NotNull JsonArray parse(@NotNull Iterable<T> iterable) {
-        JsonArray array = new JsonArray();
-        iterable.forEach(element -> {
-            if (element instanceof JsonSerializable serializable) {
-                array.add(serializable.json());
-            } else {
-                array.add(parse(element));
-            }
-        });
-        return array;
-    }
-
-    public static @NotNull JsonElement parse(@Nullable Object obj) {
+    
+    public static @NotNull JsonElement parse( @Nullable Object obj ) {
         JsonElement element;
-        if (obj == null) {
+        if ( obj == null ) {
             element = JsonNull.INSTANCE;
-        } else if (obj instanceof Number numb) {
-            element = new JsonPrimitive(numb);
-        } else if (obj instanceof Boolean bool) {
-            element = new JsonPrimitive(bool);
-        } else if (obj instanceof Color color) {
-            element = ColorUtils.toJson(color);
-        } else if (obj instanceof Font font) {
-            element = FontUtils.toJson(font);
+        } else if ( obj instanceof Number numb ) {
+            element = new JsonPrimitive( numb );
+        } else if ( obj instanceof Boolean bool ) {
+            element = new JsonPrimitive( bool );
+        } else if ( obj instanceof Color color ) {
+            element = ColorUtils.toJson( color );
+        } else if ( obj instanceof Font font ) {
+            element = FontUtils.toJson( font );
+        } else if ( obj instanceof Iterable<?> list ) {
+            element = new JsonArray();
+            list.forEach( e -> {
+                JsonElement value = parse( e );
+                ( (JsonArray) element ).add( value );
+            } );
         } else {
-            element = new JsonPrimitive(String.valueOf(obj));
+            element = new JsonPrimitive( String.valueOf( obj ) );
         }
         return element;
     }
 
-    public static void save(@NotNull JsonObject json, @NotNull File file) throws IOException {
-        FileWriter writer = new FileWriter(file);
-        GSON.toJson(json, writer);
+    public static void save( @NotNull JsonObject json, @NotNull File file ) throws IOException {
+        FileWriter writer = new FileWriter( file );
+        GSON.toJson( json, writer );
         writer.close();
     }
 }
