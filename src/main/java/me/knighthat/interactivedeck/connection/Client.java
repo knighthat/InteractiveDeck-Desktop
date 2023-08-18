@@ -12,7 +12,7 @@ package me.knighthat.interactivedeck.connection;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,13 +23,9 @@ public class Client implements JsonSerializable {
     private final @NotNull String device;
     private final @NotNull String manufacturer;
     private final @NotNull String model;
-    private final int androidVersion;
+    private final @NotNull String androidVersion;
 
-    Client( @NotNull String brand,
-            @NotNull String device,
-            @NotNull String manufacturer,
-            @NotNull String model,
-            int androidVersion ) {
+    Client( @NotNull String brand, @NotNull String device, @NotNull String manufacturer, @NotNull String model, @NotNull String androidVersion ) {
         this.brand = brand;
         this.device = device;
         this.manufacturer = manufacturer;
@@ -38,24 +34,24 @@ public class Client implements JsonSerializable {
     }
 
     public static @Nullable Client init( @NotNull JsonElement content ) {
-        if (!content.isJsonObject())
+        if ( !content.isJsonObject() )
             return null;
 
         JsonObject json = content.getAsJsonObject();
-        if (!json.has("brand") ||
-                !json.has("device") ||
-                !json.has("manufacturer") ||
-                !json.has("model") ||
-                !json.has("androidVersion"))
+        if ( !json.has( "brand" ) ||
+                !json.has( "device" ) ||
+                !json.has( "manufacturer" ) ||
+                !json.has( "model" ) ||
+                !json.has( "androidVersion" ) )
             return null;
 
-        String brand = json.get("brand").getAsString();
-        String device = json.get("device").getAsString();
-        String manufacturer = json.get("brand").getAsString();
-        String model = json.get("brand").getAsString();
-        int version = json.get("androidVersion").getAsInt();
+        String brand = json.get( "brand" ).getAsString();
+        String device = json.get( "device" ).getAsString();
+        String manufacturer = json.get( "brand" ).getAsString();
+        String model = json.get( "brand" ).getAsString();
+        String version = json.get( "androidVersion" ).getAsString();
 
-        return new Client(brand, device, manufacturer, model, version);
+        return new Client( brand, device, manufacturer, model, version );
     }
 
     public @NotNull String brand() {
@@ -74,25 +70,18 @@ public class Client implements JsonSerializable {
         return this.model;
     }
 
-    public int androidVersion() {
+    public @NotNull String androidVersion() {
         return this.androidVersion;
     }
 
     @Override
     public @NotNull JsonObject json() {
-
-        JsonElement brand = new JsonPrimitive(this.brand());
-        JsonElement device = new JsonPrimitive(this.device());
-        JsonElement manufacturer = new JsonPrimitive(this.manufacturer());
-        JsonElement model = new JsonPrimitive(this.model());
-        JsonElement androidVersion = new JsonPrimitive(this.androidVersion());
-
         JsonObject json = new JsonObject();
-        json.add("brand", brand);
-        json.add("device", device);
-        json.add("manufacturer", manufacturer);
-        json.add("mode", model);
-        json.add("androidVersion", androidVersion);
+        json.add( "brand", Json.parse( brand() ) );
+        json.add( "device", Json.parse( device() ) );
+        json.add( "manufacturer", Json.parse( manufacturer() ) );
+        json.add( "mode", Json.parse( model() ) );
+        json.add( "androidVersion", Json.parse( androidVersion() ) );
 
         return json;
     }
