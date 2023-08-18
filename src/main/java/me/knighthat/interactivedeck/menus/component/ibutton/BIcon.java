@@ -13,7 +13,6 @@ package me.knighthat.interactivedeck.menus.component.ibutton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.json.Json;
-import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +21,7 @@ import java.awt.*;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
-final class BIcon extends BChild implements JsonSerializable {
+final class BIcon extends BChild {
 
     final @NotNull Dimension arcs;
     final @NotNull Color defOuter;
@@ -34,7 +33,7 @@ final class BIcon extends BChild implements JsonSerializable {
     Color inner;
 
     {
-        arcs = new Dimension(15, 15);
+        arcs = new Dimension( 15, 15 );
         defOuter = DEFAULT_DARK;
         defInner = DEFAULT_DARK;
     }
@@ -43,23 +42,23 @@ final class BIcon extends BChild implements JsonSerializable {
         super();
     }
 
-    static @NotNull BIcon fromJson(@NotNull JsonObject json) {
+    static @NotNull BIcon fromJson( @NotNull JsonObject json ) {
         BIcon icon = new BIcon();
 
-        JsonArray outerArray = json.getAsJsonArray("outer");
-        Color outer = ColorUtils.fromJson(outerArray);
-        JsonArray innerArray = json.getAsJsonArray("inner");
-        Color inner = ColorUtils.fromJson(innerArray);
+        JsonArray outerArray = json.getAsJsonArray( "outer" );
+        Color outer = ColorUtils.fromJson( outerArray );
+        JsonArray innerArray = json.getAsJsonArray( "inner" );
+        Color inner = ColorUtils.fromJson( innerArray );
 
-        icon.repaint(outer, inner);
+        icon.repaint( outer, inner );
 
         return icon;
     }
 
-    public void repaint(@Nullable Color outer, @Nullable Color inner) {
-        if (outer != null)
+    public void repaint( @Nullable Color outer, @Nullable Color inner ) {
+        if ( outer != null )
             this.outer = outer;
-        if (inner != null)
+        if ( inner != null )
             this.inner = inner;
         repaint();
     }
@@ -73,7 +72,7 @@ final class BIcon extends BChild implements JsonSerializable {
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
+    protected void paintComponent( Graphics g ) {
         int width = getWidth() - 1, height = getHeight() - 1;
 
         /*
@@ -84,14 +83,14 @@ final class BIcon extends BChild implements JsonSerializable {
          */
         Graphics2D g2d = (Graphics2D) g;
         Color inner = this.inner == null ? defInner : this.inner;
-        g2d.setColor(inner);
-        g2d.fillRoundRect(0, 0, width, height, arcs.width, arcs.height);
+        g2d.setColor( inner );
+        g2d.fillRoundRect( 0, 0, width, height, arcs.width, arcs.height );
 
         Color outer = this.outer == null ? defOuter : this.outer;
-        g2d.setColor(outer);
-        g2d.drawRoundRect(0, 0, width, height, arcs.width, arcs.height);
+        g2d.setColor( outer );
+        g2d.drawRoundRect( 0, 0, width, height, arcs.width, arcs.height );
 
-        super.paintComponent(g);
+        super.paintComponent( g );
     }
 
     @Override
@@ -103,8 +102,8 @@ final class BIcon extends BChild implements JsonSerializable {
          * }
          */
         JsonObject json = new JsonObject();
-        json.add("outer", Json.parse(this.outer()));
-        json.add("inner", Json.parse(this.inner()));
+        json.add( "outer", Json.parse( this.outer() ) );
+        json.add( "inner", Json.parse( this.inner() ) );
 
         return json;
     }
