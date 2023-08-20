@@ -10,12 +10,15 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import me.knighthat.interactivedeck.file.Profile;
 import org.jetbrains.annotations.NotNull;
 
 public final class AddRequest extends Request {
 
-    public AddRequest( @NotNull JsonElement content ) {
-        super(RequestType.ADD, content);
+    public AddRequest( @NotNull Iterable<Profile> profiles ) {
+        super( RequestType.ADD, new JsonArray() );
+        JsonArray content = super.content().getAsJsonArray();
+        profiles.forEach( p -> content.add( p.toRequestFormat() ) );
     }
 }

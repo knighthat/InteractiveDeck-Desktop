@@ -10,12 +10,19 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
+import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
 
 public final class UpdateRequest extends Request {
 
     public UpdateRequest( @NotNull IButton button ) {
-        super(RequestType.UPDATE, button.json());
+        super( RequestType.UPDATE, new JsonObject() );
+
+        JsonObject content = content().getAsJsonObject();
+        content.add( "profile", Json.parse( button.profile().uuid() ) );
+        content.add( "button_id", Json.parse( button.uuid() ) );
+        content.add( "button", button.toRequestFormat() );
     }
 }

@@ -11,17 +11,18 @@
 package me.knighthat.interactivedeck.connection.request;
 
 import com.google.gson.JsonArray;
-import me.knighthat.interactivedeck.menus.MainMenu;
+import com.google.gson.JsonElement;
+import me.knighthat.interactivedeck.json.Json;
+import me.knighthat.interactivedeck.profile.Profiles;
 
 public class PairRequest extends Request {
 
     public PairRequest() {
-        super(RequestType.PAIR, new JsonArray());
+        super( RequestType.PAIR, new JsonArray() );
 
-        MainMenu
-                .iButtons()
-                .forEach(
-                        ( id, btn ) -> content().getAsJsonArray().add(btn.json())
-                );
+        Profiles.list().forEach( p -> {
+            JsonElement uuid = Json.parse( p.uuid() );
+            content().getAsJsonArray().add( uuid );
+        } );
     }
 }
