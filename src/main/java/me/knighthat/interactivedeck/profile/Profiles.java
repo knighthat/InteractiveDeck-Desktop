@@ -18,14 +18,14 @@ import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.file.Profile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Profiles {
 
@@ -33,53 +33,83 @@ public class Profiles {
 
     public static void init() {
         File[] files = WorkingDirectory.listDir();
-        if (files != null) {
-            walkThroughProfiles(files);
+        if ( files != null ) {
+            walkThroughProfiles( files );
 
-            if (PROFILES.size() == 0) {
-                Log.info("No profiles were found. Creating one");
-                PROFILES.add(createDefaultProfile());
+            if ( PROFILES.size() == 0 ) {
+                Log.info( "No profiles were found. Creating one" );
+                PROFILES.add( createDefaultProfile() );
             }
         } else
-            Log.err("Failed to read directory " + WorkingDirectory.get());
+            Log.err( "Failed to read directory " + WorkingDirectory.get() );
     }
 
     static @NotNull Profile createDefaultProfile() {
         Profile profile = new Profile();
-        profile.displayName("Default");
+        profile.displayName( "Default" );
         profile.isDefault = true;
-        profile.row(2);
-        profile.column(4);
+        profile.row( 2 );
+        profile.column( 4 );
 
         return profile;
     }
 
-    static void walkThroughProfiles(@NotNull File[] files) {
-        for (File file : files)
-            if (file.getName().endsWith(".profile"))
-                try (FileReader reader = new FileReader(file)) {
-                    Log.info("Loading " + file.getName());
-                    load(reader);
-                } catch (ProfileFormatException e) {
-                    Log.warn(file.getName() + " does not meet requirements. Skipping...");
-                } catch (JsonParseException e) {
-                    Log.warn(file.getName() + " is not a valid JSON file. Skipping...");
-                    Log.warn("Cause: " + e.getMessage());
-                } catch (FileNotFoundException ignored) {
-                } catch (IOException e) {
-                    Log.err("Could not read " + file.getName() + ". Perhaps permission error?");
-                    Log.err("Error message: " + e.getMessage());
+    static void walkThroughProfiles( @NotNull File[] files ) {
+        for ( File file : files )
+            if ( file.getName().endsWith( ".profile" ) )
+                try ( FileReader reader = new FileReader( file ) ) {
+                    Log.info( "Loading " + file.getName() );
+                    load( reader );
+                } catch ( ProfileFormatException e ) {
+                    Log.warn( file.getName() + " does not meet requirements. Skipping..." );
+                } catch ( JsonParseException e ) {
+                    Log.warn( file.getName() + " is not a valid JSON file. Skipping..." );
+                    Log.warn( "Cause: " + e.getMessage() );
+                } catch ( FileNotFoundException ignored ) {
+                } catch ( IOException e ) {
+                    Log.err( "Could not read " + file.getName() + ". Perhaps permission error?" );
+                    Log.err( "Error message: " + e.getMessage() );
                 }
-        Log.deb("Found " + PROFILES.size() + " profile(s)");
+        Log.deb( "Found " + PROFILES.size() + " profile(s)" );
     }
 
     public static @NotNull @Unmodifiable List<Profile> list() {
-        return List.copyOf(PROFILES);
+        return List.copyOf( PROFILES );
     }
 
-    static void load(@NotNull FileReader reader) throws JsonParseException, ProfileFormatException {
-        JsonElement json = JsonParser.parseReader(reader);
-        Profile profile = new Profile(json.getAsJsonObject());
-        PROFILES.add(profile);
+    public static @NotNull @Unmodifiable List<Profile> list( @NotNull Collection<UUID> uuids ) {
+        List<Profile> profiles = new ArrayList<>();
+
+        map().forEach( ( id, p ) -> {
+            if ( uuids.contains( id ) )
+                profiles.add( p );
+        } );
+
+        return List.copyOf( profiles );
+    }
+
+    static void load( @NotNull FileReader reader ) throws JsonParseException, ProfileFormatException {
+        JsonElement json = JsonParser.parseReader( reader );
+        Profile profile = new Profile( json.getAsJsonObject() );
+        PROFILES.add( profile );
+    }
+
+    public static @NotNull Map<UUID, Profile> map() {
+        Map<UUID, Profile> map = new HashMap<>( PROFILES.size() );
+        PROFILES.forEach( p -> map.put( p.uuid(), p ) );
+
+        return map;
+    }
+
+    public static @Nullable Profile get( @NotNull UUID uuid ) {
+        Profile profile = null;
+
+        for ( Profile p : list() )
+            if ( p.uuid().equals( uuid ) ) {
+                profile = p;
+                break;
+            }
+
+        return profile;
     }
 }
