@@ -22,12 +22,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class WirelessSender extends Thread {
 
-    private static final @NotNull BlockingQueue<Request> QUEUE = new LinkedBlockingQueue<>(20);
+    private static final @NotNull BlockingQueue<Request> QUEUE = new LinkedBlockingQueue<>( 20 );
 
     private static @NotNull OutputStream stream;
 
     WirelessSender() {
-        setName("NET/O");
+        setName( "NET/O" );
     }
 
     public static void start( @NotNull OutputStream stream ) {
@@ -36,37 +36,43 @@ public class WirelessSender extends Thread {
         new WirelessSender().start();
     }
 
-    public static void send( @NotNull Request request ) throws InterruptedException {
-        QUEUE.put(request);
+    public static void send( @NotNull Request request ) {
+        try {
+            QUEUE.put( request );
+        } catch ( InterruptedException e ) {
+            Log.warn( "Thread was interrupted while send request is pending!" );
+            Log.warn( "Caused by: " + e.getMessage() );
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
         Request request;
-        while (!Thread.interrupted()) {
+        while ( !Thread.interrupted() )
             try {
                 request = QUEUE.take();
                 String serialized = request.serialize();
 
-                Log.deb("Sending:");
-                Log.deb(serialized);
+                Log.deb( "Sending:" );
+                Log.deb( serialized );
 
-                stream.write(serialized.getBytes());
+                stream.write( serialized.getBytes() );
                 stream.flush();
-            } catch (InterruptedException e) {
+
+            } catch ( InterruptedException e ) {
                 //TODO Needs proper error handling
-                if (InteractiveDeck.client == null)
+                if ( InteractiveDeck.client == null )
                     return;
 
-                Log.err("Thread interrupted!");
+                Log.err( "Thread interrupted!" );
                 e.printStackTrace();
                 break;
-            } catch (IOException e) {
+            } catch ( IOException e ) {
                 //TODO Needs proper error handling
-                Log.err("Error occurs while sending out request");
+                Log.err( "Error occurs while sending out request" );
                 e.printStackTrace();
                 break;
             }
-        }
     }
 }
