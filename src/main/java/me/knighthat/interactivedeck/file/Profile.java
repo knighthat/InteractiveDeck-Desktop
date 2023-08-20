@@ -180,7 +180,10 @@ public class Profile implements JsonSerializable, RequestSerializable {
          * ]
          */
         JsonObject json = jsonTemplate();
-        json.add( "buttons", Json.parse( this.buttons ) );
+
+        JsonArray buttons = new JsonArray();
+        this.buttons.forEach( btn -> buttons.add( btn.json() ) );
+        json.add( "buttons", buttons );
 
         return json;
     }
@@ -191,7 +194,6 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
         JsonArray buttons = new JsonArray();
         this.buttons.forEach( btn -> buttons.add( btn.toRequestFormat() ) );
-
         json.add( "buttons", buttons );
 
         return json;
