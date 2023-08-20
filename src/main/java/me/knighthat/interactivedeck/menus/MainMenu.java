@@ -458,12 +458,7 @@ public class MainMenu extends javax.swing.JFrame {
         if (!Connection.isConnected()) return;
 
         Request request = new UpdateRequest(bSelected);
-        try {
-            WirelessSender.send(request);
-        } catch (InterruptedException e) {
-            Log.err("Failed to send update to client");
-            e.printStackTrace();
-        }
+        WirelessSender.send(request);
     }
 
     public static @NotNull Map<UUID, IButton> iButtons() {
