@@ -1,4 +1,4 @@
-Turn or old Android phone into a "**_Macro Keypad_**"
+Turn your Android phone into a "**_Macro Keypad_**"
 
 ---
 
@@ -13,7 +13,7 @@ Turn or old Android phone into a "**_Macro Keypad_**"
 
 > These steps require [JRE](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed prior.
 
-1. Clone project `git clone --depth https://github.com/knighthat/InteractiveDeck-Desktop`
+1. Clone project `git clone --depth 1 https://github.com/knighthat/InteractiveDeck-Desktop`
 2. Compile it `mvn package`
 3. Start the program (Follow [Usage](#usage))
 
@@ -53,12 +53,14 @@ Please follow guidelines to prevent conflict between push
 
 ### Guidelines
 
-* Please follow the existing code stye and conventions in the projects.
+* Please follow the existing code style and conventions in the projects.
 * Be sure to write clear and concise code and documentation.
-* If you're adding new features ormake significant changes, consider adding relevant tests.
+* If you're adding new features or make significant changes, consider adding relevant tests.
 * If you're fixing a bug, please provide steps to reproduce the issue if applicable.
 
 ### Code of Conduct
+
+1. **Do**
 
 * **_Be respectful_**: Treat all individuals with respect, regardless of their background, identity, or opinions.
 * **_Be inclusive_**: Welcome and include diverse perspectives, experiences, and ideas.
@@ -66,6 +68,8 @@ Please follow guidelines to prevent conflict between push
 * **_Be mindful_**: Be mindful of the impact our words and actions have on others in the community.
 
 ---
+
+2. **Don't**
 
 * **_Harassment_**: Any form of harassment, discrimination, or offensive behavior is unacceptable and will not be tolerated.
 * **_Trolling_**: Deliberate and disruptive actions or comments with the intent to provoke or offend others.
