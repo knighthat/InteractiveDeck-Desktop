@@ -65,6 +65,9 @@ public class MainMenu extends javax.swing.JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing( WindowEvent e ) {
+                if (bSelected != null)
+                    bSelected.unselect();
+
                 Settings.dump();
                 Profiles.list().forEach(Profile::dump);
                 super.windowClosing(e);
