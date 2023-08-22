@@ -98,7 +98,7 @@ public class Profiles {
         profile.buttons().forEach( Buttons::push );
 
         if ( profile.isDefault )
-            active = profile;
+            active( profile );
 
         PROFILES.add( profile );
     }
@@ -125,4 +125,6 @@ public class Profiles {
     public static @NotNull Profile active() {
         return active;
     }
+
+    public static void active( @NotNull Profile profile ) { active = profile; }
 }
