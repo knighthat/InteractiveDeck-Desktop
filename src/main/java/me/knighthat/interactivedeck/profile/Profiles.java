@@ -14,6 +14,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
+import me.knighthat.interactivedeck.button.Buttons;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.file.Profile;
@@ -30,6 +31,8 @@ import java.util.*;
 public class Profiles {
 
     private static final @NotNull List<Profile> PROFILES = new ArrayList<>();
+
+    private static @NotNull Profile active;
 
     public static void init() {
         File[] files = WorkingDirectory.listDir();
@@ -91,6 +94,12 @@ public class Profiles {
     static void load( @NotNull FileReader reader ) throws JsonParseException, ProfileFormatException {
         JsonElement json = JsonParser.parseReader( reader );
         Profile profile = new Profile( json.getAsJsonObject() );
+
+        profile.buttons().forEach( Buttons::push );
+
+        if ( profile.isDefault )
+            active = profile;
+
         PROFILES.add( profile );
     }
 
@@ -111,5 +120,9 @@ public class Profiles {
             }
 
         return profile;
+    }
+
+    public static @NotNull Profile active() {
+        return active;
     }
 }
