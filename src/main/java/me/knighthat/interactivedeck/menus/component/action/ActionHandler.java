@@ -10,54 +10,29 @@
 
 package me.knighthat.interactivedeck.menus.component.action;
 
+import me.knighthat.interactivedeck.button.Buttons;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.Settings;
-import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.task.BashExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 public class ActionHandler {
 
-    public static void process(@NotNull ActionType type, @NotNull UUID uuid) {
-        if (!type.equals(ActionType.PRESS)) return;
+    public static void process( @NotNull ActionType type, @NotNull UUID uuid ) {
+        if ( !type.equals( ActionType.PRESS ) )
+            return;
 
-        IButton button = MainMenu.iButtons().get(uuid);
-        File script = button.script();
-        if (script == null) return;
+        Log.deb( "Is button available: " + Buttons.pull( uuid ).isPresent() );
 
-        String path = script.getAbsolutePath();
-        ProcessBuilder builder = new ProcessBuilder("bash", path);
-        builder.redirectErrorStream(true);
+        Buttons.pull( uuid ).ifPresent( button -> {
+            File script = button.script();
 
-        try {
-            Process process = builder.start();
-            int exitCode = process.waitFor();
+            Log.deb( "Is script null: " + ( script == null ) );
 
-            Log.info("Output from script execution:");
-
-            InputStream inStream = process.getInputStream();
-            int bytesRead;
-            while ((bytesRead = inStream.read(Settings.BUFFER)) != -1) {
-                String decoded = new String(Settings.BUFFER, 0, bytesRead);
-                Log.info(decoded);
-            }
-
-            Log.info("End of script output.");
-
-            if (exitCode == 0) {
-                Log.info("Script executed successfully!");
-            } else {
-                Log.warn("Script execution failed with exit code: " + exitCode);
-            }
-        } catch (IOException | InterruptedException e) {
-            //TODO More error handler needed
-            Log.err("Error occurs while executing " + path);
-            e.printStackTrace();
-        }
+            if ( script != null )
+                new BashExecutor( script ).execute();
+        } );
     }
 }
