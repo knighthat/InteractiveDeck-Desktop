@@ -46,8 +46,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MainMenu extends javax.swing.JFrame {
 
-    private static final @NotNull Map<UUID, IButton> iButtons = new LinkedHashMap<>();
-
     static {
         Thread.currentThread().setName("GUI");
     }
@@ -60,7 +58,10 @@ public class MainMenu extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setAlwaysOnTop(false);
         initComponents();
-        addProfiles();
+
+        GridBagLayout layout = new GridBagLayout();
+        iBtnSection.setLayout(layout);
+        show(Profiles.active());
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -339,37 +340,29 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    void addProfiles() {
-        GridBagLayout layout = new GridBagLayout();
-        iBtnSection.setLayout(layout);
+    void show(@NotNull Profile profile) {
+        GridBagConstraints constraints = new GridBagConstraints();
+                constraints.anchor = GridBagConstraints.CENTER;
+                constraints.fill = GridBagConstraints.BOTH;
+                constraints.weightx = profile.column() > 6 ? 1d : 0d;
+                constraints.weighty = profile.row() > 4 ? 1d : 0d;
+                constraints.ipadx = profile.gap();
+                constraints.ipady = profile.gap();
 
-        Profiles.list().forEach(p -> {
-            Log.deb(p.uuid() + " is default profile: " + p.isDefault);
-
-            GridBagConstraints constraints = new GridBagConstraints();
-                    constraints.anchor = GridBagConstraints.CENTER;
-                    constraints.fill = GridBagConstraints.BOTH;
-                    constraints.weightx = p.column() > 6 ? 1d : 0d;
-                    constraints.weighty = p.row() > 4 ? 1d : 0d;
-                    constraints.ipadx = p.gap();
-                    constraints.ipady = p.gap();
-
-            if (p.isDefault)
-                p.buttons().forEach(button -> {
-                    iButtons.put(button.uuid(), button);
-                    button.addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
-                                iBtnClickEvent(e);
-                            }
-                    });
-
-                    constraints.gridx = button.x();
-                    constraints.gridy = button.y();
-
-                    iBtnSection.add(button, constraints);
-                });
-        });
+        profile
+        .buttons()
+        .forEach(
+                button -> {
+                            button.addMouseListener(new MouseAdapter() {
+                                    @Override
+                                    public void mouseClicked(MouseEvent e) {
+                                        iBtnClickEvent(e);
+                                    }
+                            });
+                            constraints.gridx = button.x();
+                            constraints.gridy = button.y();
+                            iBtnSection.add(button, constraints);
+                        });
     }
 
     private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
@@ -462,9 +455,5 @@ public class MainMenu extends javax.swing.JFrame {
 
         Request request = new UpdateRequest(bSelected);
         WirelessSender.send(request);
-    }
-
-    public static @NotNull Map<UUID, IButton> iButtons() {
-        return MainMenu.iButtons;
     }
 }
