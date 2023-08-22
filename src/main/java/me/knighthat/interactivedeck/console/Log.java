@@ -18,22 +18,35 @@ public class Log {
     private static final Logger LOGGER;
 
     static {
-        LOGGER = LoggerFactory.getLogger("MAIN");
+        LOGGER = LoggerFactory.getLogger( "MAIN" );
     }
 
-    public static void info( @NotNull String s ) {
-        LOGGER.info(s);
-    }
-
-    public static void warn( @NotNull String s ) {
-        LOGGER.warn(s);
-    }
-
-    public static void err( @NotNull String s ) {
-        LOGGER.error(s);
+    public static void log( @NotNull LogLevel level, @NotNull String s ) {
+        switch ( level ) {
+            case DEBUG -> LOGGER.debug( s );
+            case INFO -> LOGGER.info( s );
+            case WARNING -> LOGGER.warn( s );
+            case ERROR -> LOGGER.error( s );
+        }
     }
 
     public static void deb( @NotNull String s ) {
-        LOGGER.debug(s);
+        log( LogLevel.DEBUG, s );
+    }
+
+    public static void info( @NotNull String s ) {
+        log( LogLevel.INFO, s );
+    }
+
+    public static void warn( @NotNull String s ) {
+        log( LogLevel.WARNING, s );
+    }
+
+    public static void err( @NotNull String s ) {
+        log( LogLevel.ERROR, s );
+    }
+
+    public enum LogLevel {
+        DEBUG, INFO, WARNING, ERROR
     }
 }
