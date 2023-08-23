@@ -91,6 +91,10 @@ public class Profiles {
         return List.copyOf( profiles );
     }
 
+    public static void add( @NotNull Profile... profiles ) {
+        Collections.addAll( PROFILES, profiles );
+    }
+
     static void load( @NotNull FileReader reader ) throws JsonParseException, ProfileFormatException {
         JsonElement json = JsonParser.parseReader( reader );
         Profile profile = Profile.fromJson( json.getAsJsonObject() );
@@ -100,7 +104,7 @@ public class Profiles {
         if ( profile.isDefault )
             active( profile );
 
-        PROFILES.add( profile );
+        add( profile );
     }
 
     public static @NotNull Map<UUID, Profile> map() {
