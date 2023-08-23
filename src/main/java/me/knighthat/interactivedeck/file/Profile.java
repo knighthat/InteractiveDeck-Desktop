@@ -56,7 +56,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
                 this.buttons.add( new IButton( this, x, y ) );
     }
 
-    public Profile( @NotNull JsonObject json ) {
+    public static @NotNull Profile fromJson( @NotNull JsonObject json ) {
         if ( !json.has( "uuid" ) ||
                 !json.has( "displayName" ) ||
                 !json.has( "default" ) ||
@@ -66,20 +66,24 @@ public class Profile implements JsonSerializable, RequestSerializable {
                 !json.has( "buttons" ) )
             throw new ProfileFormatException( "Missing information" );
 
-        String uuid = json.get( "uuid" ).getAsString();
-        this.uuid = UUID.fromString( uuid );
-        this.displayName = json.get( "displayName" ).getAsString();
-        this.isDefault = json.get( "default" ).getAsBoolean();
-        this.rows = json.get( "rows" ).getAsInt();
-        this.columns = json.get( "columns" ).getAsInt();
-        this.gap = json.get( "gap" ).getAsInt();
-        this.buttons = new ArrayList<>();
+        String idStr = json.get( "uuid" ).getAsString();
+        UUID uuid = UUID.fromString( idStr );
+        String displayName = json.get( "displayName" ).getAsString();
+        boolean isDefault = json.get( "default" ).getAsBoolean();
+        int rows = json.get( "rows" ).getAsInt();
+        int columns = json.get( "columns" ).getAsInt();
+        int gap = json.get( "gap" ).getAsInt();
+        List<IButton> buttons = new ArrayList<>();
+
+        Profile profile = new Profile( uuid, displayName, isDefault, rows, columns, gap, buttons );
 
         JsonArray btnJson = json.getAsJsonArray( "buttons" );
         btnJson.forEach( button -> {
-            IButton btn = IButton.fromJson( this, button.getAsJsonObject() );
-            this.buttons.add( btn );
+            IButton btn = IButton.fromJson( profile, button.getAsJsonObject() );
+            buttons.add( btn );
         } );
+
+        return profile;
     }
 
     public @NotNull UUID uuid() {
