@@ -39,7 +39,7 @@ public class Profiles {
         if ( files != null ) {
             walkThroughProfiles( files );
 
-            if ( PROFILES.size() == 0 ) {
+            if ( PROFILES.isEmpty() ) {
                 Log.info( "No profiles were found. Creating one" );
                 PROFILES.add( createDefaultProfile() );
             }
@@ -93,7 +93,7 @@ public class Profiles {
 
     static void load( @NotNull FileReader reader ) throws JsonParseException, ProfileFormatException {
         JsonElement json = JsonParser.parseReader( reader );
-        Profile profile = new Profile( json.getAsJsonObject() );
+        Profile profile = Profile.fromJson( json.getAsJsonObject() );
 
         profile.buttons().forEach( Buttons::push );
 
