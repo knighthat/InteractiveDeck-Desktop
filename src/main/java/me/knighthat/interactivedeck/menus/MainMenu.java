@@ -37,6 +37,7 @@ import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.interactivedeck.file.Settings;
+import me.knighthat.interactivedeck.menus.component.plist.ProfilesComboBox;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +62,7 @@ public class MainMenu extends javax.swing.JFrame {
 
         GridBagLayout layout = new GridBagLayout();
         iBtnSection.setLayout(layout);
-        show(Profiles.active());
+        updateButtons();
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -87,10 +88,10 @@ public class MainMenu extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         profilesSection = new javax.swing.JPanel();
-        jComboBox2 = new javax.swing.JComboBox<>();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        profilesComboBox1 = new ProfilesComboBox(this);
         iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
         iBtnName = new javax.swing.JTextField();
@@ -115,11 +116,6 @@ public class MainMenu extends javax.swing.JFrame {
         profilesSection.setBackground(new java.awt.Color(36, 36, 36));
         profilesSection.setPreferredSize(new java.awt.Dimension(1000, 50));
 
-        jComboBox2.setBackground(new java.awt.Color(51, 51, 51));
-        String[] tempItems = new String[0];
-        jComboBox2.setModel(new DefaultComboBoxModel<>(tempItems));
-        jComboBox2.setPreferredSize(new java.awt.Dimension(300, 30));
-
         jButton4.setBackground(new java.awt.Color(51, 51, 51));
         jButton4.setText("Add");
         jButton4.setAlignmentY(0.0F);
@@ -141,13 +137,18 @@ public class MainMenu extends javax.swing.JFrame {
         jButton2.setMinimumSize(new java.awt.Dimension(100, 30));
         jButton2.setPreferredSize(new java.awt.Dimension(100, 30));
 
+        profilesComboBox1.setBackground(new java.awt.Color(51, 51, 51));
+        profilesComboBox1.setMaximumSize(new java.awt.Dimension(300, 30));
+        profilesComboBox1.setMinimumSize(new java.awt.Dimension(300, 30));
+        profilesComboBox1.setPreferredSize(new java.awt.Dimension(300, 30));
+
         javax.swing.GroupLayout profilesSectionLayout = new javax.swing.GroupLayout(profilesSection);
         profilesSection.setLayout(profilesSectionLayout);
         profilesSectionLayout.setHorizontalGroup(
             profilesSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(profilesSectionLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(profilesComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -161,10 +162,10 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(profilesSectionLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(profilesSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(profilesComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         getContentPane().add(profilesSection, java.awt.BorderLayout.NORTH);
@@ -340,30 +341,31 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    void show(@NotNull Profile profile) {
-        GridBagConstraints constraints = new GridBagConstraints();
-                constraints.anchor = GridBagConstraints.CENTER;
-                constraints.fill = GridBagConstraints.BOTH;
-                constraints.weightx = profile.column() > 6 ? 1d : 0d;
-                constraints.weighty = profile.row() > 4 ? 1d : 0d;
-                constraints.ipadx = profile.gap();
-                constraints.ipady = profile.gap();
+    public void updateButtons() {
+            this.iBtnSection.removeAll();
 
-        profile
-        .buttons()
-        .forEach(
-                button -> {
-                            button.addMouseListener(new MouseAdapter() {
-                                    @Override
-                                    public void mouseClicked(MouseEvent e) {
-                                        iBtnClickEvent(e);
-                                    }
-                            });
-                            constraints.gridx = button.x();
-                            constraints.gridy = button.y();
-                            iBtnSection.add(button, constraints);
-                        });
-    }
+            Profile profile = Profiles.active();
+            GridBagConstraints constraints = new GridBagConstraints();
+            constraints.anchor = 10;
+            constraints.fill = 1;
+            constraints.weightx = profile.column() > 6 ? 1.0 : 0.0;
+            constraints.weighty = profile.row() > 4 ? 1.0 : 0.0;
+            constraints.ipadx = profile.gap();
+            constraints.ipady = profile.gap();
+
+            profile.buttons().forEach((button) -> {
+                button.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        MainMenu.this.iBtnClickEvent(e);
+                    }
+                });
+                constraints.gridx = button.x();
+                constraints.gridy = button.y();
+                this.iBtnSection.add(button, constraints);
+            });
+
+            this.iBtnSection.updateUI();
+        }
 
     private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
         javax.swing.JTextField modifier = (javax.swing.JTextField) evt.getComponent();
@@ -407,10 +409,10 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private me.knighthat.interactivedeck.menus.component.plist.ProfilesComboBox profilesComboBox1;
     private javax.swing.JPanel profilesSection;
     private javax.swing.JPanel statusSection;
     // End of variables declaration//GEN-END:variables
