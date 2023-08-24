@@ -21,7 +21,7 @@ public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
     }
 
     public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
-        super.setText( profile.displayName );
+        super.setText( profile == null ? "" : profile.displayName );
         super.setBackground( isSelected ? list.getSelectionBackground() : list.getBackground() );
         super.setForeground( isSelected ? list.getSelectionForeground() : list.getForeground() );
         return this;
