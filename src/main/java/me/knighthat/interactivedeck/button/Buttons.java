@@ -29,4 +29,8 @@ public class Buttons {
     public static @NotNull Optional<IButton> pull( @NotNull UUID uuid ) {
         return Optional.ofNullable( BUTTONS.getOrDefault( uuid, null ) );
     }
+
+    public static void eliminate( @NotNull IButton button ) {
+        BUTTONS.remove( button.uuid() );
+    }
 }
