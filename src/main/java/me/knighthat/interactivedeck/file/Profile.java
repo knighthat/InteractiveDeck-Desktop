@@ -13,6 +13,7 @@ package me.knighthat.interactivedeck.file;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
+import me.knighthat.interactivedeck.button.Buttons;
 import me.knighthat.interactivedeck.connection.request.RequestSerializable;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
@@ -99,11 +100,35 @@ public class Profile implements JsonSerializable, RequestSerializable {
     }
 
     public void column( int columns ) {
-        for ( int y = 0 ; y < row() ; y++ )
-            for ( int x = this.columns ; x < columns ; x++ ) {
-                int i = y * x;
-                this.buttons.add( i, new IButton( this, x, y ) );
-            }
+        // If new columns is equal to current rows, then do nothing
+        if ( columns == this.columns )
+            return;
+
+        // If new rows is greater than current rows, then add more buttons
+        if ( columns > this.columns )
+            for ( int y = 0 ; y < row() ; y++ )
+                for ( int x = column() ; x < columns ; x++ ) {
+                    int i = y * x;
+                    IButton button = new IButton( this, x, y );
+                    this.buttons.add( i, button );
+                    Buttons.push( button );
+                }
+
+        // If new columns is less than current row,
+        // then remove excess buttons within profile and public list of buttons
+        if ( columns < this.columns ) {
+            List<IButton> toBeDeleted = new ArrayList<>();
+
+            this.buttons
+                    .stream()
+                    .filter( btn -> btn.x() >= columns )
+                    .forEach( toBeDeleted::add );
+
+            toBeDeleted.forEach( btn -> {
+                this.buttons.remove( btn );
+                Buttons.eliminate( btn );
+            } );
+        }
         this.columns = columns;
     }
 
@@ -112,11 +137,36 @@ public class Profile implements JsonSerializable, RequestSerializable {
     }
 
     public void row( int rows ) {
-        for ( int y = this.rows ; y < rows ; y++ )
-            for ( int x = 0 ; x < column() ; x++ ) {
-                int i = y * x;
-                this.buttons.add( i, new IButton( this, x, y ) );
-            }
+        // If new rows is equal to current rows, then do nothing
+        if ( rows == this.rows )
+            return;
+
+        // If new rows is greater than current rows, then add more buttons
+        if ( rows > this.rows )
+            for ( int y = row() ; y < rows ; y++ )
+                for ( int x = 0 ; x < column() ; x++ ) {
+                    int i = y * x;
+                    IButton button = new IButton( this, x, y );
+                    this.buttons.add( i, button );
+                    Buttons.push( button );
+                }
+
+        // If new rows is less than current row,
+        // then remove excess buttons within profile and public list of buttons
+        if ( rows < this.rows ) {
+            List<IButton> toBeDeleted = new ArrayList<>();
+
+            this.buttons
+                    .stream()
+                    .filter( btn -> btn.y() >= rows )
+                    .forEach( toBeDeleted::add );
+
+            toBeDeleted.forEach( btn -> {
+                this.buttons.remove( btn );
+                Buttons.eliminate( btn );
+            } );
+        }
+
         this.rows = rows;
     }
 
