@@ -95,6 +95,8 @@ public class Profiles {
         Collections.addAll( PROFILES, profiles );
     }
 
+    public static void remove( @NotNull Profile profile ) { PROFILES.remove( profile ); }
+
     static void load( @NotNull FileReader reader ) throws JsonParseException, ProfileFormatException {
         JsonElement json = JsonParser.parseReader( reader );
         Profile profile = Profile.fromJson( json.getAsJsonObject() );

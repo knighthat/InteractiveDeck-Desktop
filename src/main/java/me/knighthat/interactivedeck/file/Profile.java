@@ -19,6 +19,7 @@ import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.profile.Profiles;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -32,11 +33,10 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
     private final @NotNull UUID uuid;
     private final @NotNull List<IButton> buttons;
-    public @NotNull String displayName;
     public boolean isDefault;
+    public @NotNull String displayName;
     private int columns;
     private int rows;
-
     private int gap;
 
     Profile( @NotNull UUID uuid, @NotNull String displayName, boolean isDefault, int columns, int rows, int gap, @NotNull List<IButton> buttons ) {
@@ -150,6 +150,16 @@ public class Profile implements JsonSerializable, RequestSerializable {
             Log.err( "Failed to save profile " + displayName() );
             Log.err( "Caused by: " + e.getMessage() );
         }
+    }
+
+    public void remove() {
+        Profiles.remove( this );
+
+        String fileName = this.uuid().toString().concat( ".profile" );
+        File file = new File( WorkingDirectory.absPath(), fileName );
+
+        if ( file.exists() )
+            file.delete();
     }
 
     private @NotNull JsonObject jsonTemplate() {
