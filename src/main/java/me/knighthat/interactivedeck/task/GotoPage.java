@@ -8,28 +8,20 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.menus.component.action;
+package me.knighthat.interactivedeck.task;
 
-import me.knighthat.interactivedeck.button.Buttons;
-import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.task.ExecutableTask;
-import me.knighthat.interactivedeck.task.Task;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class ActionHandler {
+public record GotoPage( @NotNull UUID target ) implements Task {
 
-    public static void process( @NotNull ActionType type, @NotNull UUID uuid ) {
-        if ( !type.equals( ActionType.PRESS ) )
-            return;
-
-        Log.deb( "Is button available: " + Buttons.pull( uuid ).isPresent() );
-
-        Buttons.pull( uuid ).ifPresent( button -> {
-            Task task = button.task();
-            if ( task instanceof ExecutableTask executable )
-                executable.execute();
-        } );
+    @Override
+    public @NotNull JsonObject json() {
+        JsonObject json = new JsonObject();
+        json.addProperty( "action_type", "SWITCH_PROFILE" );
+        json.addProperty( "profile", this.target.toString() );
+        return json;
     }
 }

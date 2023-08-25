@@ -18,7 +18,7 @@ import me.knighthat.interactivedeck.profile.Profiles;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
-public class ProfilesComboBox extends JComboBox<Profile> {
+public class ProfilesComboBox extends JComboBox<Profile> implements Cloneable {
 
     public ProfilesComboBox() {
         super( Profiles.list().toArray( Profile[]::new ) );
@@ -39,5 +39,14 @@ public class ProfilesComboBox extends JComboBox<Profile> {
         ( (MainMenu) SwingUtilities.getWindowAncestor( this ) ).updateButtons();
 
         super.actionPerformed( e );
+    }
+
+    @Override
+    public ProfilesComboBox clone() {
+        try {
+            return (ProfilesComboBox) super.clone();
+        } catch ( CloneNotSupportedException e ) {
+            throw new AssertionError();
+        }
     }
 }

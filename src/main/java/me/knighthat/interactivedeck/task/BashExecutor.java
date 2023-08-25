@@ -10,6 +10,7 @@
 
 package me.knighthat.interactivedeck.task;
 
+import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class BashExecutor {
+public final class BashExecutor extends ExecutableTask {
 
     private final @NotNull String filePath;
     private final @NotNull ProcessBuilder process;
@@ -27,14 +28,23 @@ public final class BashExecutor {
         this.process = new ProcessBuilder( "bash", filePath );
     }
 
-    public void execute() {
-        new Thread( () -> {
-            Thread.currentThread().setName( "EXEC" );
-            execute0();
-        } ).start();
+    public @NotNull String path() {
+        return this.filePath;
     }
 
-    private void execute0() {
+    private void log( @NotNull Log.LogLevel level, @NotNull InputStream stream ) throws IOException {
+        int eightBytes = 8 * 1024;  // 8 KiB
+        byte[] buffer = new byte[eightBytes];
+        int bytesRead;
+
+        while ( ( bytesRead = stream.read( buffer ) ) != -1 ) {
+            String decoded = new String( buffer, 0, bytesRead );
+            Log.log( level, decoded );
+        }
+    }
+
+    @Override
+    protected void executeInternal() {
         int exit = 1;
         try {
             Process process = this.process.start();
@@ -59,14 +69,12 @@ public final class BashExecutor {
         Log.log( exit == 0 ? Log.LogLevel.INFO : Log.LogLevel.WARNING, s );
     }
 
-    private void log( @NotNull Log.LogLevel level, @NotNull InputStream stream ) throws IOException {
-        int eightBytes = 8 * 1024;
-        byte[] buffer = new byte[eightBytes];
-        int bytesRead;
+    @Override
+    public @NotNull JsonObject json() {
+        JsonObject json = new JsonObject();
+        json.addProperty( "action_type", "BASH_EXEC" );
+        json.addProperty( "file_path", this.filePath );
 
-        while ( ( bytesRead = stream.read( buffer ) ) != -1 ) {
-            String decoded = new String( buffer, 0, bytesRead );
-            Log.log( level, decoded );
-        }
+        return json;
     }
 }

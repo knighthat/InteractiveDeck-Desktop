@@ -17,12 +17,13 @@ import me.knighthat.interactivedeck.connection.request.RequestSerializable;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.task.GotoPage;
+import me.knighthat.interactivedeck.task.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.UUID;
 
 import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
@@ -36,21 +37,21 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
     private final @NotNull BLabel label;
     private final int x;
     private final int y;
-    private @Nullable File script;
+    private @Nullable Task task;
 
     IButton( @NotNull UUID uuid,
              @NotNull Profile profile,
              @NotNull BIcon icon,
              @NotNull BLabel label,
              int x, int y,
-             @Nullable File script ) {
+             @Nullable Task task ) {
         this.uuid = uuid;
         this.profile = profile;
         this.icon = icon;
         this.label = label;
         this.x = x;
         this.y = y;
-        this.script = script;
+        this.task = task;
 
         setOpaque( false );
         setForeground( TRANSPARENT );
@@ -86,13 +87,9 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         JsonPrimitive yPrim = json.getAsJsonPrimitive( "y" );
         int y = yPrim.getAsInt();
 
-        File script = null;
-        if ( json.has( "script" ) ) {
-            JsonPrimitive scriptPath = json.getAsJsonPrimitive( "script" );
-            script = new File( scriptPath.getAsString() );
-        }
+        Task task = json.has( "task" ) ? Task.fromJson( json.getAsJsonObject( "task" ) ) : null;
 
-        return new IButton( uuid, profile, icon, label, x, y, script );
+        return new IButton( uuid, profile, icon, label, x, y, task );
     }
 
     public @NotNull UUID uuid() {
@@ -141,12 +138,12 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         return this.label.text();
     }
 
-    public void script( @NotNull File script ) {
-        this.script = script;
+    public void task( @NotNull Task task ) {
+        this.task = task;
     }
 
-    public @Nullable File script() {
-        return this.script;
+    public @Nullable Task task() {
+        return this.task;
     }
 
     @Override
@@ -172,8 +169,8 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         json.add( "uuid", Json.parse( this.uuid ) );
         json.add( "x", Json.parse( this.x ) );
         json.add( "y", Json.parse( this.y ) );
-        if ( this.script != null )
-            json.add( "script", Json.parse( this.script.getAbsolutePath() ) );
+        if ( this.task != null )
+            json.add( "task", this.task.json() );
         json.add( "icon", this.icon.json() );
         json.add( "label", this.label.json() );
 
@@ -200,6 +197,8 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         json.add( "background", Json.parse( this.icon.inner() ) );
         json.add( "foreground", Json.parse( this.label.getForeground() ) );
         json.add( "text", Json.parse( this.label.text() ) );
+        if ( task instanceof GotoPage t )
+            json.add( "goto", Json.parse( t.target().toString() ) );
 
         return json;
     }

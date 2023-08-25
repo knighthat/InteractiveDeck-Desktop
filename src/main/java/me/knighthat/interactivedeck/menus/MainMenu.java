@@ -1,21 +1,11 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
- * and associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package me.knighthat.interactivedeck.menus;
 
@@ -24,14 +14,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
 import javax.swing.*;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
@@ -99,7 +86,7 @@ public class MainMenu extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         iBtnBgColor = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        iBtnScript = new javax.swing.JTextField();
+        javax.swing.JButton taskManagerBttn = new javax.swing.JButton();
         statusSection = new javax.swing.JPanel();
         conStatus = Connection.component();
 
@@ -299,7 +286,7 @@ public class MainMenu extends javax.swing.JFrame {
         btnModifierSection.add(iBtnBgColor, gridBagConstraints);
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Execute");
+        jLabel1.setText("Task");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 6;
@@ -307,26 +294,21 @@ public class MainMenu extends javax.swing.JFrame {
         gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
         btnModifierSection.add(jLabel1, gridBagConstraints);
 
-        iBtnScript.setBackground(new java.awt.Color(51, 51, 51));
-        iBtnScript.setForeground(new java.awt.Color(255, 255, 255));
-        iBtnScript.setText("Path To Script");
-        iBtnScript.setMaximumSize(new java.awt.Dimension(200, 40));
-        iBtnScript.setMinimumSize(new java.awt.Dimension(200, 40));
-        iBtnScript.setPreferredSize(new java.awt.Dimension(200, 40));
-        iBtnScript.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                modifierFocusLostEvent(evt);
-            }
-        });
-        iBtnScript.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifierEnterKeyPressedEvent(evt);
+        taskManagerBttn.setBackground(new java.awt.Color(51, 51, 51));
+        taskManagerBttn.setForeground(new java.awt.Color(255, 255, 255));
+        taskManagerBttn.setText("Task Manager");
+        taskManagerBttn.setMaximumSize(new java.awt.Dimension(200, 40));
+        taskManagerBttn.setMinimumSize(new java.awt.Dimension(200, 40));
+        taskManagerBttn.setPreferredSize(new java.awt.Dimension(200, 40));
+        taskManagerBttn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                taskButtonClicked(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
-        btnModifierSection.add(iBtnScript, gridBagConstraints);
+        gridBagConstraints.gridy = 8;
+        btnModifierSection.add(taskManagerBttn, gridBagConstraints);
 
         getContentPane().add(btnModifierSection, java.awt.BorderLayout.CENTER);
 
@@ -418,6 +400,13 @@ public class MainMenu extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_configureProfileButtonClicked
 
+    private void taskButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskButtonClicked
+        if (bSelected == null) return;
+        
+        JDialog dialog = new TaskManagerMenu(this, bSelected, profilesList);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_taskButtonClicked
+
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         if (bSelected != null) 
             bSelected.unselect();
@@ -427,15 +416,6 @@ public class MainMenu extends javax.swing.JFrame {
         iBtnName.setText(bSelected.text());
         updateModifiers(iBtnFgColor, bSelected.foreground());
         updateModifiers(iBtnBgColor, bSelected.background());
-
-        File script = bSelected.script();
-        if (script == null) return;
-        try {
-            iBtnScript.setText(script.getCanonicalPath());
-        } catch (IOException e) {
-            Log.err("Error occurs while obtaining script's path");
-            e.printStackTrace();
-        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -445,7 +425,6 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JTextField iBtnBgColor;
     private javax.swing.JTextField iBtnFgColor;
     private javax.swing.JTextField iBtnName;
-    private javax.swing.JTextField iBtnScript;
     private javax.swing.JPanel iBtnSection;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -478,19 +457,8 @@ public class MainMenu extends javax.swing.JFrame {
             Color bg = ColorUtils.fromHex(content);
             bSelected.background(bg);
             updateModifiers(modifier, bg);
-        } else if (modifier == iBtnScript) {
-            String path = modifier.getText();
-            if (path.isBlank()) return;
-
-            File script = new File(path);
-            if (!script.exists()) {
-                Log.err("File \"" + path + "\" does NOT exist!");
-                return;
-            }
-
-            bSelected.script(script);
-        }
-
+        } 
+        
         if (!Connection.isConnected()) return;
 
         Request request = new UpdateRequest(bSelected);
