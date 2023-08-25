@@ -11,18 +11,18 @@
 package me.knighthat.interactivedeck.connection.request;
 
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
 
-public final class UpdateRequest extends Request {
+public class UpdateRequest extends Request {
 
-    public UpdateRequest( @NotNull IButton button ) {
-        super( RequestType.UPDATE, new JsonObject() );
+    public UpdateRequest(@NotNull RequestSerializable serializable) {
+        super(RequestType.UPDATE, new JsonObject());
 
-        JsonObject content = content().getAsJsonObject();
-        content.add( "profile", Json.parse( button.profile().uuid() ) );
-        content.add( "button_id", Json.parse( button.uuid() ) );
-        content.add( "button", button.toRequestFormat() );
+        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
+        JsonObject json = super.content().getAsJsonObject();
+
+        json.addProperty("target", target);
+        json.add("payload", serializable.toRequestFormat());
     }
 }
