@@ -403,7 +403,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void taskButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskButtonClicked
         if (bSelected == null) return;
         
-        JDialog dialog = new TaskManagerMenu(this, bSelected, profilesList);
+        JDialog dialog = new TaskManagerMenu(this, bSelected);
         dialog.setVisible(true);
     }//GEN-LAST:event_taskButtonClicked
 
