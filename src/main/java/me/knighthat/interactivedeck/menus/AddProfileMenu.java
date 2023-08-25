@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package me.knighthat.interactivedeck.menus;
 
 
-import java.awt.Window;
 import javax.swing.JRootPane;
+import me.knighthat.interactivedeck.connection.request.AddRequest;import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.profile.Profiles;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.profile.Profiles;import java.util.List;
 
 /**
  *
@@ -25,20 +25,15 @@ public class AddProfileMenu extends javax.swing.JDialog {
     /**
      * Creates new form AddProfileDialog
      */
-    public AddProfileMenu(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-    }
-    
-    public AddProfileMenu(@NotNull Window owner) {
-        super(owner, ModalityType.MODELESS);
+    public AddProfileMenu(java.awt.Frame parent) {
+        super(parent, false);
         
         super.getRootPane().setWindowDecorationStyle( JRootPane.NONE );
         super.setUndecorated( true );
         
         initComponents();
         
-        super.setLocationRelativeTo(owner);
+        super.setLocationRelativeTo(parent);
     }
 
     /**
@@ -135,6 +130,9 @@ public class AddProfileMenu extends javax.swing.JDialog {
         Profiles.add( profile );
         ( (MainMenu) super.getOwner() ).updateProfilesList();
 
+        Request request = new AddRequest(List.of(profile));
+        WirelessSender.send(request);
+        
         finish();
     }//GEN-LAST:event_createButtonMouseClicked
 

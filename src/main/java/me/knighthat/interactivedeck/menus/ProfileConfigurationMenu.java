@@ -1,17 +1,19 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package me.knighthat.interactivedeck.menus;
 
-import java.awt.*;
 import javax.swing.JRootPane;
 import javax.swing.SpinnerNumberModel;
+import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.utils.ColorUtils;
@@ -26,13 +28,9 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     /**
      * Creates new form ProfileConfigurationMenu
      */
-    public ProfileConfigurationMenu(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
-    }
-    
-    public ProfileConfigurationMenu(@NotNull Window owner) {
-        super(owner, ModalityType.MODELESS);
+    public ProfileConfigurationMenu(java.awt.Frame parent) {
+        super(parent, false);
+        
         this.profile = Profiles.active();
         
         super.getRootPane().setWindowDecorationStyle( JRootPane.NONE );
@@ -40,7 +38,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         
         initComponents();
         
-        super.setLocationRelativeTo(owner);
+        super.setLocationRelativeTo(parent);
     }
 
     /**
@@ -56,7 +54,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         javax.swing.JLabel menuTitle = new javax.swing.JLabel();
         javax.swing.JPanel contentContainer = new javax.swing.JPanel();
         javax.swing.JLabel displayNameLabel = new javax.swing.JLabel();
-        displayNameInput = new javax.swing.JTextField();
+        displayNameInput = new javax.swing.JTextField(this.profile.displayName);
         javax.swing.JLabel columnsLabel = new javax.swing.JLabel();
         columnsSpinner = new javax.swing.JSpinner();
         javax.swing.JLabel rowsLabel = new javax.swing.JLabel();
@@ -98,7 +96,6 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         contentContainer.add(displayNameLabel, gridBagConstraints);
 
-        displayNameInput.setText(this.profile.displayName);
         displayNameInput.setPreferredSize(new java.awt.Dimension(150, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -156,7 +153,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(gapLabel, gridBagConstraints);
 
-        SpinnerNumberModel gModel = new SpinnerNumberModel(this.profile.gap(), 1, 10, 1);
+        SpinnerNumberModel gModel = new SpinnerNumberModel(this.profile.gap(), 0, 10, 1);
         gapSpinner.setModel(gModel);
         gapSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -225,6 +222,10 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
             this.profile.gap(newGap);
         
         ((MainMenu) super.getOwner()).updateButtons();
+        
+        Request request = new UpdateRequest(this.profile);
+        WirelessSender.send(request);
+        
         finish();
     }//GEN-LAST:event_saveButtonMouseClicked
 
@@ -235,7 +236,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     private javax.swing.JSpinner rowsSpinner;
     // End of variables declaration//GEN-END:variables
 
-    private @NotNull Profile profile;
+    private final @NotNull Profile profile;
     
     private void finish() {
         this.setVisible(false);

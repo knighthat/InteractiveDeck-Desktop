@@ -13,10 +13,12 @@ import java.awt.Frame;
 import java.io.File;
 import java.util.List;
 import javax.swing.*;
+import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
-import me.knighthat.interactivedeck.menus.component.plist.ProfilesComboBox;
 import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.task.BashExecutor;
 import me.knighthat.interactivedeck.task.GotoPage;
@@ -33,13 +35,12 @@ public class TaskManagerMenu extends javax.swing.JDialog {
     /**
      * Creates new form TaskManagement
      */
-    public TaskManagerMenu(@NotNull Frame parent, @NotNull IButton button, @NotNull ProfilesComboBox pList) {
+    public TaskManagerMenu(@NotNull Frame parent, @NotNull IButton button) {
         super(parent, false);
         super.getRootPane().setWindowDecorationStyle( JRootPane.NONE );
         super.setUndecorated( true );
 
         this.button = button;
-        this.pList = pList;
 
         initComponents();
 
@@ -70,10 +71,10 @@ public class TaskManagerMenu extends javax.swing.JDialog {
 
         javax.swing.JLabel menuTitle = new javax.swing.JLabel();
         javax.swing.JPanel contentContainer = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         scriptButton = new javax.swing.JRadioButton();
         scriptPathInput = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
+        javax.swing.JPanel jPanel2 = new javax.swing.JPanel();
         gotoButton = new javax.swing.JRadioButton();
         profilesSelector = new javax.swing.JComboBox<>();
         javax.swing.JPanel buttonsContainer = new javax.swing.JPanel();
@@ -216,6 +217,9 @@ public class TaskManagerMenu extends javax.swing.JDialog {
         
         this.button.task(task);
         
+        Request request = new UpdateRequest(button);
+        WirelessSender.send(request);
+        
         finish();
     }//GEN-LAST:event_okButtonClicked
 
@@ -225,14 +229,11 @@ public class TaskManagerMenu extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton gotoButton;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JComboBox<String> profilesSelector;
     private javax.swing.JRadioButton scriptButton;
     private javax.swing.JTextField scriptPathInput;
     // End of variables declaration//GEN-END:variables
-    private @NotNull IButton button;
-    private @NotNull ProfilesComboBox pList;
+    private final @NotNull IButton button;
     
     private void finish() {
         this.setVisible(false);
