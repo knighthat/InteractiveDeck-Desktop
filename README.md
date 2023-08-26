@@ -4,14 +4,38 @@ Turn your Android phone into a "**_Macro Keypad_**"
 
 # Features
 
+# General
+
 🎯 Easy to use, straight forward.<br>
 🔲 Customizable, button's foreground/background/text can be changed.<br>
 🚀 Fast to connect, responsive to touch/update between devices.<br>
 ⚖️ Lightweight, built using minimal resources to maximize performance.
 
+# Core Functions
+
+📑 Multiple Pages (Profiles)
+
+- Add
+- Remove
+- Modify
+    - Title
+    - Columns (up to 6)
+    - Rows (up to 4)
+    - Gap Between Buttons
+
+🖲️ Buttons
+
+- Label
+- Background
+- Foreground (Font Color)
+- Task (Its Usage)
+    - Executing BASH Script
+    - Switch Profile on Mobile Device
+
 # Installation
 
-> These steps require [JRE](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed prior.
+> These steps require [JRE](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed
+> prior.
 
 1. Clone project `git clone --depth 1 https://github.com/knighthat/InteractiveDeck-Desktop`
 2. Compile it `mvn package`
@@ -71,7 +95,8 @@ Please follow guidelines to prevent conflict between push
 
 2. **Don't**
 
-* **_Harassment_**: Any form of harassment, discrimination, or offensive behavior is unacceptable and will not be tolerated.
+* **_Harassment_**: Any form of harassment, discrimination, or offensive behavior is unacceptable and will not be
+  tolerated.
 * **_Trolling_**: Deliberate and disruptive actions or comments with the intent to provoke or offend others.
 * **_Hateful speech_**: Use of derogatory or offensive language, slurs, or personal attacks.
 * **_Spam_**: Posting irrelevant or unsolicited content, including excessive self-promotion.
