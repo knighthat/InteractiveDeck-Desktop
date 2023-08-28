@@ -1,33 +1,38 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package me.knighthat.interactivedeck.file;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import me.knighthat.interactivedeck.WorkingDirectory;
-import me.knighthat.interactivedeck.button.Buttons;
 import me.knighthat.interactivedeck.connection.request.RequestSerializable;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
-import me.knighthat.interactivedeck.profile.Profiles;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class Profile implements JsonSerializable, RequestSerializable {
@@ -52,19 +57,46 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
     public Profile() {
         this( UUID.randomUUID(), "", false, 4, 2, 3, new ArrayList<>() );
-        for ( int y = 0 ; y < row() ; y++ )
-            for ( int x = 0 ; x < column() ; x++ )
+        for (int y = 0 ; y < row() ; y++)
+            for (int x = 0 ; x < column() ; x++)
                 this.buttons.add( new IButton( this, x, y ) );
     }
 
-    public static @NotNull Profile fromJson( @NotNull JsonObject json ) {
-        if ( !json.has( "uuid" ) ||
+    public static @NotNull Optional<Profile> fromFile( @NotNull File file ) {
+        Profile profile = null;
+
+        try (FileReader reader = new FileReader( file )) {
+
+            JsonElement json = JsonParser.parseReader( reader );
+            profile = Profile.fromJson( json.getAsJsonObject() );
+
+        } catch (ProfileFormatException e) {
+
+            Log.warn( file.getName() + " does not meet requirements. Skipping..." );
+
+        } catch (JsonParseException e) {
+
+            Log.warn( file.getName() + " is not a valid JSON file. Skipping..." );
+            Log.warn( "Cause: " + e.getMessage() );
+
+        } catch (FileNotFoundException ignored) {
+        } catch (IOException e) {
+
+            Log.err( "Could not read " + file.getName() + ". Perhaps permission error?" );
+            Log.err( "Error message: " + e.getMessage() );
+
+        }
+        return Optional.ofNullable( profile );
+    }
+
+    private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
+        if (!json.has( "uuid" ) ||
                 !json.has( "displayName" ) ||
                 !json.has( "default" ) ||
                 !json.has( "rows" ) ||
                 !json.has( "columns" ) ||
                 !json.has( "gap" ) ||
-                !json.has( "buttons" ) )
+                !json.has( "buttons" ))
             throw new ProfileFormatException( "Missing information" );
 
         String idStr = json.get( "uuid" ).getAsString();
@@ -76,7 +108,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
         int gap = json.get( "gap" ).getAsInt();
         List<IButton> buttons = new ArrayList<>();
 
-        Profile profile = new Profile( uuid, displayName, isDefault, rows, columns, gap, buttons );
+        Profile profile = new Profile( uuid, displayName, isDefault, columns, rows, gap, buttons );
 
         JsonArray btnJson = json.getAsJsonArray( "buttons" );
         btnJson.forEach( button -> {
@@ -101,22 +133,21 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
     public void column( int columns ) {
         // If new columns is equal to current rows, then do nothing
-        if ( columns == this.columns )
+        if (columns == this.columns)
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if ( columns > this.columns )
-            for ( int y = 0 ; y < row() ; y++ )
-                for ( int x = column() ; x < columns ; x++ ) {
-                    int i = y * x;
+        if (columns > this.columns)
+            for (int y = 0 ; y < this.rows ; y++)
+                for (int x = this.columns ; x < columns ; x++) {
                     IButton button = new IButton( this, x, y );
-                    this.buttons.add( i, button );
-                    Buttons.push( button );
+                    this.buttons.add( button );
+                    MenuProperty.add( button );
                 }
 
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if ( columns < this.columns ) {
+        if (columns < this.columns) {
             List<IButton> toBeDeleted = new ArrayList<>();
 
             this.buttons
@@ -126,7 +157,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
             toBeDeleted.forEach( btn -> {
                 this.buttons.remove( btn );
-                Buttons.eliminate( btn );
+                MenuProperty.remove( btn );
             } );
         }
         this.columns = columns;
@@ -138,22 +169,21 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
     public void row( int rows ) {
         // If new rows is equal to current rows, then do nothing
-        if ( rows == this.rows )
+        if (rows == this.rows)
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if ( rows > this.rows )
-            for ( int y = row() ; y < rows ; y++ )
-                for ( int x = 0 ; x < column() ; x++ ) {
-                    int i = y * x;
+        if (rows > this.rows)
+            for (int y = this.rows ; y < rows ; y++)
+                for (int x = 0 ; x < this.columns ; x++) {
                     IButton button = new IButton( this, x, y );
-                    this.buttons.add( i, button );
-                    Buttons.push( button );
+                    this.buttons.add( button );
+                    MenuProperty.add( button );
                 }
 
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if ( rows < this.rows ) {
+        if (rows < this.rows) {
             List<IButton> toBeDeleted = new ArrayList<>();
 
             this.buttons
@@ -163,7 +193,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
             toBeDeleted.forEach( btn -> {
                 this.buttons.remove( btn );
-                Buttons.eliminate( btn );
+                MenuProperty.remove( btn );
             } );
         }
 
@@ -190,25 +220,25 @@ public class Profile implements JsonSerializable, RequestSerializable {
         Log.info( "Saving " + displayName() );
 
         String fileName = this.uuid.toString().concat( ".profile" );
-        File file = new File( WorkingDirectory.get(), fileName );
+        File file = new File( WorkingDirectory.file(), fileName );
 
         try {
-            file.createNewFile();
-
-            Json.save( this.json(), file );
-        } catch ( IOException e ) {
+            if (file.createNewFile())
+                Json.save( this.serialize(), file );
+            else
+                Log.warn( "Failed to create profile " + fileName );
+        } catch (IOException e) {
             Log.err( "Failed to save profile " + displayName() );
             Log.err( "Caused by: " + e.getMessage() );
         }
     }
 
     public void remove() {
-        Profiles.remove( this );
+        MenuProperty.remove( this );
+        String fileName = uuid() + ".profile";
+        File file = new File( WorkingDirectory.path(), fileName );
 
-        String fileName = this.uuid().toString().concat( ".profile" );
-        File file = new File( WorkingDirectory.absPath(), fileName );
-
-        if ( file.exists() )
+        if (file.exists())
             file.delete();
     }
 
@@ -225,18 +255,18 @@ public class Profile implements JsonSerializable, RequestSerializable {
          */
         JsonObject json = new JsonObject();
 
-        json.add( "uuid", Json.parse( this.uuid ) );
-        json.add( "displayName", Json.parse( this.displayName ) );
-        json.add( "default", Json.parse( this.isDefault ) );
-        json.add( "rows", Json.parse( this.row() ) );
-        json.add( "columns", Json.parse( this.column() ) );
-        json.add( "gap", Json.parse( this.gap() ) );
+        json.addProperty( "uuid", uuid.toString() );
+        json.addProperty( "displayName", displayName );
+        json.addProperty( "default", isDefault );
+        json.addProperty( "rows", row() );
+        json.addProperty( "columns", column() );
+        json.addProperty( "gap", gap() );
 
         return json;
     }
 
     @Override
-    public @NotNull JsonObject json() {
+    public @NotNull JsonObject serialize() {
         /*
          * "buttons":
          * [
@@ -246,7 +276,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
         JsonObject json = jsonTemplate();
 
         JsonArray buttons = new JsonArray();
-        this.buttons.forEach( btn -> buttons.add( btn.json() ) );
+        this.buttons.forEach( btn -> buttons.add( btn.serialize() ) );
         json.add( "buttons", buttons );
 
         return json;

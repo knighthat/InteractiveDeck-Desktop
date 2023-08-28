@@ -15,13 +15,12 @@ import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
  *
- * @author knighthat
+ * @author knighthatProfiles.active()
  */
 public class ProfileConfigurationMenu extends javax.swing.JDialog {
 
@@ -31,7 +30,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     public ProfileConfigurationMenu(java.awt.Frame parent) {
         super(parent, false);
         
-        this.profile = Profiles.active();
+        this.profile = MenuProperty.active();
         
         super.getRootPane().setWindowDecorationStyle( JRootPane.NONE );
         super.setUndecorated( true );

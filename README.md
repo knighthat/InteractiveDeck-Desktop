@@ -23,7 +23,7 @@ Turn your Android phone into a "**_Macro Keypad_**"
     - Rows (up to 4)
     - Gap Between Buttons
 
-🖲️ Buttons
+🖲️ ButtonsMath.ceilDiv(  )
 
 - Label
 - Background
@@ -49,7 +49,7 @@ Turn your Android phone into a "**_Macro Keypad_**"
 
 ### Requirements
 
-- JRE 20 or higher. [DOWNLOAD HERE](https://jdk.java.net/20/)
+- JRE 17 or higher. [DOWNLOAD HERE](https://jdk.java.net/)
 
 `java -Xms512M -Xmx512M -jar target/InteractiveDeckDesktop-*.jar`
 

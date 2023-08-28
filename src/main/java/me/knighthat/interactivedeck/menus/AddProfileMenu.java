@@ -14,7 +14,7 @@ import javax.swing.JRootPane;
 import me.knighthat.interactivedeck.connection.request.AddRequest;import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.profile.Profiles;import java.util.List;
+import java.util.List;
 
 /**
  *
@@ -127,7 +127,7 @@ public class AddProfileMenu extends javax.swing.JDialog {
         Profile profile = new Profile();
         profile.displayName = fromUser;
 
-        Profiles.add( profile );
+        MenuProperty.add(profile);
         ( (MainMenu) super.getOwner() ).updateProfilesList();
 
         Request request = new AddRequest(List.of(profile));

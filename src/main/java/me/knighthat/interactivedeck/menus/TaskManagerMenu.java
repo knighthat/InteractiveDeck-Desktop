@@ -9,9 +9,9 @@
  */
 package me.knighthat.interactivedeck.menus;
 
-import java.awt.Frame;
+import java.awt.*;
 import java.io.File;
-import java.util.List;
+import java.util.Set;import java.util.function.Predicate;
 import javax.swing.*;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
@@ -19,7 +19,6 @@ import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
-import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.task.BashExecutor;
 import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
@@ -50,9 +49,11 @@ public class TaskManagerMenu extends javax.swing.JDialog {
             this.scriptPathInput.setText( executor.path() );
         } else if (task instanceof GotoPage gotoPage) {
             this.gotoButton.setSelected( true );
-            Profile profile = Profiles.get( gotoPage.target() );
-            if (profile == null)
-                profile = Profiles.active();
+
+            Profile profile =
+                        MenuProperty
+                        .profile( gotoPage.target() )
+                        .orElse(MenuProperty.active());
             this.profilesSelector.setSelectedItem( profile.displayName );
         }
 
@@ -272,28 +273,26 @@ public class TaskManagerMenu extends javax.swing.JDialog {
     }
 
     private @Nullable Task createGotoPageTask() {
-        String pName = (String) this.profilesSelector.getSelectedItem();
+        String selected = (String) this.profilesSelector.getSelectedItem();
 
         Task task = null;
-        for (Profile profile : Profiles.list())
-            if (profile.displayName.equals( pName ))
+        for (Profile profile : MenuProperty.profiles())
+        if (profile.displayName.equals( selected )) {
                 task = new GotoPage( profile.uuid() );
-
+                break;
+        }
         return task;
     }
 
     private @NotNull ComboBoxModel<String> getNames() {
-        List<Profile> profiles = Profiles.list();
-        String[] names = new String[profiles.size() - 1];
-
-
-        int index = 0;
-        for (Profile profile : profiles) {
-            if (this.button.profile().equals( profile ))
-                continue;
-            names[index] = profile.displayName;
-            index++;
-        }
+        Profile current = this.button.profile();
+        Predicate<Profile> condition = p -> !p.equals(current);
+        Set<Profile> profiles = MenuProperty.profiles(condition);
+        String[] names =
+                    profiles
+                    .stream()
+                    .map(Profile::displayName)
+                    .toArray(String[]::new);
 
         return new DefaultComboBoxModel<>(names);
     }

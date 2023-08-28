@@ -1,11 +1,15 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package me.knighthat.interactivedeck.file;
@@ -39,58 +43,53 @@ public class Settings {
     public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
 
     public static void init() {
-        File settings = new File(WorkingDirectory.get(), "settings.json");
+        File settings = new File( WorkingDirectory.file(), "settings.json" );
         try {
             if (settings.exists()) {
-                load(settings);
+                load( settings );
             } else
                 settings.createNewFile();
         } catch (IOException e) {
-            Log.err("Couldn't generate settings.yml. Perhaps permission error?");
-            Log.err("Reason: " + e.getMessage());
+            Log.err( "Couldn't generate settings.yml. Perhaps permission error?" );
+            Log.err( "Reason: " + e.getMessage() );
         } finally {
             FILE = settings;
         }
     }
 
-    static void load(@NotNull File file) {
-        try (Reader reader = new FileReader(file)) {
-            JsonElement json = JsonParser.parseReader(reader);
+    static void load( @NotNull File file ) {
+        try (Reader reader = new FileReader( file )) {
+            JsonElement json = JsonParser.parseReader( reader );
             if (!json.isJsonNull())
-                load(json.getAsJsonObject());
+                load( json.getAsJsonObject() );
         } catch (IOException e) {
-            Log.err("Error occurs while reading settings.");
-            Log.err("New settings file will be save at shutdown");
-            Log.err("Caused by: " + e.getMessage());
+            Log.err( "Error occurs while reading settings." );
+            Log.err( "New settings file will be save at shutdown" );
+            Log.err( "Caused by: " + e.getMessage() );
         }
     }
 
-    static void load(@NotNull JsonObject json) {
-        if (json.has("address"))
-            ADDRESS = json.get("address").getAsString();
-        if (json.has("port"))
-            PORT = json.get("port").getAsInt();
-        if (json.has("buffer")) {
-            int size = json.get("buffer").getAsInt();
+    static void load( @NotNull JsonObject json ) {
+        if (json.has( "address" ))
+            ADDRESS = json.get( "address" ).getAsString();
+        if (json.has( "port" ))
+            PORT = json.get( "port" ).getAsInt();
+        if (json.has( "buffer" )) {
+            int size = json.get( "buffer" ).getAsInt();
             BUFFER = new byte[size];
         }
-        if (json.has("selected_color"))
-            SELECTED_COLOR = ColorUtils.fromJson(json.getAsJsonArray("selected_color"));
+        if (json.has( "selected_color" ))
+            SELECTED_COLOR = ColorUtils.fromJson( json.getAsJsonArray( "selected_color" ) );
     }
 
     public static void dump() {
         JsonObject json = new JsonObject();
-        json.add("address", Json.parse(ADDRESS));
-        json.add("port", Json.parse(PORT));
-        json.add("buffer", Json.parse(BUFFER.length));
-        json.add("selected_color", Json.parse(SELECTED_COLOR));
+        json.addProperty( "address", ADDRESS );
+        json.addProperty( "port", PORT );
+        json.addProperty( "buffer", BUFFER.length );
+        json.add( "selected_color", ColorUtils.toJson( SELECTED_COLOR ) );
 
-        try {
-            Json.save(json, FILE);
-        } catch (IOException e) {
-            Log.err("Failed to save settings file!");
-            Log.err("Caused by: " + e.getMessage());
-        }
+        Json.save( json, FILE );
     }
 
     public static @NotNull String address() {

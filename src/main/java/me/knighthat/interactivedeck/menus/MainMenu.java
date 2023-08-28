@@ -22,7 +22,6 @@ import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
-import me.knighthat.interactivedeck.profile.Profiles;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +53,7 @@ public class MainMenu extends javax.swing.JFrame {
                     bSelected.unselect();
 
                 Settings.dump();
-                Profiles.list().forEach(Profile::dump);
+                MenuProperty.profiles().forEach( Profile::dump );
                 super.windowClosing(e);
             }
         });
@@ -339,7 +338,7 @@ public class MainMenu extends javax.swing.JFrame {
     public void updateButtons() {
         this.iBtnSection.removeAll();
 
-        Profile profile = Profiles.active();
+        Profile profile = MenuProperty.active();
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = 10;
         constraints.fill = 1;
@@ -385,9 +384,11 @@ public class MainMenu extends javax.swing.JFrame {
         selected.remove();
         updateProfilesList();
         
-        for (Profile p : Profiles.list())
-            if (p.isDefault)
+        for (Profile p : MenuProperty.profiles())
+            if (p.isDefault) {
                 this.profilesList.setSelectedItem(p);
+                break;
+            }
         this.updateButtons();
     }//GEN-LAST:event_removeProfilesButtonClicked
 
@@ -467,7 +468,7 @@ public class MainMenu extends javax.swing.JFrame {
 
     public void updateProfilesList() {
         this.profilesList.removeAll();
-        ComboBoxModel<Profile> profiles = new DefaultComboBoxModel<>(Profiles.list().toArray(Profile[]::new));
+        ComboBoxModel<Profile> profiles = new DefaultComboBoxModel<>(MenuProperty.profileArray());
         this.profilesList.setModel(profiles);
         this.profilesList.revalidate();
         this.profilesList.repaint();
