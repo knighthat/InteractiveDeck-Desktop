@@ -23,7 +23,7 @@ Turn your Android phone into a "**_Macro Keypad_**"
     - Rows (up to 4)
     - Gap Between Buttons
 
-🖲️ ButtonsMath
+🖲️ Buttons
 
 - Label
 - Background
