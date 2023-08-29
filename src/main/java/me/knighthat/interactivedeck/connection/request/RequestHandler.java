@@ -18,6 +18,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.InteractiveDeck;
+import me.knighthat.interactivedeck.component.action.ActionHandler;
+import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.Status;
@@ -26,8 +28,6 @@ import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
-import me.knighthat.interactivedeck.menus.component.action.ActionHandler;
-import me.knighthat.interactivedeck.menus.component.action.ActionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;

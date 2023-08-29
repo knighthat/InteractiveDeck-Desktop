@@ -12,36 +12,23 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.menus.component.plist;
+package me.knighthat.interactivedeck.component.netstatus;
 
-import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
+import java.awt.*;
 
-public class ProfilesComboBox extends JComboBox<Profile> {
+public class StatusLabel extends JLabel {
 
-    public ProfilesComboBox() {
-        super( MenuProperty.profiles().toArray( Profile[]::new ) );
-        this.setSelectedItem( MenuProperty.active() );
-        this.setRenderer( new PBoxRenderer() );
-        this.addActionListener( this );
-    }
+    private final @NotNull Font font = new Font( "Open Sans", Font.PLAIN, 14 );
 
-    public void actionPerformed( ActionEvent e ) {
-        Profile profile = (Profile) super.getSelectedItem();
-        if (profile == null)
-            return;
+    public StatusLabel() {
+        Dimension dimension = new Dimension( 100, 30 );
+        setPreferredSize( dimension );
+        setMinimumSize( dimension );
+        setMaximumSize( dimension );
 
-        Log.info( "Switching to profile: " + profile.displayName );
-
-        MenuProperty.active( profile );
-
-        ( (MainMenu) SwingUtilities.getWindowAncestor( this ) ).updateButtons();
-
-        super.actionPerformed( e );
+        setFont( font );
     }
 }

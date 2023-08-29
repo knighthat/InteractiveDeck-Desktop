@@ -12,21 +12,25 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection.request;
+package me.knighthat.interactivedeck.component.action;
 
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.task.ExecutableTask;
+import me.knighthat.interactivedeck.task.Task;
 import org.jetbrains.annotations.NotNull;
 
-public class UpdateRequest extends Request {
+import java.util.UUID;
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+public class ActionHandler {
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+    public static void process( @NotNull ActionType type, @NotNull UUID uuid ) {
+        if (!type.equals( ActionType.PRESS ))
+            return;
 
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+        MenuProperty.button( uuid ).ifPresent( button -> {
+            Task task = button.task();
+            if (task instanceof ExecutableTask executable)
+                executable.execute();
+        } );
     }
 }

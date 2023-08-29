@@ -12,21 +12,21 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection.request;
+package me.knighthat.interactivedeck.component.ibutton;
 
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.json.JsonSerializable;
 
-public class UpdateRequest extends Request {
+import javax.swing.*;
+import java.awt.*;
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+abstract class BChild extends JComponent implements JsonSerializable {
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+    public BChild() {
+        Dimension dimension = new Dimension( 120, 120 );
+        setPreferredSize( dimension );
+        setMinimumSize( dimension );
+        setMaximumSize( dimension );
 
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+        setOpaque( false );
     }
 }

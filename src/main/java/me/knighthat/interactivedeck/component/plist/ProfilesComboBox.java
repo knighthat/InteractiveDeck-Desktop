@@ -12,21 +12,36 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection.request;
+package me.knighthat.interactivedeck.component.plist;
 
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.menus.MainMenu;
+import me.knighthat.interactivedeck.menus.MenuProperty;
 
-public class UpdateRequest extends Request {
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+public class ProfilesComboBox extends JComboBox<Profile> {
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+    public ProfilesComboBox() {
+        super( MenuProperty.profiles().toArray( Profile[]::new ) );
+        this.setSelectedItem( MenuProperty.active() );
+        this.setRenderer( new PBoxRenderer() );
+        this.addActionListener( this );
+    }
 
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+    public void actionPerformed( ActionEvent e ) {
+        Profile profile = (Profile) super.getSelectedItem();
+        if (profile == null)
+            return;
+
+        Log.info( "Switching to profile: " + profile.displayName );
+
+        MenuProperty.active( profile );
+
+        ( (MainMenu) SwingUtilities.getWindowAncestor( this ) ).updateButtons();
+
+        super.actionPerformed( e );
     }
 }

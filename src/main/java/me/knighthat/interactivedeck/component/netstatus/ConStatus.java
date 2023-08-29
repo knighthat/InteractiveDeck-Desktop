@@ -11,22 +11,41 @@
  * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+package me.knighthat.interactivedeck.component.netstatus;
 
-package me.knighthat.interactivedeck.connection.request;
-
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.connection.Status;
 import org.jetbrains.annotations.NotNull;
 
-public class UpdateRequest extends Request {
+import javax.swing.*;
+import java.awt.*;
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+public class ConStatus extends JComponent {
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+    static final @NotNull StatusIndicator INDICATOR;
+    static final @NotNull StatusLabel LABEL;
 
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+    static {
+        INDICATOR = new StatusIndicator();
+        INDICATOR.setBounds( 0, 0, 15, 30 );
+
+        LABEL = new StatusLabel();
+        LABEL.setBounds( 15, 0, 100, 30 );
+    }
+
+    public ConStatus() {
+        Dimension cDimension = new Dimension( 115, 30 );
+        setPreferredSize( cDimension );
+        setMinimumSize( cDimension );
+        setMaximumSize( cDimension );
+        setOpaque( false );
+
+        add( INDICATOR );
+        add( LABEL );
+    }
+
+    public void update( @NotNull Status status ) {
+        INDICATOR.setBackground( status.getColor() );
+        LABEL.setText( status.getStatus() );
+        LABEL.setForeground( status.getColor() );
     }
 }

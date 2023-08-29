@@ -13,7 +13,7 @@
  */
 package me.knighthat.interactivedeck.connection;
 
-import me.knighthat.interactivedeck.menus.component.netstatus.ConStatus;
+import me.knighthat.interactivedeck.component.netstatus.ConStatus;
 import org.jetbrains.annotations.NotNull;
 
 public class Connection {

@@ -21,7 +21,7 @@ import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
-import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
@@ -75,7 +75,7 @@ public class MainMenu extends javax.swing.JFrame {
         javax.swing.JButton addProfileButton = new javax.swing.JButton();
         javax.swing.JButton removeProfileButton = new javax.swing.JButton();
         javax.swing.JButton configureProfileButton = new javax.swing.JButton();
-        profilesList = new me.knighthat.interactivedeck.menus.component.plist.ProfilesComboBox();
+        profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
         iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
         iBtnName = new javax.swing.JTextField();
@@ -422,7 +422,7 @@ public class MainMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JLabel btnNameModifier;
-    private me.knighthat.interactivedeck.menus.component.netstatus.ConStatus conStatus;
+    private me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus;
     private javax.swing.JTextField iBtnBgColor;
     private javax.swing.JTextField iBtnFgColor;
     private javax.swing.JTextField iBtnName;
@@ -430,7 +430,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private me.knighthat.interactivedeck.menus.component.plist.ProfilesComboBox profilesList;
+    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
     private javax.swing.JPanel profilesSection;
     private javax.swing.JPanel statusSection;
     // End of variables declaration//GEN-END:variables

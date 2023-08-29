@@ -12,25 +12,22 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.menus.component.action;
+package me.knighthat.interactivedeck.component.plist;
 
-import me.knighthat.interactivedeck.menus.MenuProperty;
-import me.knighthat.interactivedeck.task.ExecutableTask;
-import me.knighthat.interactivedeck.task.Task;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.file.Profile;
 
-import java.util.UUID;
+import javax.swing.*;
+import java.awt.*;
 
-public class ActionHandler {
+public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
 
-    public static void process( @NotNull ActionType type, @NotNull UUID uuid ) {
-        if (!type.equals( ActionType.PRESS ))
-            return;
+    public PBoxRenderer() {
+    }
 
-        MenuProperty.button( uuid ).ifPresent( button -> {
-            Task task = button.task();
-            if (task instanceof ExecutableTask executable)
-                executable.execute();
-        } );
+    public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
+        super.setText( profile == null ? "" : profile.displayName );
+        super.setBackground( isSelected ? list.getSelectionBackground() : list.getBackground() );
+        super.setForeground( isSelected ? list.getSelectionForeground() : list.getForeground() );
+        return this;
     }
 }

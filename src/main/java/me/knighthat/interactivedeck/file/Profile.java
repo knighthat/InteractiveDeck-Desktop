@@ -16,13 +16,13 @@ package me.knighthat.interactivedeck.file;
 
 import com.google.gson.*;
 import me.knighthat.interactivedeck.WorkingDirectory;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.request.RequestSerializable;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.menus.MenuProperty;
-import me.knighthat.interactivedeck.menus.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 

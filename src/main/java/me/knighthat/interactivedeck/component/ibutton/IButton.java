@@ -12,7 +12,7 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.menus.component.ibutton;
+package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;

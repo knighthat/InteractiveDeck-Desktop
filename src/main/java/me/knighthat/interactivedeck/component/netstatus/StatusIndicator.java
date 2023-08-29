@@ -12,21 +12,35 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection.request;
+package me.knighthat.interactivedeck.component.netstatus;
 
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
-import org.jetbrains.annotations.NotNull;
+import javax.swing.*;
+import java.awt.*;
 
-public class UpdateRequest extends Request {
+public class StatusIndicator extends JComponent {
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+    public StatusIndicator() {
+        Dimension dimension = new Dimension( 15, 30 );
+        setPreferredSize( dimension );
+        setMinimumSize( dimension );
+        setMaximumSize( dimension );
+    }
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+    @Override
+    protected void paintComponent( Graphics g ) {
+        super.paintComponent( g );
 
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+        Graphics2D graphics = (Graphics2D) g;
+        graphics.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
+        graphics.setColor( getBackground() );
+
+        // Indicator's Diameter
+        int d = 10;
+        int r = d / 2;
+        int wStart = (int) Math.floor( ( getWidth() / 2 ) - r );
+        int hStart = (int) Math.floor( ( getHeight() / 2 ) - r );
+
+        graphics.fillOval( wStart, hStart, d, d );
     }
 }
