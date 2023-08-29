@@ -11,41 +11,38 @@
  * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package me.knighthat.interactivedeck.menus.component.netstatus;
 
-import me.knighthat.interactivedeck.connection.Status;
-import org.jetbrains.annotations.NotNull;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
+ */
+package me.knighthat.interactivedeck.connection;
 
-import javax.swing.*;
 import java.awt.*;
 
-public class ConStatus extends JComponent {
+/**
+ * @author knighthat
+ */
+public enum Status {
 
-    static final @NotNull StatusIndicator INDICATOR;
-    static final @NotNull StatusLabel LABEL;
+    DISCONNECTED( Color.GRAY, "Disconnected" ),
+    CONNECTED( Color.GREEN, "Connected" ),
+    ERROR( Color.RED, "ERROR" ),
+    UNKNOWN( Color.ORANGE, "UNKNOWN" );
 
-    static {
-        INDICATOR = new StatusIndicator();
-        INDICATOR.setBounds( 0, 0, 15, 30 );
+    private final Color color;
+    private final String status;
 
-        LABEL = new StatusLabel();
-        LABEL.setBounds( 15, 0, 100, 30 );
+    Status( Color color, String status ) {
+        this.color = color;
+        this.status = status;
     }
 
-    public ConStatus() {
-        Dimension cDimension = new Dimension( 115, 30 );
-        setPreferredSize( cDimension );
-        setMinimumSize( cDimension );
-        setMaximumSize( cDimension );
-        setOpaque( false );
-
-        add( INDICATOR );
-        add( LABEL );
+    public final Color getColor() {
+        return this.color;
     }
 
-    public void update( @NotNull Status status ) {
-        INDICATOR.setBackground( status.getColor() );
-        LABEL.setText( status.getStatus() );
-        LABEL.setForeground( status.getColor() );
+    public final String getStatus() {
+        return this.status;
     }
 }
