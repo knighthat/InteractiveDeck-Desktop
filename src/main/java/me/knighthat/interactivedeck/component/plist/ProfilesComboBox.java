@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 public class ProfilesComboBox extends JComboBox<Profile> {
 
     public ProfilesComboBox() {
-        super( MenuProperty.profiles().toArray( Profile[]::new ) );
+        super( MenuProperty.profileArray() );
         this.setSelectedItem( MenuProperty.active() );
         this.setRenderer( new PBoxRenderer() );
         this.addActionListener( this );
