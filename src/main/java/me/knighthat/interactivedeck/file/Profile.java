@@ -223,10 +223,8 @@ public class Profile implements JsonSerializable, RequestSerializable {
         File file = new File( WorkingDirectory.file(), fileName );
 
         try {
-            if (file.createNewFile())
-                Json.save( this.serialize(), file );
-            else
-                Log.warn( "Failed to create profile " + fileName );
+            file.createNewFile();
+            Json.save( this.serialize(), file );
         } catch (IOException e) {
             Log.err( "Failed to save profile " + displayName() );
             Log.err( "Caused by: " + e.getMessage() );
