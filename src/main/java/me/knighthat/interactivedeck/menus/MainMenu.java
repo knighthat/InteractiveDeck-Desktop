@@ -15,17 +15,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
-import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -46,11 +42,13 @@ public class MainMenu extends javax.swing.JFrame {
         iBtnSection.setLayout(layout);
         updateButtons();
 
+        initButtonObserver();
+
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (bSelected != null)
-                    bSelected.unselect();
+                if (bSelected.value() != null)
+                    bSelected.value().unselect();
 
                 Settings.dump();
                 MenuProperty.profiles().forEach( Profile::dump );
@@ -69,7 +67,6 @@ public class MainMenu extends javax.swing.JFrame {
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         profilesSection = new javax.swing.JPanel();
         javax.swing.JButton addProfileButton = new javax.swing.JButton();
@@ -78,14 +75,6 @@ public class MainMenu extends javax.swing.JFrame {
         profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
         iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
-        iBtnName = new javax.swing.JTextField();
-        iBtnFgColor = new javax.swing.JTextField();
-        btnNameModifier = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        iBtnBgColor = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        javax.swing.JButton taskManagerBttn = new javax.swing.JButton();
         statusSection = new javax.swing.JPanel();
         conStatus = Connection.component();
 
@@ -94,7 +83,6 @@ public class MainMenu extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMaximumSize(new java.awt.Dimension(1000, 600));
         setMinimumSize(new java.awt.Dimension(1000, 600));
-        setPreferredSize(new java.awt.Dimension(1000, 600));
         setResizable(false);
 
         profilesSection.setBackground(new java.awt.Color(36, 36, 36));
@@ -188,127 +176,10 @@ public class MainMenu extends javax.swing.JFrame {
 
         btnModifierSection.setBackground(new java.awt.Color(36, 36, 36));
         btnModifierSection.setDoubleBuffered(false);
-        btnModifierSection.setPreferredSize(new java.awt.Dimension(250, 0));
-        btnModifierSection.setLayout(new java.awt.GridBagLayout());
-
-        iBtnName.setBackground(new java.awt.Color(51, 51, 51));
-        iBtnName.setForeground(new java.awt.Color(255, 255, 255));
-        iBtnName.setText("Enter Name");
-        iBtnName.setMaximumSize(new java.awt.Dimension(200, 40));
-        iBtnName.setMinimumSize(new java.awt.Dimension(200, 40));
-        iBtnName.setName(""); // NOI18N
-        iBtnName.setPreferredSize(new java.awt.Dimension(200, 40));
-        iBtnName.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                modifierFocusLostEvent(evt);
-            }
-        });
-        iBtnName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifierEnterKeyPressedEvent(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        btnModifierSection.add(iBtnName, gridBagConstraints);
-
-        iBtnFgColor.setBackground(new java.awt.Color(51, 51, 51));
-        iBtnFgColor.setForeground(new java.awt.Color(255, 255, 255));
-        iBtnFgColor.setText("Hex Color");
-        iBtnFgColor.setMaximumSize(new java.awt.Dimension(200, 40));
-        iBtnFgColor.setMinimumSize(new java.awt.Dimension(200, 40));
-        iBtnFgColor.setPreferredSize(new java.awt.Dimension(200, 40));
-        iBtnFgColor.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                modifierFocusLostEvent(evt);
-            }
-        });
-        iBtnFgColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifierEnterKeyPressedEvent(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        btnModifierSection.add(iBtnFgColor, gridBagConstraints);
-
-        btnNameModifier.setForeground(new java.awt.Color(255, 255, 255));
-        btnNameModifier.setText("Name");
-        btnNameModifier.setToolTipText("Text display on the button");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        btnModifierSection.add(btnNameModifier, gridBagConstraints);
-
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Text Color");
-        jLabel2.setToolTipText("Colorize display text");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
-        btnModifierSection.add(jLabel2, gridBagConstraints);
-
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Background Color");
-        jLabel3.setToolTipText("Set background color for button");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
-        btnModifierSection.add(jLabel3, gridBagConstraints);
-
-        iBtnBgColor.setBackground(new java.awt.Color(51, 51, 51));
-        iBtnBgColor.setForeground(new java.awt.Color(255, 255, 255));
-        iBtnBgColor.setText("Hex Color");
-        iBtnBgColor.setMaximumSize(new java.awt.Dimension(200, 40));
-        iBtnBgColor.setMinimumSize(new java.awt.Dimension(200, 40));
-        iBtnBgColor.setPreferredSize(new java.awt.Dimension(200, 40));
-        iBtnBgColor.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                modifierFocusLostEvent(evt);
-            }
-        });
-        iBtnBgColor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                modifierEnterKeyPressedEvent(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        btnModifierSection.add(iBtnBgColor, gridBagConstraints);
-
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Task");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(3, 0, 0, 0);
-        btnModifierSection.add(jLabel1, gridBagConstraints);
-
-        taskManagerBttn.setBackground(new java.awt.Color(51, 51, 51));
-        taskManagerBttn.setForeground(new java.awt.Color(255, 255, 255));
-        taskManagerBttn.setText("Task Manager");
-        taskManagerBttn.setMaximumSize(new java.awt.Dimension(200, 40));
-        taskManagerBttn.setMinimumSize(new java.awt.Dimension(200, 40));
-        taskManagerBttn.setPreferredSize(new java.awt.Dimension(200, 40));
-        taskManagerBttn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                taskButtonClicked(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        btnModifierSection.add(taskManagerBttn, gridBagConstraints);
-
+        btnModifierSection.setMaximumSize(new java.awt.Dimension(250, 520));
+        btnModifierSection.setMinimumSize(new java.awt.Dimension(250, 520));
+        btnModifierSection.setPreferredSize(new java.awt.Dimension(250, 520));
+        btnModifierSection.setLayout(new java.awt.BorderLayout());
         getContentPane().add(btnModifierSection, java.awt.BorderLayout.CENTER);
 
         statusSection.setBackground(new java.awt.Color(36, 36, 36));
@@ -334,6 +205,61 @@ public class MainMenu extends javax.swing.JFrame {
 
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void addButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addButtonClicked
+        JDialog dialog = new AddProfileMenu(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_addButtonClicked
+
+    private void removeProfilesButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_removeProfilesButtonClicked
+        Profile selected = (Profile) this.profilesList.getSelectedItem();
+        if (selected == null || selected.isDefault)
+            return;
+
+        selected.remove();
+        updateProfilesList();
+
+        for (Profile p : MenuProperty.profiles())
+            if (p.isDefault) {
+                this.profilesList.setSelectedItem(p);
+                break;
+            }
+        this.updateButtons();
+    }//GEN-LAST:event_removeProfilesButtonClicked
+
+    private void configureProfileButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_configureProfileButtonClicked
+        Profile selected = (Profile) this.profilesList.getSelectedItem();
+        if (selected == null)
+            return;
+
+        JDialog dialog = new ProfileConfigurationMenu(this);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_configureProfileButtonClicked
+
+    void iBtnClickEvent(java.awt.event.MouseEvent evt) {
+        IButton selected = (IButton) evt.getComponent();
+
+        IButton current = bSelected.value();
+        if (current != null ) {
+            current.unselect();
+            if (current == selected) {
+                bSelected.value(null);
+                return;
+            }
+        }
+        bSelected.value(selected);
+        selected.select();
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel btnModifierSection;
+    private me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus;
+    private javax.swing.JPanel iBtnSection;
+    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
+    private javax.swing.JPanel profilesSection;
+    private javax.swing.JPanel statusSection;
+    // End of variables declaration//GEN-END:variables
+    private @NotNull Observable<IButton> bSelected;
 
     public void updateButtons() {
         this.iBtnSection.removeAll();
@@ -361,110 +287,50 @@ public class MainMenu extends javax.swing.JFrame {
         this.iBtnSection.updateUI();
     }
 
-    private void modifierFocusLostEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_modifierFocusLostEvent
-        javax.swing.JTextField modifier = (javax.swing.JTextField) evt.getComponent();
-        updateButton(modifier);
-    }//GEN-LAST:event_modifierFocusLostEvent
+    void initButtonObserver() {
+        this.bSelected = new Observable<>( null );
+        this.bSelected.observe( btn -> {
+            this.btnModifierSection.removeAll();
 
-    private void modifierEnterKeyPressedEvent(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifierEnterKeyPressedEvent
-        java.awt.Component component = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-        updateButton((javax.swing.JTextField) component);
-    }//GEN-LAST:event_modifierEnterKeyPressedEvent
+            this.btnModifierSection.revalidate();
+            this.btnModifierSection.repaint();
 
-    private void addButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addButtonClicked
-        JDialog dialog = new AddProfileMenu(this);
-        dialog.setVisible(true);
-    }//GEN-LAST:event_addButtonClicked
+            if (btn == null) return;
 
-    private void removeProfilesButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_removeProfilesButtonClicked
-        Profile selected = (Profile) this.profilesList.getSelectedItem();
-        if (selected == null || selected.isDefault)
-            return;
+            ButtonModifierPanel panel = new ButtonModifierPanel(btn);
 
-        selected.remove();
-        updateProfilesList();
-        
-        for (Profile p : MenuProperty.profiles())
-            if (p.isDefault) {
-                this.profilesList.setSelectedItem(p);
-                break;
-            }
-        this.updateButtons();
-    }//GEN-LAST:event_removeProfilesButtonClicked
-
-    private void configureProfileButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_configureProfileButtonClicked
-        Profile selected = (Profile) this.profilesList.getSelectedItem();
-        if (selected == null)
-            return;
-        
-        JDialog dialog = new ProfileConfigurationMenu(this);
-        dialog.setVisible(true);
-    }//GEN-LAST:event_configureProfileButtonClicked
-
-    private void taskButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taskButtonClicked
-        if (bSelected == null) return;
-        
-        JDialog dialog = new TaskManagerMenu(this, bSelected);
-        dialog.setVisible(true);
-    }//GEN-LAST:event_taskButtonClicked
-
-    void iBtnClickEvent(java.awt.event.MouseEvent evt) {
-        if (bSelected != null) 
-            bSelected.unselect();
-        bSelected = (IButton) evt.getComponent();
-        bSelected.select();
-
-        iBtnName.setText(bSelected.text());
-        updateModifiers(iBtnFgColor, bSelected.foreground());
-        updateModifiers(iBtnBgColor, bSelected.background());
+            this.btnModifierSection.add( panel, BorderLayout.PAGE_START );
+        } );
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel btnModifierSection;
-    private javax.swing.JLabel btnNameModifier;
-    private me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus;
-    private javax.swing.JTextField iBtnBgColor;
-    private javax.swing.JTextField iBtnFgColor;
-    private javax.swing.JTextField iBtnName;
-    private javax.swing.JPanel iBtnSection;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
-    private javax.swing.JPanel profilesSection;
-    private javax.swing.JPanel statusSection;
-    // End of variables declaration//GEN-END:variables
-
-    private @Nullable IButton bSelected;
-
-    void updateModifiers(@NotNull javax.swing.JTextField modifier, @NotNull Color bgColor) {
-        String bgHex = ColorUtils.toHex(bgColor);
-        modifier.setText(bgHex);
-        modifier.setBackground(bgColor);
-        modifier.setForeground(ColorUtils.getContrast(bgColor));
-    }
-
-    void updateButton(javax.swing.JTextField modifier) {
-        if (bSelected == null) return;
-
-        String content = modifier.getText();
-        if (modifier == iBtnName) {
-            bSelected.text(content);
-        } else if (modifier == iBtnFgColor) {
-            Color fg = ColorUtils.fromHex(content);
-            bSelected.foreground(fg);
-            updateModifiers(modifier, fg);
-        } else if (modifier == iBtnBgColor) {
-            Color bg = ColorUtils.fromHex(content);
-            bSelected.background(bg);
-            updateModifiers(modifier, bg);
-        } 
-        
-        if (!Connection.isConnected()) return;
-
-        Request request = new UpdateRequest(bSelected);
-        WirelessSender.send(request);
-    }
+//    void updateModifiers(@NotNull javax.swing.JTextField modifier, @NotNull Color bgColor) {
+//        String bgHex = ColorUtils.toHex(bgColor);
+//        modifier.setText(bgHex);
+//        modifier.setBackground(bgColor);
+//        modifier.setForeground(ColorUtils.getContrast(bgColor));
+//    }
+//
+//    void updateButton(javax.swing.JTextField modifier) {
+//        if (bSelected == null) return;
+//
+//        String content = modifier.getText();
+//        if (modifier == iBtnName) {
+//            bSelected.text(content);
+//        } else if (modifier == iBtnFgColor) {
+//            Color fg = ColorUtils.fromHex(content);
+//            bSelected.foreground(fg);
+//            updateModifiers(modifier, fg);
+//        } else if (modifier == iBtnBgColor) {
+//            Color bg = ColorUtils.fromHex(content);
+//            bSelected.background(bg);
+//            updateModifiers(modifier, bg);
+//        }
+//
+//        if (!Connection.isConnected()) return;
+//
+//        Request request = new UpdateRequest(bSelected);
+//        WirelessSender.send(request);
+//    }
 
     public void updateProfilesList() {
         this.profilesList.removeAll();
