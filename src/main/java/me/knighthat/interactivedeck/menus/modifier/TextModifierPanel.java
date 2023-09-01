@@ -9,8 +9,11 @@
  */
 package me.knighthat.interactivedeck.menus.modifier;
 
+import java.awt.*;
+import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author knighthat
@@ -18,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 public class TextModifierPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton applyButton;
     private javax.swing.JToggleButton boldButton;
     private javax.swing.JComboBox<String> fontSelector;
     private javax.swing.JSpinner fontSizeSpinner;
@@ -38,6 +40,7 @@ public class TextModifierPanel extends javax.swing.JPanel {
     public TextModifierPanel( @NotNull IButton selected ) {
         this();
         this.selected = selected;
+        loadButtonTextProperties();
     }
 
     /**
@@ -52,12 +55,12 @@ public class TextModifierPanel extends javax.swing.JPanel {
 
         javax.swing.JLabel titleLabel = new javax.swing.JLabel();
         titleInput = new javax.swing.JTextField();
-        fontSelector = new javax.swing.JComboBox<>();
         fontSizeSpinner = new javax.swing.JSpinner();
         boldButton = new javax.swing.JToggleButton();
         italicButton = new javax.swing.JToggleButton();
         underlineButton = new javax.swing.JToggleButton();
-        applyButton = new javax.swing.JButton();
+        String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+        fontSelector = new javax.swing.JComboBox<>(fonts);
 
         setBackground(new java.awt.Color(36, 36, 36));
         setMaximumSize(new java.awt.Dimension(250, 489));
@@ -78,6 +81,16 @@ public class TextModifierPanel extends javax.swing.JPanel {
         titleInput.setMaximumSize(new java.awt.Dimension(140, 40));
         titleInput.setMinimumSize(new java.awt.Dimension(140, 40));
         titleInput.setPreferredSize(new java.awt.Dimension(140, 40));
+        titleInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                titleInputFocusLost(evt);
+            }
+        });
+        titleInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                titleInputEnterPressed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -86,21 +99,14 @@ public class TextModifierPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
         add(titleInput, gridBagConstraints);
 
-        fontSelector.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        fontSelector.setMaximumSize(new java.awt.Dimension(140, 30));
-        fontSelector.setMinimumSize(new java.awt.Dimension(140, 30));
-        fontSelector.setPreferredSize(new java.awt.Dimension(140, 30));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        add(fontSelector, gridBagConstraints);
-
         fontSizeSpinner.setMaximumSize(new java.awt.Dimension(55, 30));
         fontSizeSpinner.setMinimumSize(new java.awt.Dimension(55, 30));
         fontSizeSpinner.setPreferredSize(new java.awt.Dimension(55, 30));
+        fontSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                fontSizeChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
@@ -109,12 +115,22 @@ public class TextModifierPanel extends javax.swing.JPanel {
         add(fontSizeSpinner, gridBagConstraints);
 
         boldButton.setText("B");
+        boldButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                boldButtonStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         add(boldButton, gridBagConstraints);
 
         italicButton.setText("I");
+        italicButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                italicButtonStateChanged(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -126,15 +142,91 @@ public class TextModifierPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 3;
         add(underlineButton, gridBagConstraints);
 
-        applyButton.setText("Apply");
-        applyButton.setMaximumSize(new java.awt.Dimension(140, 30));
-        applyButton.setMinimumSize(new java.awt.Dimension(140, 30));
-        applyButton.setPreferredSize(new java.awt.Dimension(140, 30));
+        fontSelector.setMaximumSize(new java.awt.Dimension(140, 30));
+        fontSelector.setMinimumSize(new java.awt.Dimension(140, 30));
+        fontSelector.setPreferredSize(new java.awt.Dimension(140, 30));
+        fontSelector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontSelectedEvent(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.insets = new java.awt.Insets(50, 0, 0, 0);
-        add(applyButton, gridBagConstraints);
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
+        add(fontSelector, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void titleInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_titleInputFocusLost
+         this.applyTitle( evt.getSource() );
+    }//GEN-LAST:event_titleInputFocusLost
+
+    private void titleInputEnterPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_titleInputEnterPressed
+         if (evt.getKeyCode() != 10) return;
+         this.applyTitle( evt.getSource() );
+    }//GEN-LAST:event_titleInputEnterPressed
+
+    private void fontSizeChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fontSizeChanged
+        int value = (int) this.fontSizeSpinner.getValue();
+        this.apply( null, null, value );
+    }//GEN-LAST:event_fontSizeChanged
+
+    private void boldButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_boldButtonStateChanged
+        int style = this.boldButton.isSelected() ? Font.BOLD : Font.PLAIN;
+
+        if (this.italicButton.isSelected())
+            style = style | Font.ITALIC;
+
+        this.apply( null, style, null );
+    }//GEN-LAST:event_boldButtonStateChanged
+
+    private void italicButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_italicButtonStateChanged
+        int style = this.italicButton.isSelected() ? Font.ITALIC : Font.PLAIN;
+
+        if (this.boldButton.isSelected())
+            style = style | Font.BOLD;
+
+        this.apply( null, style, null );
+    }//GEN-LAST:event_italicButtonStateChanged
+
+    private void fontSelectedEvent(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSelectedEvent
+        String family = (String) this.fontSelector.getSelectedItem();
+        this.apply( family, null, null );
+    }//GEN-LAST:event_fontSelectedEvent
+
+    private void applyTitle(@NotNull Object source) {
+        JTextField input = (JTextField) source;
+        String text = input.getText();
+
+        this.selected.text(text);
+    }
+
+    private void apply(@Nullable String family, @Nullable Integer style, @Nullable Integer size) {
+        Font currentFont = this.selected.font();
+        Font newFont = new Font(
+                family != null ? family : currentFont.getFamily(),
+                style != null ? style : currentFont.getStyle(),
+                size != null ? size : currentFont.getSize()
+        );
+
+        this.selected.font(newFont);
+    }
+
+    private void loadButtonTextProperties() {
+        String text = this.selected.text();
+        this.titleInput.setText( text );
+
+        Font font = this.selected.font();
+
+        String family = font.getFamily();
+        this.fontSelector.setSelectedItem( family );
+
+        int size = font.getSize();
+        this.fontSizeSpinner.setValue( size );
+
+        this.boldButton.setSelected( font.isBold() );
+        this.italicButton.setSelected( font.isItalic() );
+        this.underlineButton.setEnabled( false );
+    }
 }
