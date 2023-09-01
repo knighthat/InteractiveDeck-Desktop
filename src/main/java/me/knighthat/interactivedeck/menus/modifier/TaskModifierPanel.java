@@ -9,8 +9,20 @@
  */
 package me.knighthat.interactivedeck.menus.modifier;
 
+import java.io.File;
+import javax.swing.JRadioButton;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
+import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.task.BashExecutor;
+import me.knighthat.interactivedeck.task.GotoPage;
+import me.knighthat.interactivedeck.task.Task;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  *
@@ -28,6 +40,8 @@ public class TaskModifierPanel extends javax.swing.JPanel {
     public TaskModifierPanel(@NotNull IButton selected) {
         this();
         this.selected = selected;
+        
+        loadButtonTask();
     }
 
     /**
@@ -41,11 +55,11 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         javax.swing.JPanel runScriptTaskPanel = new javax.swing.JPanel();
-        javax.swing.JRadioButton runScriptLabel = new javax.swing.JRadioButton();
+        runScriptButton = new javax.swing.JRadioButton();
         runScriptInput = new javax.swing.JTextField();
         javax.swing.JPanel gotoTaskPanel = new javax.swing.JPanel();
-        javax.swing.JRadioButton gotoLabel = new javax.swing.JRadioButton();
-        gotoList = new javax.swing.JComboBox<>();
+        gotoButton = new javax.swing.JRadioButton();
+        profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
         applyButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(36, 36, 36));
@@ -59,14 +73,18 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         runScriptTaskPanel.setPreferredSize(new java.awt.Dimension(250, 200));
         runScriptTaskPanel.setLayout(new java.awt.GridBagLayout());
 
-        runScriptLabel.setForeground(new java.awt.Color(255, 255, 255));
-        runScriptLabel.setText("Run script");
+        runScriptButton.setForeground(new java.awt.Color(255, 255, 255));
+        runScriptButton.setText("Run script");
+        runScriptButton.addItemListener(event -> {
+            JRadioButton source = (JRadioButton) event.getItem();
+            this.buttonStateChange(source);
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        runScriptTaskPanel.add(runScriptLabel, gridBagConstraints);
+        runScriptTaskPanel.add(runScriptButton, gridBagConstraints);
 
         runScriptInput.setMaximumSize(new java.awt.Dimension(200, 40));
         runScriptInput.setMinimumSize(new java.awt.Dimension(200, 40));
@@ -84,23 +102,26 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         gotoTaskPanel.setPreferredSize(new java.awt.Dimension(250, 200));
         gotoTaskPanel.setLayout(new java.awt.GridBagLayout());
 
-        gotoLabel.setForeground(new java.awt.Color(255, 255, 255));
-        gotoLabel.setText("Go To Page");
+        gotoButton.setForeground(new java.awt.Color(255, 255, 255));
+        gotoButton.setText("Go To Page");
+        gotoButton.addItemListener(event -> {
+            JRadioButton source = (JRadioButton) event.getItem();
+            this.buttonStateChange(source);
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
-        gotoTaskPanel.add(gotoLabel, gridBagConstraints);
+        gotoTaskPanel.add(gotoButton, gridBagConstraints);
 
-        gotoList.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        gotoList.setMaximumSize(new java.awt.Dimension(200, 40));
-        gotoList.setMinimumSize(new java.awt.Dimension(200, 40));
-        gotoList.setPreferredSize(new java.awt.Dimension(200, 40));
+        profilesList.setMaximumSize(new java.awt.Dimension(200, 40));
+        profilesList.setMinimumSize(new java.awt.Dimension(200, 40));
+        profilesList.setPreferredSize(new java.awt.Dimension(200, 40));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gotoTaskPanel.add(gotoList, gridBagConstraints);
+        gotoTaskPanel.add(profilesList, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -111,17 +132,98 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         applyButton.setMaximumSize(new java.awt.Dimension(140, 30));
         applyButton.setMinimumSize(new java.awt.Dimension(140, 30));
         applyButton.setPreferredSize(new java.awt.Dimension(140, 30));
+        applyButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                applyButtonClicked(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         add(applyButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void applyButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_applyButtonClicked
+       Task task = null;
+        
+        if (this.gotoButton.isSelected())
+            task = createGotoPageTask();
+        if (this.runScriptButton.isSelected())
+            task = createBashExecutorTask();
+        
+        this.selected.task(task);
+        
+        Request request = new UpdateRequest(this.selected);
+        WirelessSender.send(request);        
+    }//GEN-LAST:event_applyButtonClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyButton;
-    private javax.swing.JComboBox<String> gotoList;
+    private javax.swing.JRadioButton gotoButton;
+    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
+    private javax.swing.JRadioButton runScriptButton;
     private javax.swing.JTextField runScriptInput;
     // End of variables declaration//GEN-END:variables
     private @NotNull IButton selected;
+    
+    private void loadButtonTask() {
+        Task task = selected.task();
+        if (task instanceof BashExecutor executor) {
+            this.runScriptButton.setSelected( true );
+            this.runScriptInput.setText( executor.path() );
+        } else if (task instanceof GotoPage gotoPage) {
+            this.gotoButton.setSelected( true );
+
+            Profile profile =
+                        MenuProperty
+                        .profile( gotoPage.target() )
+                        .orElse(MenuProperty.active());
+            this.profilesList.setSelectedItem( profile.displayName );
+        }
+    }
+    
+    private void buttonStateChange(@NotNull JRadioButton source) {
+        if (source.isSelected()) {
+            if (source == runScriptButton ) {
+                this.runScriptInput.setEnabled(true);
+                this.profilesList.setEnabled(false);
+                this.gotoButton.setSelected(false);
+            } else if (source == gotoButton) {
+                this.profilesList.setEnabled(true);
+                this.runScriptInput.setEnabled(false);
+                this.runScriptButton.setSelected(false);
+            }
+        } else {
+            if (source == runScriptButton ) {
+                this.runScriptInput.setEditable(false);
+            } else if (source == gotoButton) {
+                this.profilesList.setEditable(false);
+            }
+        }
+    }
+    
+    private @Nullable Task createGotoPageTask() {
+        String selected = (String) this.profilesList.getSelectedItem();
+
+        Task task = null;
+        for (Profile profile : MenuProperty.profiles())
+        if (profile.displayName.equals( selected )) {
+                task = new GotoPage( profile.uuid() );
+                break;
+        }
+        return task;
+    }
+
+    private @Nullable Task createBashExecutorTask() {
+        String filePath = this.runScriptInput.getText();
+        if (filePath.isBlank()) return null;
+
+        File file = new File( filePath );
+        if (!file.exists()) {
+            Log.err("File \"" + file.getAbsolutePath() + "\" does NOT exist!");
+            return null;
+        }
+        return  new BashExecutor( file );
+    }
 }
