@@ -14,13 +14,10 @@
 
 package me.knighthat.interactivedeck.component.plist;
 
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 public class ProfilesComboBox extends JComboBox<Profile> {
 
@@ -29,19 +26,5 @@ public class ProfilesComboBox extends JComboBox<Profile> {
         this.setSelectedItem( MenuProperty.active() );
         this.setRenderer( new PBoxRenderer() );
         this.addActionListener( this );
-    }
-
-    public void actionPerformed( ActionEvent e ) {
-        Profile profile = (Profile) super.getSelectedItem();
-        if (profile == null)
-            return;
-
-        Log.info( "Switching to profile: " + profile.displayName );
-
-        MenuProperty.active( profile );
-
-        ( (MainMenu) SwingUtilities.getWindowAncestor( this ) ).updateButtons();
-
-        super.actionPerformed( e );
     }
 }

@@ -17,6 +17,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.Connection;
+import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.observable.Observable;
@@ -128,6 +129,11 @@ public class MainMenu extends javax.swing.JFrame {
         profilesList.setMaximumSize(new java.awt.Dimension(300, 30));
         profilesList.setMinimumSize(new java.awt.Dimension(300, 30));
         profilesList.setPreferredSize(new java.awt.Dimension(300, 30));
+        profilesList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                profileSelected(evt);
+            }
+        });
 
         javax.swing.GroupLayout profilesSectionLayout = new javax.swing.GroupLayout(profilesSection);
         profilesSection.setLayout(profilesSectionLayout);
@@ -235,6 +241,17 @@ public class MainMenu extends javax.swing.JFrame {
         JDialog dialog = new ProfileConfigurationMenu(this);
         dialog.setVisible(true);
     }//GEN-LAST:event_configureProfileButtonClicked
+
+    private void profileSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileSelected
+        Profile profile = (Profile) profilesList.getSelectedItem();
+        if (profile == null)
+           return;
+        
+        Log.info( "Switching to profile: " + profile.displayName );
+
+        MenuProperty.active( profile );
+        updateButtons();
+    }//GEN-LAST:event_profileSelected
 
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         IButton selected = (IButton) evt.getComponent();
