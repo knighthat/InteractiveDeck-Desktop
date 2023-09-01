@@ -51,7 +51,7 @@ public class FontUtils {
         };
 
         JsonObject json = new JsonObject();
-        json.addProperty( "name", font.getName() );
+        json.addProperty( "name", font.getFamily() );
         json.addProperty( "weight", weight );
         json.addProperty( "size", font.getSize() );
 
