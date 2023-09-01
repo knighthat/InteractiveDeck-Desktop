@@ -70,9 +70,9 @@ public class ColorUtils {
     public static Color getContrast( @NotNull Color color ) {
         float r = .299F * color.getRed();
         float g = .587F * color.getGreen();
-        float b = .322F * color.getBlue();
-        double luma = Math.round( ( r + g + b ) / 1000 );
+        float b = .114F * color.getBlue();
+        float luma = r + g + b;
 
-        return luma >= 128 ? Color.black : Color.white;
+        return luma >= 128 ? Color.BLACK : Color.WHITE;
     }
 }
