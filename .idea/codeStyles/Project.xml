@@ -3,6 +3,7 @@
     <option name="FORMATTER_TAGS_ENABLED" value="true" />
     <option name="DO_NOT_FORMAT">
       <list>
+        <fileSet type="globPattern" pattern="*.form" />
         <fileSet type="globPattern" pattern="*Menu.java" />
         <fileSet type="globPattern" pattern="*Panel.java" />
       </list>
