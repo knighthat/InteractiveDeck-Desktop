@@ -144,6 +144,14 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         return this.label.text();
     }
 
+    public void font( @NotNull Font font ) {
+        this.label.font( font );
+    }
+
+    public @NotNull Font font() {
+        return this.label.font;
+    }
+
     public void task( @Nullable Task task ) {
         this.task = task;
     }
