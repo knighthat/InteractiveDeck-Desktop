@@ -19,7 +19,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,16 +79,6 @@ public class Settings {
         }
         if (json.has( "selected_color" ))
             SELECTED_COLOR = ColorUtils.fromJson( json.getAsJsonArray( "selected_color" ) );
-    }
-
-    public static void dump() {
-        JsonObject json = new JsonObject();
-        json.addProperty( "address", ADDRESS );
-        json.addProperty( "port", PORT );
-        json.addProperty( "buffer", BUFFER.length );
-        json.add( "selected_color", ColorUtils.toJson( SELECTED_COLOR ) );
-
-        Json.save( json, FILE );
     }
 
     public static @NotNull String address() {

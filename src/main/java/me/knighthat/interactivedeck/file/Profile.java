@@ -20,7 +20,6 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.request.RequestSerializable;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
@@ -221,23 +220,10 @@ public class Profile implements JsonSerializable, RequestSerializable {
      * Physical File
      */
 
-    public void dump() {
-        Log.info( "Saving " + displayName() );
-
-        String fileName = this.uuid.toString().concat( ".profile" );
-        File file = new File( WorkingDirectory.file(), fileName );
-
-        try {
-            file.createNewFile();
-            Json.save( this.serialize(), file );
-        } catch (IOException e) {
-            Log.err( "Failed to save profile " + displayName() );
-            Log.err( "Caused by: " + e.getMessage() );
-        }
-    }
-
     public void remove() {
         MenuProperty.remove( this );
+        buttons.forEach( MenuProperty.buttons()::remove );
+
         String fileName = uuid + ".profile";
         File file = new File( WorkingDirectory.path(), fileName );
 

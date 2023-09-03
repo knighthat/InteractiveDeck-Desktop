@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,13 +27,27 @@ import java.io.IOException;
 
 public class Json {
 
-    public static void save( @NotNull JsonObject json, @NotNull File file ) {
-        try (FileWriter writer = new FileWriter( file )) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static boolean dump( @NotNull String fileName, @NotNull JsonSerializable serializable ) {
+        File file = new File( WorkingDirectory.file(), fileName );
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        try {
+            if (!file.exists() && !file.createNewFile()) {
+                Log.warn( "Couldn't create " + fileName + ". Please make sure permission is sufficient!" );
+                return false;
+            }
+            JsonObject json = serializable.serialize().getAsJsonObject();
+            FileWriter writer = new FileWriter( file );
             gson.toJson( json, writer );
+            writer.close();
+
+            Log.info( "Saved under " + fileName );
+            return true;
         } catch (IOException e) {
-            Log.err( "Failed to save settings file!" );
+            Log.err( "Failed to save " + fileName );
             Log.err( "Caused by: " + e.getMessage() );
+
+            return false;
         }
     }
 }

@@ -15,14 +15,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
+import com.google.gson.JsonObject;import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
-import me.knighthat.interactivedeck.observable.Observable;
-import me.knighthat.interactivedeck.utils.GlobalVars;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.json.Json;import me.knighthat.interactivedeck.observable.Observable;
+import me.knighthat.interactivedeck.utils.ColorUtils;import me.knighthat.interactivedeck.utils.GlobalVars;
+import org.jetbrains.annotations.NotNull;import static me.knighthat.interactivedeck.file.Settings.*;
 
 /**
  *
@@ -51,8 +51,19 @@ public class MainMenu extends javax.swing.JFrame {
                 if (bSelected.value() != null)
                     bSelected.value().unselect();
 
-                Settings.dump();
-                MenuProperty.profiles().forEach( Profile::dump );
+                Json.dump( FILE.getName(), () -> {
+                    JsonObject json = new JsonObject();
+                    json.addProperty( "address", ADDRESS );
+                    json.addProperty( "port", PORT );
+                    json.addProperty( "buffer", BUFFER.length );
+                    json.add( "selected_color", ColorUtils.toJson( SELECTED_COLOR ) );
+
+                    return json;
+                } );
+                MenuProperty.profiles().forEach( profile ->  {
+                    Json.dump( profile.uuid + ".profile", profile );
+                } );
+
                 super.windowClosing(e);
             }
         });
