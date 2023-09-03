@@ -179,7 +179,7 @@ public class TaskModifierPanel extends javax.swing.JPanel {
                         MenuProperty
                         .profile( gotoPage.target() )
                         .orElse(MenuProperty.active());
-            this.profilesList.setSelectedItem( profile.displayName );
+            this.profilesList.setSelectedItem( profile.displayName() );
         }
     }
     
@@ -208,8 +208,8 @@ public class TaskModifierPanel extends javax.swing.JPanel {
 
         Task task = null;
         for (Profile profile : MenuProperty.profiles())
-        if (profile.displayName.equals( selected )) {
-                task = new GotoPage( profile.uuid() );
+        if (profile.displayName().equals( selected )) {
+                task = new GotoPage( profile.uuid );
                 break;
         }
         return task;

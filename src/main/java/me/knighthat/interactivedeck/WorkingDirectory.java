@@ -71,7 +71,7 @@ public class WorkingDirectory {
                     MenuProperty.active( profile );
 
                 String msg = "Loaded: %s (%s)";
-                msg = String.format( msg, profile.displayName, profile.uuid() );
+                msg = String.format( msg, profile.displayName(), profile.uuid );
                 Log.info( msg );
             } );
         }
@@ -81,8 +81,7 @@ public class WorkingDirectory {
     private static void createDefaultProfile() {
         Log.info( "No profiles were found. Creating one..." );
 
-        Profile defProfile = new Profile();
-        defProfile.isDefault = true;
+        Profile defProfile = new Profile( "Main", true );
 
         MenuProperty.add( defProfile );
     }

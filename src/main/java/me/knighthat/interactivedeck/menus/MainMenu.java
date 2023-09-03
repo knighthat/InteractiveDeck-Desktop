@@ -247,7 +247,7 @@ public class MainMenu extends javax.swing.JFrame {
         if (profile == null)
            return;
         
-        Log.info( "Switching to profile: " + profile.displayName );
+        Log.info( "Switching to profile: " + profile.displayName() );
 
         MenuProperty.active( profile );
         updateButtons();

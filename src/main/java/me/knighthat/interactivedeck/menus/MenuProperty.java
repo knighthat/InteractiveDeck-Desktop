@@ -70,7 +70,7 @@ public class MenuProperty {
     public static @NotNull Optional<Profile> profile( @NotNull UUID uuid ) {
         Profile result = null;
         for (Profile p : internal.profiles)
-            if (p.uuid().equals( uuid )) {
+            if (p.uuid.equals( uuid )) {
                 result = p;
                 break;
             }

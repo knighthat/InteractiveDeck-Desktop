@@ -38,9 +38,9 @@ import java.util.function.Predicate;
 public class RequestHandler {
 
     public static void process( @NotNull Request request ) {
-        JsonElement content = request.content();
+        JsonElement content = request.content;
 
-        switch (request.type()) {
+        switch (request.type) {
             case PAIR -> {
                 if (!Connection.isConnected())
                     handlePairing( content );
@@ -106,7 +106,7 @@ public class RequestHandler {
                 Log.warn( uuidStr + " is not a valid UUID" );
             }
         } );
-        Predicate<Profile> condition = p -> uuids.contains( p.uuid() );
+        Predicate<Profile> condition = p -> uuids.contains( p.uuid );
         Set<Profile> profiles = MenuProperty.profiles( condition );
 
         Request request = new AddRequest( profiles );

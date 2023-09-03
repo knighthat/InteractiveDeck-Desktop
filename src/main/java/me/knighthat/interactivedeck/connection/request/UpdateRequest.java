@@ -24,7 +24,7 @@ public class UpdateRequest extends Request {
         super( RequestType.UPDATE, new JsonObject() );
 
         String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content().getAsJsonObject();
+        JsonObject json = super.content.getAsJsonObject();
 
         json.addProperty( "target", target );
         json.add( "payload", serializable.toRequestFormat() );

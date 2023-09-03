@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class Request {
 
-    private final @NotNull RequestType type;
-    private final @NotNull JsonElement content;
+    public final @NotNull RequestType type;
+    protected final @NotNull JsonElement content;
 
     public Request( @NotNull RequestType type, @NotNull JsonElement content ) {
         this.type = type;
@@ -40,18 +40,10 @@ public class Request {
         return new Request( type, content );
     }
 
-    public @NotNull RequestType type() {
-        return this.type;
-    }
-
-    public @NotNull JsonElement content() {
-        return this.content;
-    }
-
     public @NotNull String serialize() {
         JsonObject json = new JsonObject();
         json.addProperty( "type", type.toString() );
-        json.add( "content", content() );
+        json.add( "content", content );
 
         return json.toString();
     }

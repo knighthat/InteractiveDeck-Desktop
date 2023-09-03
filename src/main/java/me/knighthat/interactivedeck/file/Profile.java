@@ -37,10 +37,10 @@ import java.util.UUID;
 
 public class Profile implements JsonSerializable, RequestSerializable {
 
-    private final @NotNull UUID uuid;
+    public final @NotNull UUID uuid;
+    public final boolean isDefault;
     private final @NotNull List<IButton> buttons;
-    public boolean isDefault;
-    public @NotNull String displayName;
+    private @NotNull String displayName;
     private int columns;
     private int rows;
     private int gap;
@@ -55,10 +55,12 @@ public class Profile implements JsonSerializable, RequestSerializable {
         this.buttons = buttons;
     }
 
-    public Profile() {
-        this( UUID.randomUUID(), "", false, 4, 2, 3, new ArrayList<>() );
-        for (int y = 0 ; y < row() ; y++)
-            for (int x = 0 ; x < column() ; x++)
+    public Profile( @NotNull String displayName, boolean isDefault ) {
+        // Init an array list of 8 because it contains 4 columns and 2 rows by default
+        this( UUID.randomUUID(), displayName, isDefault, 4, 2, 3, new ArrayList<>( 8 ) );
+
+        for (int y = 0 ; y < rows ; y++)
+            for (int x = 0 ; x < columns ; x++)
                 this.buttons.add( new IButton( this, x, y ) );
     }
 
@@ -117,10 +119,6 @@ public class Profile implements JsonSerializable, RequestSerializable {
         } );
 
         return profile;
-    }
-
-    public @NotNull UUID uuid() {
-        return this.uuid;
     }
 
     public void displayName( @NotNull String displayName ) {
@@ -233,7 +231,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
     public void remove() {
         MenuProperty.remove( this );
-        String fileName = uuid() + ".profile";
+        String fileName = uuid + ".profile";
         File file = new File( WorkingDirectory.path(), fileName );
 
         if (file.exists())

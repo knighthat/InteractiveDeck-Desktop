@@ -53,7 +53,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         javax.swing.JLabel menuTitle = new javax.swing.JLabel();
         javax.swing.JPanel contentContainer = new javax.swing.JPanel();
         javax.swing.JLabel displayNameLabel = new javax.swing.JLabel();
-        displayNameInput = new javax.swing.JTextField(this.profile.displayName);
+        displayNameInput = new javax.swing.JTextField(this.profile.displayName());
         javax.swing.JLabel columnsLabel = new javax.swing.JLabel();
         columnsSpinner = new javax.swing.JSpinner();
         javax.swing.JLabel rowsLabel = new javax.swing.JLabel();
@@ -203,7 +203,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
         String newDisplayName = this.displayNameInput.getText();
         if (!newDisplayName.isBlank())
-            this.profile.displayName = newDisplayName;
+            this.profile.displayName(newDisplayName);
         
         int newColumns = (int) this.columnsSpinner.getValue();
         newColumns = newColumns < 1 ? 1 : Math.min(newColumns, 6);

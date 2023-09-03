@@ -22,9 +22,9 @@ public class PairRequest extends Request {
     public PairRequest() {
         super( RequestType.PAIR, new JsonArray() );
 
-        JsonArray array = content().getAsJsonArray();
+        JsonArray array = content.getAsJsonArray();
         MenuProperty.profiles().forEach( p -> {
-            String uuid = p.uuid().toString();
+            String uuid = p.uuid.toString();
             array.add( uuid );
         } );
     }

@@ -124,8 +124,7 @@ public class AddProfileMenu extends javax.swing.JDialog {
         String fromUser = this.displayNameInput.getText().trim();
         if (fromUser.isBlank()) return;
 
-        Profile profile = new Profile();
-        profile.displayName = fromUser;
+        Profile profile = new Profile(fromUser, false);
 
         MenuProperty.add(profile);
         ( (MainMenu) super.getOwner() ).updateProfilesList();
