@@ -30,10 +30,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Profile implements JsonSerializable, RequestSerializable {
 
@@ -75,6 +73,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
         } catch (ProfileFormatException e) {
 
             Log.warn( file.getName() + " does not meet requirements. Skipping..." );
+            Log.warn( "Cause: " + e.getMessage() );
 
         } catch (JsonParseException e) {
 
@@ -136,28 +135,13 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
         // If new rows is greater than current rows, then add more buttons
         if (columns > this.columns)
-            for (int y = 0 ; y < this.rows ; y++)
-                for (int x = this.columns ; x < columns ; x++) {
-                    IButton button = new IButton( this, x, y );
-                    this.buttons.add( button );
-                    MenuProperty.add( button );
-                }
+            addButtons( this.columns, columns, 0, this.rows );
 
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (columns < this.columns) {
-            List<IButton> toBeDeleted = new ArrayList<>();
+        if (columns < this.columns)
+            removeButtons( button -> button.x() >= columns );
 
-            this.buttons
-                    .stream()
-                    .filter( btn -> btn.x() >= columns )
-                    .forEach( toBeDeleted::add );
-
-            toBeDeleted.forEach( btn -> {
-                this.buttons.remove( btn );
-                MenuProperty.remove( btn );
-            } );
-        }
         this.columns = columns;
     }
 
@@ -172,28 +156,12 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
         // If new rows is greater than current rows, then add more buttons
         if (rows > this.rows)
-            for (int y = this.rows ; y < rows ; y++)
-                for (int x = 0 ; x < this.columns ; x++) {
-                    IButton button = new IButton( this, x, y );
-                    this.buttons.add( button );
-                    MenuProperty.add( button );
-                }
+            addButtons( 0, this.columns, this.rows, rows );
 
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (rows < this.rows) {
-            List<IButton> toBeDeleted = new ArrayList<>();
-
-            this.buttons
-                    .stream()
-                    .filter( btn -> btn.y() >= rows )
-                    .forEach( toBeDeleted::add );
-
-            toBeDeleted.forEach( btn -> {
-                this.buttons.remove( btn );
-                MenuProperty.remove( btn );
-            } );
-        }
+        if (rows < this.rows)
+            removeButtons( btn -> btn.y() >= rows );
 
         this.rows = rows;
     }
@@ -210,9 +178,48 @@ public class Profile implements JsonSerializable, RequestSerializable {
         return this.gap;
     }
 
+    /*
+     * Buttons
+     */
+
     public @NotNull @Unmodifiable List<IButton> buttons() {
         return List.copyOf( this.buttons );
     }
+
+    private @NotNull Collection<IButton> addButtons( int fromX, int toX, int fromY, int toY ) {
+        Collection<IButton> newButtons = new HashSet<>();
+
+        for (int y = fromY ; y < toY ; y++)
+            for (int x = fromX ; x < toX ; x++) {
+                IButton button = new IButton( this, x, y );
+                this.buttons.add( button );
+                MenuProperty.add( button );
+                newButtons.add( button );
+            }
+
+        return newButtons;
+    }
+
+    private @NotNull Collection<IButton> removeButtons( @NotNull Predicate<IButton> condition ) {
+        Collection<IButton> deletedButtons = new HashSet<>();
+
+        Iterator<IButton> buttons = this.buttons.iterator();
+        while (buttons.hasNext()) {
+            IButton button = buttons.next();
+            if (!condition.test( button ))
+                continue;
+
+            buttons.remove();
+            MenuProperty.remove( button );
+            deletedButtons.add( button );
+        }
+
+        return deletedButtons;
+    }
+
+    /*
+     * Physical File
+     */
 
     public void dump() {
         Log.info( "Saving " + displayName() );
@@ -237,6 +244,10 @@ public class Profile implements JsonSerializable, RequestSerializable {
         if (file.exists())
             file.delete();
     }
+
+    /*
+     * Json Related
+     */
 
     private @NotNull JsonObject jsonTemplate() {
         /* Template
