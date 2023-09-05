@@ -1,11 +1,15 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 package me.knighthat.interactivedeck.connection.wireless;
@@ -39,7 +43,7 @@ public class WirelessSender extends Thread {
     public static void send( @NotNull Request request ) {
         try {
             QUEUE.put( request );
-        } catch ( InterruptedException e ) {
+        } catch (InterruptedException e) {
             Log.warn( "Thread was interrupted while send request is pending!" );
             Log.warn( "Caused by: " + e.getMessage() );
             e.printStackTrace();
@@ -49,10 +53,10 @@ public class WirelessSender extends Thread {
     @Override
     public void run() {
         Request request;
-        while ( !Thread.interrupted() )
+        while (!Thread.interrupted())
             try {
                 request = QUEUE.take();
-                String serialized = request.serialize();
+                String serialized = request.toString();
 
                 Log.deb( "Sending:" );
                 Log.deb( serialized );
@@ -60,15 +64,15 @@ public class WirelessSender extends Thread {
                 stream.write( serialized.getBytes() );
                 stream.flush();
 
-            } catch ( InterruptedException e ) {
+            } catch (InterruptedException e) {
                 //TODO Needs proper error handling
-                if ( InteractiveDeck.client == null )
+                if (InteractiveDeck.client == null)
                     return;
 
                 Log.err( "Thread interrupted!" );
                 e.printStackTrace();
                 break;
-            } catch ( IOException e ) {
+            } catch (IOException e) {
                 //TODO Needs proper error handling
                 Log.err( "Error occurs while sending out request" );
                 e.printStackTrace();

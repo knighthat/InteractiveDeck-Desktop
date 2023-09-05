@@ -17,15 +17,15 @@ package me.knighthat.interactivedeck.component.ibutton;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 
 import javax.swing.*;
-import java.awt.*;
+
+import static me.knighthat.interactivedeck.component.ibutton.IButton.DIMENSION;
 
 abstract class BChild extends JComponent implements JsonSerializable {
 
     public BChild() {
-        Dimension dimension = new Dimension( 120, 120 );
-        setPreferredSize( dimension );
-        setMinimumSize( dimension );
-        setMaximumSize( dimension );
+        setPreferredSize( DIMENSION );
+        setMinimumSize( DIMENSION );
+        setMaximumSize( DIMENSION );
 
         setOpaque( false );
     }

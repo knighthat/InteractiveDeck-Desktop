@@ -9,20 +9,21 @@
  */
 package me.knighthat.interactivedeck.menus;
 
+import com.google.gson.JsonObject;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
-import com.google.gson.JsonObject;import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.component.ibutton.IButton;import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.file.Settings;
-import me.knighthat.interactivedeck.json.Json;import me.knighthat.interactivedeck.observable.Observable;
-import me.knighthat.interactivedeck.utils.ColorUtils;import me.knighthat.interactivedeck.utils.GlobalVars;
-import org.jetbrains.annotations.NotNull;import static me.knighthat.interactivedeck.file.Settings.*;
+import static me.knighthat.interactivedeck.file.Settings.*;
+import me.knighthat.interactivedeck.json.Json;
+import me.knighthat.interactivedeck.observable.Observable;import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.utils.GlobalVars;
+import org.jetbrains.annotations.NotNull;
 
 /**
  *
@@ -39,17 +40,18 @@ public class MainMenu extends javax.swing.JFrame {
         setAlwaysOnTop(false);
         initComponents();
 
-        GridBagLayout layout = new GridBagLayout();
-        iBtnSection.setLayout(layout);
-        updateButtons();
-
+        this.bSelected = Observable.of( null );
         initButtonObserver();
+
+        GridBagLayout layout = new GridBagLayout();
+        this.iBtnSection.setLayout(layout);
+        initActiveProfileObserver();
+        this.profilesList.setSelectedItem( MenuProperty.defaultProfile() );
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (bSelected.value() != null)
-                    bSelected.value().unselect();
+                bSelected.value().ifPresent( IButton::toggleSelect );
 
                 Json.dump( FILE.getName(), () -> {
                     JsonObject json = new JsonObject();
@@ -60,14 +62,13 @@ public class MainMenu extends javax.swing.JFrame {
 
                     return json;
                 } );
-                MenuProperty.profiles().forEach( profile ->  {
-                    Json.dump( profile.uuid + ".profile", profile );
-                } );
+                MenuProperty
+                    .profiles()
+                    .forEach( profile ->  Json.dump( profile.uuid + ".profile", profile ) );
 
                 super.windowClosing(e);
             }
         });
-
     }
 
     /**
@@ -80,15 +81,15 @@ public class MainMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        profilesSection = new javax.swing.JPanel();
+        javax.swing.JPanel profilesSection = new javax.swing.JPanel();
         javax.swing.JButton addProfileButton = new javax.swing.JButton();
         javax.swing.JButton removeProfileButton = new javax.swing.JButton();
         javax.swing.JButton configureProfileButton = new javax.swing.JButton();
         profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
         iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
-        statusSection = new javax.swing.JPanel();
-        conStatus = Connection.component();
+        javax.swing.JPanel statusSection = new javax.swing.JPanel();
+        me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus = Connection.component();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
@@ -176,7 +177,9 @@ public class MainMenu extends javax.swing.JFrame {
 
         iBtnSection.setBackground(new java.awt.Color(51, 51, 51));
         iBtnSection.setDoubleBuffered(false);
-        iBtnSection.setPreferredSize(new java.awt.Dimension(750, 0));
+        iBtnSection.setMaximumSize(new java.awt.Dimension(750, 520));
+        iBtnSection.setMinimumSize(new java.awt.Dimension(750, 520));
+        iBtnSection.setPreferredSize(new java.awt.Dimension(750, 520));
 
         javax.swing.GroupLayout iBtnSectionLayout = new javax.swing.GroupLayout(iBtnSection);
         iBtnSection.setLayout(iBtnSectionLayout);
@@ -229,23 +232,19 @@ public class MainMenu extends javax.swing.JFrame {
     }//GEN-LAST:event_addButtonClicked
 
     private void removeProfilesButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_removeProfilesButtonClicked
-        Profile selected = (Profile) this.profilesList.getSelectedItem();
+        Profile selected = (Profile) profilesList.getSelectedItem();
         if (selected == null || selected.isDefault)
             return;
-
         selected.remove();
         updateProfilesList();
 
-        for (Profile p : MenuProperty.profiles())
-            if (p.isDefault) {
-                this.profilesList.setSelectedItem(p);
-                break;
-            }
-        this.updateButtons();
+        Profile profile = MenuProperty.defaultProfile();
+        profilesList.setSelectedItem(profile);
+        MenuProperty.active(profile);
     }//GEN-LAST:event_removeProfilesButtonClicked
 
     private void configureProfileButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_configureProfileButtonClicked
-        Profile selected = (Profile) this.profilesList.getSelectedItem();
+        Profile selected = (Profile) profilesList.getSelectedItem();
         if (selected == null)
             return;
 
@@ -258,113 +257,97 @@ public class MainMenu extends javax.swing.JFrame {
         if (profile == null)
            return;
         
-        Log.info( "Switching to profile: " + profile.displayName() );
-
         MenuProperty.active( profile );
-        updateButtons();
+
+        String info = "Now showing: %s (%s)";
+        Log.info( info.formatted( profile.displayName(), profile.uuid ) );
     }//GEN-LAST:event_profileSelected
 
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         IButton selected = (IButton) evt.getComponent();
 
-        IButton current = bSelected.value();
-        if (current != null ) {
-            current.unselect();
-            if (current == selected) {
-                bSelected.value(null);
-                return;
-            }
-        }
-        bSelected.value(selected);
-        selected.select();
+        bSelected.value().ifPresentOrElse( currentlySelected -> {
+
+            currentlySelected.toggleSelect();
+            bSelected.value(currentlySelected == selected ? null : selected);
+
+        }, () -> bSelected.value(selected) );
+
+        String deb = "Button %s@x:%s,y:%s clicked!";
+        Log.deb( deb.formatted( selected.uuid, selected.x, selected.y) );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnModifierSection;
-    private me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus;
     private javax.swing.JPanel iBtnSection;
     private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
-    private javax.swing.JPanel profilesSection;
-    private javax.swing.JPanel statusSection;
     // End of variables declaration//GEN-END:variables
-    private @NotNull Observable<IButton> bSelected;
+    private final @NotNull Observable<IButton> bSelected;
 
-    public void updateButtons() {
-        this.iBtnSection.removeAll();
+    private void initActiveProfileObserver() {
+        MenuProperty.observeActive( profile -> {
+            iBtnSection.removeAll();
 
-        Profile profile = MenuProperty.active();
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.anchor = 10;
-        constraints.fill = 1;
-        constraints.weightx = profile.column() > 6 ? 1.0 : 0.0;
-        constraints.weighty = profile.row() > 4 ? 1.0 : 0.0;
-        constraints.ipadx = profile.gap();
-        constraints.ipady = profile.gap();
+            bSelected.value().ifPresent( IButton::toggleSelect );
+            bSelected.value(null);
 
-        profile.buttons().forEach((button) -> {
-            button.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    MainMenu.this.iBtnClickEvent(e);
-                }
+            GridBagConstraints constraints = genConstraints( profile );
+
+            profile.buttons().forEach((button) -> {
+                if (button.getMouseListeners().length == 0)
+                        button.addMouseListener(new MouseAdapter() {
+                                                public void mouseClicked(MouseEvent e) {
+                                                    iBtnClickEvent(e);
+                                                }
+                                            });
+
+                constraints.gridx = button.x;
+                constraints.gridy = button.y;
+                this.iBtnSection.add(button, constraints);
             });
-            constraints.gridx = button.x();
-            constraints.gridy = button.y();
-            this.iBtnSection.add(button, constraints);
-        });
 
-        this.iBtnSection.updateUI();
-    }
-
-    void initButtonObserver() {
-        this.bSelected = new Observable<>( null );
-        this.bSelected.observe( btn -> {
-            this.btnModifierSection.removeAll();
-
-            this.btnModifierSection.revalidate();
-            this.btnModifierSection.repaint();
-
-            if (btn == null) return;
-
-            ButtonModifierPanel panel = new ButtonModifierPanel(btn);
-
-            this.btnModifierSection.add( panel, BorderLayout.PAGE_START );
+            iBtnSection.revalidate();
+            iBtnSection.repaint();
         } );
     }
 
-//    void updateModifiers(@NotNull javax.swing.JTextField modifier, @NotNull Color bgColor) {
-//        String bgHex = ColorUtils.toHex(bgColor);
-//        modifier.setText(bgHex);
-//        modifier.setBackground(bgColor);
-//        modifier.setForeground(ColorUtils.getContrast(bgColor));
-//    }
-//
-//    void updateButton(javax.swing.JTextField modifier) {
-//        if (bSelected == null) return;
-//
-//        String content = modifier.getText();
-//        if (modifier == iBtnName) {
-//            bSelected.text(content);
-//        } else if (modifier == iBtnFgColor) {
-//            Color fg = ColorUtils.fromHex(content);
-//            bSelected.foreground(fg);
-//            updateModifiers(modifier, fg);
-//        } else if (modifier == iBtnBgColor) {
-//            Color bg = ColorUtils.fromHex(content);
-//            bSelected.background(bg);
-//            updateModifiers(modifier, bg);
-//        }
-//
-//        if (!Connection.isConnected()) return;
-//
-//        Request request = new UpdateRequest(bSelected);
-//        WirelessSender.send(request);
-//    }
+    @NotNull GridBagConstraints genConstraints(@NotNull Profile profile) {
+        int gap = profile.gap();
+        int spaceX = profile.columns() * (IButton.DIMENSION.width + gap) - gap;     // Horizontal space (includes gaps) taken by buttons
+        int spaceY = profile.rows() * (IButton.DIMENSION.height + gap) - gap;       // Vertical space (includes gaps taken by buttons
+        Dimension sectionSize = iBtnSection.getMaximumSize();
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.weightx = spaceX >= sectionSize.width ? 1D : 0D;
+        constraints.weighty = spaceY >= sectionSize.height ? 1D : 0D;
+        constraints.ipadx = gap;
+        constraints.ipady = gap;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.fill = 1;
+
+        return constraints;
+    }
+
+    void initButtonObserver() {
+        bSelected.observe( btn -> {
+            btnModifierSection.removeAll();
+            btnModifierSection.revalidate();
+            btnModifierSection.repaint();
+
+            if (btn == null) return;
+
+            btn.toggleSelect();
+
+            ButtonModifierPanel panel = new ButtonModifierPanel(btn);
+            btnModifierSection.add( panel, BorderLayout.PAGE_START );
+        } );
+    }
 
     public void updateProfilesList() {
-        this.profilesList.removeAll();
-        ComboBoxModel<Profile> profiles = new DefaultComboBoxModel<>(MenuProperty.profileArray());
-        this.profilesList.setModel(profiles);
-        this.profilesList.revalidate();
-        this.profilesList.repaint();
+        profilesList.removeAll();
+        ComboBoxModel<Profile> model = new DefaultComboBoxModel<>(MenuProperty.profileArray());
+        profilesList.setModel( model );
+        profilesList.revalidate();
+        profilesList.repaint();
     }
 }

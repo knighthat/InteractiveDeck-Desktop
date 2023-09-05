@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.component.plist;
 
+
 import me.knighthat.interactivedeck.file.Profile;
 
 import javax.swing.*;

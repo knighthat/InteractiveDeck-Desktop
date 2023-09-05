@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.connection.request;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +41,8 @@ public class Request {
         return new Request( type, content );
     }
 
-    public @NotNull String serialize() {
+    @Override
+    public String toString() {
         JsonObject json = new JsonObject();
         json.addProperty( "type", type.toString() );
         json.add( "content", content );
@@ -49,7 +51,8 @@ public class Request {
     }
 
     public void send() {
-        WirelessSender.send( this );
+        if (Connection.isConnected())
+            WirelessSender.send( this );
     }
 
     public enum RequestType {

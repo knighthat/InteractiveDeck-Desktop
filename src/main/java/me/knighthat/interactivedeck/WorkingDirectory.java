@@ -15,13 +15,12 @@
 package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.file.Profiles;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class WorkingDirectory {
@@ -65,10 +64,8 @@ public class WorkingDirectory {
         for (File file : profileFiles) {
             if (!file.getName().endsWith( ".profile" ))
                 continue;
-            Profile.fromFile( file ).ifPresent( profile -> {
+            Profiles.fromFile( file ).ifPresent( profile -> {
                 MenuProperty.add( profile );
-                if (profile.isDefault)
-                    MenuProperty.active( profile );
 
                 String msg = "Loaded: %s (%s)";
                 msg = String.format( msg, profile.displayName(), profile.uuid );
@@ -80,10 +77,7 @@ public class WorkingDirectory {
 
     private static void createDefaultProfile() {
         Log.info( "No profiles were found. Creating one..." );
-
-        Profile defProfile = new Profile( "Main", true );
-
-        MenuProperty.add( defProfile );
+        MenuProperty.add( Profiles.createDefault() );
     }
 
 
@@ -91,9 +85,11 @@ public class WorkingDirectory {
         List<File> profiles = new ArrayList<>( 0 );
         File[] files = WORK_DIR.listFiles();
 
-        if (files != null)
-            Collections.addAll( profiles, files );
-        else
+        if (files != null) {
+            for (File f : files)
+                if (f.getName().endsWith( ".profile" ))
+                    profiles.add( f );
+        } else
             Log.err( "Failed to read directory " + WorkingDirectory.file() );
 
         return profiles;

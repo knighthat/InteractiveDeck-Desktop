@@ -11,8 +11,7 @@ package me.knighthat.interactivedeck.menus.modifier;
 
 import java.awt.*;
 import javax.swing.*;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.component.ibutton.IButton;import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -199,25 +198,25 @@ public class TextModifierPanel extends javax.swing.JPanel {
         JTextField input = (JTextField) source;
         String text = input.getText();
 
-        this.selected.text(text);
+        selected.text(text);
     }
 
     private void apply(@Nullable String family, @Nullable Integer style, @Nullable Integer size) {
-        Font currentFont = this.selected.font();
+        Font currentFont = selected.font();
         Font newFont = new Font(
                 family != null ? family : currentFont.getFamily(),
                 style != null ? style : currentFont.getStyle(),
                 size != null ? size : currentFont.getSize()
         );
 
-        this.selected.font(newFont);
+        selected.font(newFont);
     }
 
     private void loadButtonTextProperties() {
-        String text = this.selected.text();
+        String text = selected.text();
         this.titleInput.setText( text );
 
-        Font font = this.selected.font();
+        Font font = selected.font();
 
         String family = font.getFamily();
         this.fontSelector.setSelectedItem( family );

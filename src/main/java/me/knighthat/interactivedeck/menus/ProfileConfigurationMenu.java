@@ -11,9 +11,6 @@ package me.knighthat.interactivedeck.menus;
 
 import javax.swing.JRootPane;
 import javax.swing.SpinnerNumberModel;
-import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
-import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +27,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     public ProfileConfigurationMenu(java.awt.Frame parent) {
         super(parent, false);
         
-        this.profile = MenuProperty.active();
+        this.profile = MenuProperty.active().get();
         
         super.getRootPane().setWindowDecorationStyle( JRootPane.NONE );
         super.setUndecorated( true );
@@ -112,7 +109,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(columnsLabel, gridBagConstraints);
 
-        SpinnerNumberModel cModel = new SpinnerNumberModel(this.profile.column(), 1, 6, 1);
+        SpinnerNumberModel cModel = new SpinnerNumberModel(this.profile.columns(), 1, 6, 1);
         columnsSpinner.setModel(cModel);
         columnsSpinner.getEditor().getComponent(0).setBackground(ColorUtils.DEFAULT_DARK);
         columnsSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
@@ -132,7 +129,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(rowsLabel, gridBagConstraints);
 
-        SpinnerNumberModel rModel = new SpinnerNumberModel(this.profile.row(), 1, 4, 1);
+        SpinnerNumberModel rModel = new SpinnerNumberModel(this.profile.rows(), 1, 4, 1);
         rowsSpinner.setModel(rModel);
         rowsSpinner.getEditor().getComponent(0).setBackground(ColorUtils.DEFAULT_DARK);
         rowsSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
@@ -201,30 +198,27 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonMouseClicked
 
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
-        String newDisplayName = this.displayNameInput.getText();
+        String newDisplayName = displayNameInput.getText();
         if (!newDisplayName.isBlank())
-            this.profile.displayName(newDisplayName);
+            profile.displayName(newDisplayName);
         
-        int newColumns = (int) this.columnsSpinner.getValue();
+        int newColumns = (int) columnsSpinner.getValue();
         newColumns = newColumns < 1 ? 1 : Math.min(newColumns, 6);
-        if (newColumns != this.profile.column())
-            this.profile.column(newColumns);
+        if (newColumns != profile.columns())
+            profile.columns(newColumns);
                 
-        int newRows = (int) this.rowsSpinner.getValue();
+        int newRows = (int) rowsSpinner.getValue();
         newRows = newRows < 1 ? 1 : Math.min(newRows, 4);
-        if (newRows != this.profile.row())
-            this.profile.row(newRows);
+        if (newRows != profile.rows())
+            profile.rows(newRows);
                 
         int newGap = (int ) this.gapSpinner.getValue();
         newGap = newGap < 0 ? 0 : Math.min(newGap, 10);
-        if (newGap != this.profile.gap())
-            this.profile.gap(newGap);
+        if (newGap != profile.gap())
+            profile.gap(newGap);
         
-        ((MainMenu) super.getOwner()).updateButtons();
-        
-        Request request = new UpdateRequest(this.profile);
-        WirelessSender.send(request);
-        
+        MenuProperty.active(profile);
+
         finish();
     }//GEN-LAST:event_saveButtonMouseClicked
 

@@ -11,10 +11,8 @@ package me.knighthat.interactivedeck.menus;
 
 
 import javax.swing.JRootPane;
-import me.knighthat.interactivedeck.connection.request.AddRequest;import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
-import me.knighthat.interactivedeck.file.Profile;
-import java.util.List;
+import com.google.gson.JsonArray;
+import me.knighthat.interactivedeck.connection.request.AddRequest;import me.knighthat.interactivedeck.file.Profiles;import me.knighthat.interactivedeck.file.Profile;
 
 /**
  *
@@ -124,14 +122,15 @@ public class AddProfileMenu extends javax.swing.JDialog {
         String fromUser = this.displayNameInput.getText().trim();
         if (fromUser.isBlank()) return;
 
-        Profile profile = new Profile(fromUser, false);
+        Profile profile = Profiles.create( fromUser );
 
         MenuProperty.add(profile);
         ( (MainMenu) super.getOwner() ).updateProfilesList();
 
-        Request request = new AddRequest(List.of(profile));
-        WirelessSender.send(request);
-        
+        JsonArray payload = new JsonArray(1);
+        payload.add( profile.serialize() );
+        new AddRequest( payload ).send();
+
         finish();
     }//GEN-LAST:event_createButtonMouseClicked
 

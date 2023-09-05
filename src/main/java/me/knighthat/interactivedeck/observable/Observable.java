@@ -17,17 +17,22 @@ package me.knighthat.interactivedeck.observable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public final class Observable<T> {
 
-    T value;
+    @Nullable T value;
 
-    List<Observer<T>> observers = new ArrayList<>();
+    @NotNull Set<Observer<T>> observers = new HashSet<>();
 
-    public Observable( @Nullable T value ) {
+    Observable( @Nullable T value ) {
         this.value = value;
+    }
+
+    public static <T> @NotNull Observable<T> of( @Nullable T value ) {
+        return new Observable<>( value );
     }
 
     public void value( @Nullable T value ) {
@@ -35,16 +40,15 @@ public final class Observable<T> {
         notifyObservers();
     }
 
-    public @Nullable T value() {
-        return this.value;
+    public @NotNull Optional<T> value() {
+        return Optional.ofNullable( value );
     }
 
     public void observe( @NotNull Observer<T> observer ) {
-        this.observers.add( observer );
+        observers.add( observer );
     }
 
     private void notifyObservers() {
-        for (Observer<T> observer : observers)
-            observer.update( value );
+        observers.forEach( observer -> observer.update( value ) );
     }
 }

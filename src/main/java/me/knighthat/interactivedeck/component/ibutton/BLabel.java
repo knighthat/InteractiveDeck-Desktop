@@ -14,7 +14,6 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
@@ -27,28 +26,11 @@ final class BLabel extends BChild {
     @NotNull
     String text = "";
 
-    @NotNull Font font = new Font( "Stardos Stencil", Font.PLAIN, 14 );
-
     BLabel() {
         super();
         setForeground( Color.WHITE );
-    }
 
-    static @NotNull BLabel fromJson( @NotNull JsonObject json ) {
-        BLabel label = new BLabel();
-
-        String text = json.get( "text" ).getAsString();
-        label.text( text );
-
-        JsonArray colorJson = json.getAsJsonArray( "color" );
-        Color color = ColorUtils.fromJson( colorJson );
-        label.setForeground( color );
-
-        JsonObject fontJson = json.getAsJsonObject( "font" );
-        Font font = FontUtils.fromJson( fontJson );
-        label.font( font );
-
-        return label;
+        setFont( new Font( "Stardos Stencil", Font.PLAIN, 14 ) );
     }
 
     public void text( @NotNull String text ) {
@@ -60,21 +42,12 @@ final class BLabel extends BChild {
         return this.text;
     }
 
-    public @NotNull Font font() {
-        return this.font;
-    }
-
-    public void font( @NotNull Font font ) {
-        this.font = font;
-        repaint();
-    }
-
     @Override
     protected void paintComponent( Graphics g ) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
         g2d.setColor( getForeground() );
-        g2d.setFont( this.font );
+        g2d.setFont( getFont() );
         FontMetrics fontMetrics = g2d.getFontMetrics();
         int width = fontMetrics.stringWidth( text );
         int height = fontMetrics.getHeight();
@@ -89,20 +62,20 @@ final class BLabel extends BChild {
     public @NotNull JsonObject serialize() {
         /* Template
          * {
-         *      "text":"placeholder",
-         *      "color":[r, r, r],
+         *      "text": $text,
+         *      "color": [r, g, b],
          *      "font":
          *      {
-         *          "name": "font name",
-         *          "weight":"plain",
-         *          "size":"14",
+         *          "name": $family,
+         *          "weight": $style,
+         *          "size": $size,
          *      }
          * }
          */
         JsonObject json = new JsonObject();
-        json.addProperty( "text", text() );
+        json.addProperty( "text", text );
         json.add( "color", ColorUtils.toJson( getForeground() ) );
-        json.add( "font", FontUtils.toJson( font() ) );
+        json.add( "font", FontUtils.toJson( getFont() ) );
 
         return json;
     }

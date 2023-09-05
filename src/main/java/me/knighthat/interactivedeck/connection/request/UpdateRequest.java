@@ -14,19 +14,15 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
+import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class UpdateRequest extends Request {
+import java.util.UUID;
 
-    public UpdateRequest( @NotNull RequestSerializable serializable ) {
-        super( RequestType.UPDATE, new JsonObject() );
+public class UpdateRequest extends TargetedRequest {
 
-        String target = serializable instanceof IButton ? "BUTTON" : "PROFILE";
-        JsonObject json = super.content.getAsJsonObject();
-
-        json.addProperty( "target", target );
-        json.add( "payload", serializable.toRequestFormat() );
+    public <T extends JsonElement> UpdateRequest( @NotNull Target target, @Nullable UUID uuid, @NotNull T payload ) {
+        super( RequestType.UPDATE, target, uuid, payload );
     }
 }

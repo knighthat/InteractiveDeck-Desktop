@@ -14,15 +14,11 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSyntaxException;
-import me.knighthat.interactivedeck.connection.request.RequestSerializable;
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.JsonSerializable;
-import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
-import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,21 +26,22 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.UUID;
 
-import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
-public class IButton extends JComponent implements JsonSerializable, RequestSerializable {
+public class IButton extends JComponent implements JsonSerializable {
 
-    private final @NotNull UUID uuid;
-    private final @NotNull Profile profile;
+    public static final @NotNull Dimension DIMENSION = new Dimension( 120, 120 );
+
+    public final @NotNull UUID uuid;
+    public final @NotNull UUID profile;
+    public final int x;
+    public final int y;
     private final @NotNull BIcon icon;
     private final @NotNull BLabel label;
-    private final int x;
-    private final int y;
     private @Nullable Task task;
 
     IButton( @NotNull UUID uuid,
-             @NotNull Profile profile,
+             @NotNull UUID profile,
              @NotNull BIcon icon,
              @NotNull BLabel label,
              int x, int y,
@@ -65,91 +62,50 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         add( icon, 1 );
     }
 
-    public IButton( @NotNull Profile profile, int x, int y ) {
+    public IButton( @NotNull UUID profile, int x, int y ) {
         this( UUID.randomUUID(), profile, new BIcon(), new BLabel(), x, y, null );
     }
 
-
-    public static @NotNull IButton fromJson( @NotNull Profile profile, @NotNull JsonObject json ) throws JsonSyntaxException {
-        if (!json.has( "uuid" ) ||
-                !json.has( "icon" ) ||
-                !json.has( "label" ))
-            throw new JsonSyntaxException( "Not enough argument" );
-
-        String idStr = json.get( "uuid" ).getAsString();
-        UUID uuid = UUID.fromString( idStr );
-
-        JsonObject iconJson = json.getAsJsonObject( "icon" );
-        BIcon icon = BIcon.fromJson( iconJson );
-
-        JsonObject labelJson = json.getAsJsonObject( "label" );
-        BLabel label = BLabel.fromJson( labelJson );
-
-        JsonPrimitive xPrim = json.getAsJsonPrimitive( "x" );
-        int x = xPrim.getAsInt();
-
-        JsonPrimitive yPrim = json.getAsJsonPrimitive( "y" );
-        int y = yPrim.getAsInt();
-
-        Task task = json.has( "task" ) ? Task.fromJson( json.getAsJsonObject( "task" ) ) : null;
-
-        return new IButton( uuid, profile, icon, label, x, y, task );
-    }
-
-    public @NotNull UUID uuid() {
-        return this.uuid;
-    }
-
-    public @NotNull Profile profile() {
-        return this.profile;
-    }
-
-    public int x() {
-        return this.x;
-    }
-
-    public int y() {
-        return this.y;
-    }
-
-    public void select() {
-        this.icon.repaint( SELECTED_COLOR, this.icon.inner() );
-    }
-
-    public void unselect() {
-        this.icon.repaint( this.icon.inner(), this.icon.inner() );
-    }
-
-    public void background( @NotNull Color bg ) {
-        this.icon.repaint( null, bg );
+    public void toggleSelect() {
+        icon.toggleSelect();
     }
 
     public @NotNull Color background() {
-        return this.icon.inner();
+        return icon.getBackground();
     }
 
-    public void foreground( @NotNull Color fg ) {
-        this.label.setForeground( fg );
+    public void background( @NotNull Color color ) {
+        icon.setBackground( color );
+    }
+
+    public @NotNull Color border() {return icon.getForeground();}
+
+    public void border( @NotNull Color color ) {
+        icon.setForeground( color );
     }
 
     public @NotNull Color foreground() {
-        return this.label.getForeground();
+        return label.getForeground();
     }
 
-    public void text( @NotNull String text ) {
-        this.label.text( text );
+    public void foreground( @NotNull Color color ) {
+        label.setForeground( color );
     }
 
     public @NotNull String text() {
-        return this.label.text();
+        return label.text();
     }
 
-    public void font( @NotNull Font font ) {
-        this.label.font( font );
+    public void text( @NotNull String text ) {
+        label.text( text );
     }
 
     public @NotNull Font font() {
-        return this.label.font;
+        return label.getFont();
+    }
+
+    public void font( @NotNull Font font ) {
+        label.setFont( font );
     }
 
     public void task( @Nullable Task task ) {
@@ -160,34 +116,17 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
         return this.task;
     }
 
-    private @NotNull JsonObject jsonObject() {
-        /* Template
-         * {
-         *      "uuid": "UUID",
-         *      "x": x,
-         *      "y": y,
-         *      "script": script.path
-         *      "icon": {}
-         *      "label": {}
-         * }
-         */
-        JsonObject json = new JsonObject();
-
-        json.addProperty( "uuid", uuid().toString() );
-        json.addProperty( "x", x() );
-        json.addProperty( "y", y() );
-
-        return json;
-    }
-
     @Override
     public @NotNull JsonObject serialize() {
         /* Template
          * {
-         *      "uuid": "UUID",
-         *      "x": x,
-         *      "y": y,
-         *      "script": script.path
+         *      "uuid": $uuid,
+         *      "x": $x,
+         *      "y": $y,
+         *      "task":
+         *      {
+         *          Task.json()
+         *      }
          *      "icon":
          *      {
          *          BIcon.json()
@@ -198,34 +137,16 @@ public class IButton extends JComponent implements JsonSerializable, RequestSeri
          *      }
          * }
          */
-        JsonObject json = jsonObject();
-        if (this.task != null)
-            json.add( "task", task.serialize() );
+        JsonElement task = this.task != null ? this.task.serialize() : JsonNull.INSTANCE;
+
+        JsonObject json = new JsonObject();
+
+        json.addProperty( "uuid", uuid.toString() );
+        json.addProperty( "x", x );
+        json.addProperty( "y", y );
+        json.add( "task", task );
         json.add( "icon", icon.serialize() );
         json.add( "label", label.serialize() );
-
-        return json;
-    }
-
-    @Override
-    public @NotNull JsonObject toRequestFormat() {
-        /* Template
-         * {
-         *      "uuid": $uuid,
-         *      "x": $x,
-         *      "y": $y,
-         *      "background": $color,
-         *      "foreground": $color,
-         *      "text": $text
-         * }
-         */
-        JsonObject json = jsonObject();
-
-        json.add( "background", ColorUtils.toJson( icon.inner() ) );
-        json.add( "foreground", ColorUtils.toJson( label.getForeground() ) );
-        json.addProperty( "text", label.text() );
-        if (task instanceof GotoPage t)
-            json.addProperty( "goto", t.target().toString() );
 
         return json;
     }

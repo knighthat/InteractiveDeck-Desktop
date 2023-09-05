@@ -23,7 +23,6 @@ import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.Status;
-import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
@@ -33,7 +32,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Predicate;
 
 public class RequestHandler {
 
@@ -67,9 +65,7 @@ public class RequestHandler {
         logClientInfo();
 
         Connection.status( Status.CONNECTED );
-
-        Request request = new PairRequest();
-        WirelessSender.send( request );
+        new PairRequest().send();
     }
 
     static void logClientInfo() {
@@ -106,10 +102,13 @@ public class RequestHandler {
                 Log.warn( uuidStr + " is not a valid UUID" );
             }
         } );
-        Predicate<Profile> condition = p -> uuids.contains( p.uuid );
-        Set<Profile> profiles = MenuProperty.profiles( condition );
 
-        Request request = new AddRequest( profiles );
-        WirelessSender.send( request );
+        JsonArray profiles = new JsonArray();
+
+        for (Profile p : MenuProperty.profiles())
+            if (uuids.contains( p.uuid ))
+                profiles.add( p.serialize() );
+
+        new AddRequest( profiles ).send();
     }
 }

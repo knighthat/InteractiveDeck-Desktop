@@ -37,9 +37,9 @@ public class StatusIndicator extends JComponent {
 
         // Indicator's Diameter
         int d = 10;
-        int r = d / 2;
-        int wStart = (int) Math.floor( ( getWidth() / 2 ) - r );
-        int hStart = (int) Math.floor( ( getHeight() / 2 ) - r );
+        int r = d >> 1;
+        int wStart = ( getWidth() >> 1 ) - r;
+        int hStart = ( getHeight() >> 1 ) - r;
 
         graphics.fillOval( wStart, hStart, d, d );
     }

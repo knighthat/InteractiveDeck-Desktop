@@ -14,25 +14,21 @@
 
 package me.knighthat.interactivedeck.file;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.connection.request.RequestSerializable;
-import me.knighthat.interactivedeck.console.Log;
-import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class Profile implements JsonSerializable, RequestSerializable {
+public class Profile implements JsonSerializable {
 
     public final @NotNull UUID uuid;
     public final boolean isDefault;
@@ -52,71 +48,9 @@ public class Profile implements JsonSerializable, RequestSerializable {
         this.buttons = buttons;
     }
 
-    public Profile( @NotNull String displayName, boolean isDefault ) {
-        // Init an array list of 8 because it contains 4 columns and 2 rows by default
+    Profile( @NotNull String displayName, boolean isDefault ) {
         this( UUID.randomUUID(), displayName, isDefault, 4, 2, 3, new ArrayList<>( 8 ) );
-
-        for (int y = 0 ; y < rows ; y++)
-            for (int x = 0 ; x < columns ; x++)
-                this.buttons.add( new IButton( this, x, y ) );
-    }
-
-    public static @NotNull Optional<Profile> fromFile( @NotNull File file ) {
-        Profile profile = null;
-
-        try (FileReader reader = new FileReader( file )) {
-
-            JsonElement json = JsonParser.parseReader( reader );
-            profile = Profile.fromJson( json.getAsJsonObject() );
-
-        } catch (ProfileFormatException e) {
-
-            Log.warn( file.getName() + " does not meet requirements. Skipping..." );
-            Log.warn( "Cause: " + e.getMessage() );
-
-        } catch (JsonParseException e) {
-
-            Log.warn( file.getName() + " is not a valid JSON file. Skipping..." );
-            Log.warn( "Cause: " + e.getMessage() );
-
-        } catch (FileNotFoundException ignored) {
-        } catch (IOException e) {
-
-            Log.err( "Could not read " + file.getName() + ". Perhaps permission error?" );
-            Log.err( "Error message: " + e.getMessage() );
-
-        }
-        return Optional.ofNullable( profile );
-    }
-
-    private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
-        if (!json.has( "uuid" ) ||
-                !json.has( "displayName" ) ||
-                !json.has( "default" ) ||
-                !json.has( "rows" ) ||
-                !json.has( "columns" ) ||
-                !json.has( "gap" ) ||
-                !json.has( "buttons" ))
-            throw new ProfileFormatException( "Missing information" );
-
-        String idStr = json.get( "uuid" ).getAsString();
-        UUID uuid = UUID.fromString( idStr );
-        String displayName = json.get( "displayName" ).getAsString();
-        boolean isDefault = json.get( "default" ).getAsBoolean();
-        int rows = json.get( "rows" ).getAsInt();
-        int columns = json.get( "columns" ).getAsInt();
-        int gap = json.get( "gap" ).getAsInt();
-        List<IButton> buttons = new ArrayList<>();
-
-        Profile profile = new Profile( uuid, displayName, isDefault, columns, rows, gap, buttons );
-
-        JsonArray btnJson = json.getAsJsonArray( "buttons" );
-        btnJson.forEach( button -> {
-            IButton btn = IButton.fromJson( profile, button.getAsJsonObject() );
-            buttons.add( btn );
-        } );
-
-        return profile;
+        addButtons( 0, columns, 0, rows );
     }
 
     public void displayName( @NotNull String displayName ) {
@@ -127,7 +61,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
         return this.displayName;
     }
 
-    public void column( int columns ) {
+    public void columns( int columns ) {
         // If new columns is equal to current rows, then do nothing
         if (columns == this.columns)
             return;
@@ -139,33 +73,37 @@ public class Profile implements JsonSerializable, RequestSerializable {
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
         if (columns < this.columns)
-            removeButtons( button -> button.x() >= columns );
+            removeButtons( button -> button.x >= columns );
 
         this.columns = columns;
     }
 
-    public int column() {
+    public int columns() {
         return this.columns;
     }
 
-    public void row( int rows ) {
+    public void rows( int rows ) {
         // If new rows is equal to current rows, then do nothing
         if (rows == this.rows)
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if (rows > this.rows)
-            addButtons( 0, this.columns, this.rows, rows );
+        if (rows > this.rows) {
+            JsonArray array = new JsonArray();
+
+            addButtons( 0, this.columns, this.rows, rows )
+                    .forEach( button -> array.add( button.serialize() ) );
+        }
 
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
         if (rows < this.rows)
-            removeButtons( btn -> btn.y() >= rows );
+            removeButtons( btn -> btn.y >= rows );
 
         this.rows = rows;
     }
 
-    public int row() {
+    public int rows() {
         return this.rows;
     }
 
@@ -182,7 +120,7 @@ public class Profile implements JsonSerializable, RequestSerializable {
      */
 
     public @NotNull @Unmodifiable List<IButton> buttons() {
-        return List.copyOf( this.buttons );
+        return List.copyOf( buttons );
     }
 
     private @NotNull Collection<IButton> addButtons( int fromX, int toX, int fromY, int toY ) {
@@ -190,11 +128,13 @@ public class Profile implements JsonSerializable, RequestSerializable {
 
         for (int y = fromY ; y < toY ; y++)
             for (int x = fromX ; x < toX ; x++) {
-                IButton button = new IButton( this, x, y );
+                IButton button = new IButton( uuid, x, y );
                 this.buttons.add( button );
                 MenuProperty.add( button );
                 newButtons.add( button );
             }
+
+        sortButtons();
 
         return newButtons;
     }
@@ -213,16 +153,18 @@ public class Profile implements JsonSerializable, RequestSerializable {
             deletedButtons.add( button );
         }
 
+        sortButtons();
+
         return deletedButtons;
     }
 
-    /*
-     * Physical File
-     */
+    private void sortButtons() {
+        buttons.sort( Comparator.comparingInt( button -> button.x * button.y ) );
+    }
 
     public void remove() {
+        removeButtons( button -> true );
         MenuProperty.remove( this );
-        buttons.forEach( MenuProperty.buttons()::remove );
 
         String fileName = uuid + ".profile";
         File file = new File( WorkingDirectory.path(), fileName );
@@ -231,56 +173,33 @@ public class Profile implements JsonSerializable, RequestSerializable {
             file.delete();
     }
 
-    /*
-     * Json Related
-     */
-
-    private @NotNull JsonObject jsonTemplate() {
+    @Override
+    public @NotNull JsonElement serialize() {
         /* Template
          * {
-         *      "uuid": uuid,
-         *      "displayName": displayName,
-         *      "default": isDefault,
-         *      "rows": rows,
-         *      "columns": columns,
-         *      "gap": gap
+         *      "uuid": $uuid,
+         *      "displayName": $displayName,
+         *      "default": $isDefault,
+         *      "rows": $rows,
+         *      "columns": $columns,
+         *      "gap": $gap,
+         *      "buttons":
+         *      {
+         *          IButton.json()
+         *      }
          * }
          */
+        JsonArray buttons = new JsonArray();
+        buttons().forEach( btn -> buttons.add( btn.serialize() ) );
+
         JsonObject json = new JsonObject();
 
         json.addProperty( "uuid", uuid.toString() );
         json.addProperty( "displayName", displayName );
         json.addProperty( "default", isDefault );
-        json.addProperty( "rows", row() );
-        json.addProperty( "columns", column() );
-        json.addProperty( "gap", gap() );
-
-        return json;
-    }
-
-    @Override
-    public @NotNull JsonObject serialize() {
-        /*
-         * "buttons":
-         * [
-         *      buttons
-         * ]
-         */
-        JsonObject json = jsonTemplate();
-
-        JsonArray buttons = new JsonArray();
-        this.buttons.forEach( btn -> buttons.add( btn.serialize() ) );
-        json.add( "buttons", buttons );
-
-        return json;
-    }
-
-    @Override
-    public @NotNull JsonObject toRequestFormat() {
-        JsonObject json = jsonTemplate();
-
-        JsonArray buttons = new JsonArray();
-        this.buttons.forEach( btn -> buttons.add( btn.toRequestFormat() ) );
+        json.addProperty( "rows", rows );
+        json.addProperty( "columns", columns );
+        json.addProperty( "gap", gap );
         json.add( "buttons", buttons );
 
         return json;

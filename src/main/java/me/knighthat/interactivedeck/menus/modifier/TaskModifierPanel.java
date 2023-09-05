@@ -9,14 +9,12 @@
  */
 package me.knighthat.interactivedeck.menus.modifier;
 
-import java.io.File;
-import javax.swing.JRadioButton;
+import java.io.File;import java.util.UUID;
+import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
-import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
+import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.BashExecutor;
 import me.knighthat.interactivedeck.task.GotoPage;
@@ -151,35 +149,36 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         if (this.runScriptButton.isSelected())
             task = createBashExecutorTask();
         
-        this.selected.task(task);
-        
-        Request request = new UpdateRequest(this.selected);
-        WirelessSender.send(request);        
+        selected.task(task);
     }//GEN-LAST:event_applyButtonClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton applyButton;
-    private javax.swing.JRadioButton gotoButton;
-    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
-    private javax.swing.JRadioButton runScriptButton;
-    private javax.swing.JTextField runScriptInput;
+    private JButton applyButton;
+    private JRadioButton gotoButton;
+    private ProfilesComboBox profilesList;
+    private JRadioButton runScriptButton;
+    private JTextField runScriptInput;
     // End of variables declaration//GEN-END:variables
     private @NotNull IButton selected;
     
     private void loadButtonTask() {
         Task task = selected.task();
         if (task instanceof BashExecutor executor) {
-            this.runScriptButton.setSelected( true );
-            this.runScriptInput.setText( executor.path() );
+            runScriptButton.setSelected( true );
+            runScriptInput.setText( executor.path() );
         } else if (task instanceof GotoPage gotoPage) {
-            this.gotoButton.setSelected( true );
+            gotoButton.setSelected( true );
 
-            Profile profile =
-                        MenuProperty
-                        .profile( gotoPage.target() )
-                        .orElse(MenuProperty.active());
-            this.profilesList.setSelectedItem( profile.displayName() );
+            Profile profile = MenuProperty.defaultProfile();
+            UUID targetUuid = gotoPage.target();
+            for (Profile p : MenuProperty.profiles())
+                if (p.uuid.equals( targetUuid )) {
+                    profile = p;
+                    break;
+                }
+
+            profilesList.setSelectedItem( profile.displayName() );
         }
     }
     
@@ -187,32 +186,25 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         if (source.isSelected()) {
             if (source == runScriptButton ) {
                 this.runScriptInput.setEnabled(true);
-                this.profilesList.setEnabled(false);
+                profilesList.setEnabled(false);
                 this.gotoButton.setSelected(false);
             } else if (source == gotoButton) {
-                this.profilesList.setEnabled(true);
-                this.runScriptInput.setEnabled(false);
-                this.runScriptButton.setSelected(false);
+                profilesList.setEnabled(true);
+                runScriptInput.setEnabled(false);
+                runScriptButton.setSelected(false);
             }
         } else {
             if (source == runScriptButton ) {
-                this.runScriptInput.setEditable(false);
+                runScriptInput.setEditable(false);
             } else if (source == gotoButton) {
-                this.profilesList.setEditable(false);
+                profilesList.setEditable(false);
             }
         }
     }
     
     private @Nullable Task createGotoPageTask() {
-        String selected = (String) this.profilesList.getSelectedItem();
-
-        Task task = null;
-        for (Profile profile : MenuProperty.profiles())
-        if (profile.displayName().equals( selected )) {
-                task = new GotoPage( profile.uuid );
-                break;
-        }
-        return task;
+        Profile selected = (Profile) profilesList.getSelectedItem();
+        return selected != null ? new GotoPage( selected.uuid ) : null;
     }
 
     private @Nullable Task createBashExecutorTask() {

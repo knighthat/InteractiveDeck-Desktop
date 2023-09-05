@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.component.plist;
 
+
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 
@@ -23,7 +24,7 @@ public class ProfilesComboBox extends JComboBox<Profile> {
 
     public ProfilesComboBox() {
         super( MenuProperty.profileArray() );
-        this.setSelectedItem( MenuProperty.active() );
+        MenuProperty.active().ifPresent( this::setSelectedItem );
         this.setRenderer( new PBoxRenderer() );
         this.addActionListener( this );
     }

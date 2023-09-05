@@ -15,18 +15,50 @@
 package me.knighthat.interactivedeck.connection.request;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public final class AddRequest extends TargetedRequest {
+abstract class TargetedRequest extends Request {
 
-    public <T extends JsonElement> AddRequest( @Nullable UUID pUuid, @NotNull T payload ) {
-        super( RequestType.ADD, Target.BUTTON, pUuid, payload );
+    /*
+     * Intended Pattern:
+     * {
+     *      "type": $type,
+     *      "target": $target,
+     *      "uuid": $uuid,
+     *      "content": $payload
+     * }
+     */
+
+    protected final @Nullable UUID uuid;
+    protected final @NotNull TargetedRequest.Target target;
+
+    protected <T extends JsonElement> TargetedRequest( @NotNull RequestType type, @NotNull TargetedRequest.Target target, @Nullable UUID uuid, @NotNull T payload ) {
+        super( type, payload );
+        this.uuid = uuid;
+        this.target = target;
     }
 
-    public <T extends JsonElement> AddRequest( @NotNull T payload ) {
-        super( RequestType.ADD, Target.PROFILE, null, payload );
+    @Override
+    public String toString() {
+        JsonElement uuidE = uuid == null ? JsonNull.INSTANCE : new JsonPrimitive( uuid.toString() );
+
+        JsonObject json = new JsonObject();
+
+        json.addProperty( "type", type.name() );
+        json.addProperty( "target", target.name() );
+        json.add( "uuid", uuidE );
+        json.add( "content", content );
+
+        return json.toString();
+    }
+
+    public enum Target {
+        BUTTON, PROFILE
     }
 }

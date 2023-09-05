@@ -12,7 +12,6 @@ package me.knighthat.interactivedeck.menus.modifier;
 import java.awt.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.input.HexColorTextField;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 /**
@@ -127,10 +126,10 @@ public class IconModifierPanel extends javax.swing.JPanel {
     private @NotNull IButton selected;
 
     private void updateInputColors() {
-        Color background = this.selected.background();
+        Color background = selected.background();
         this.updateColor( this.bgInput, background );
 
-        Color foreground = this.selected.foreground();
+        Color foreground = selected.foreground();
         this.updateColor( this.fgInput, foreground );
     }
 
@@ -143,8 +142,6 @@ public class IconModifierPanel extends javax.swing.JPanel {
     }
 
     private void applyColor(@NotNull Object source) {
-        Log.deb( source.toString() );
-
         if (!( source instanceof HexColorTextField input ))
             return;
 

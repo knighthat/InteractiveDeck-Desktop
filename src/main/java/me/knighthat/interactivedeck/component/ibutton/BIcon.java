@@ -18,80 +18,50 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
+import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
 final class BIcon extends BChild {
 
-    final @NotNull Dimension arcs;
-    final @NotNull Color defOuter;
-    final @NotNull Color defInner;
+    static final @NotNull Dimension borderRadius;
 
-    @Nullable
-    Color outer;
-    @Nullable
-    Color inner;
-
-    {
-        arcs = new Dimension( 15, 15 );
-        defOuter = DEFAULT_DARK;
-        defInner = DEFAULT_DARK;
+    static {
+        borderRadius = new Dimension( 15, 15 );
     }
+
+    boolean isSelected = false;
 
     BIcon() {
         super();
+
+        setBackground( DEFAULT_DARK );
+        setForeground( DEFAULT_DARK );
     }
 
-    static @NotNull BIcon fromJson( @NotNull JsonObject json ) {
-        BIcon icon = new BIcon();
-
-        JsonArray outerArray = json.getAsJsonArray( "outer" );
-        Color outer = ColorUtils.fromJson( outerArray );
-        JsonArray innerArray = json.getAsJsonArray( "inner" );
-        Color inner = ColorUtils.fromJson( innerArray );
-
-        icon.repaint( outer, inner );
-
-        return icon;
-    }
-
-    public void repaint( @Nullable Color outer, @Nullable Color inner ) {
-        if (outer != null)
-            this.outer = outer;
-        if (inner != null)
-            this.inner = inner;
+    void toggleSelect() {
+        this.isSelected = !this.isSelected;
         repaint();
-    }
-
-    public @NotNull Color inner() {
-        return this.inner == null ? this.defInner : this.inner;
-    }
-
-    public @NotNull Color outer() {
-        return this.outer == null ? this.defOuter : this.outer;
     }
 
     @Override
     protected void paintComponent( Graphics g ) {
-        int width = getWidth() - 1, height = getHeight() - 1;
-
         /*
          * Enabling antialiasing results in visual artifacts or "residue" on corners
          * TODO: Find a way to enable antialiasing without leaving "residue" after color transition
          *
          * g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          */
-        Graphics2D g2d = (Graphics2D) g;
-        Color inner = this.inner == null ? defInner : this.inner;
-        g2d.setColor( inner );
-        g2d.fillRoundRect( 0, 0, width, height, arcs.width, arcs.height );
+        int width = getWidth() - 1, height = getHeight() - 1;
 
-        Color outer = this.outer == null ? defOuter : this.outer;
-        g2d.setColor( outer );
-        g2d.drawRoundRect( 0, 0, width, height, arcs.width, arcs.height );
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor( getBackground() );
+        g2d.fillRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
+
+        g2d.setColor( isSelected ? SELECTED_COLOR : getForeground() );
+        g2d.drawRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
         super.paintComponent( g );
     }
@@ -100,14 +70,17 @@ final class BIcon extends BChild {
     public @NotNull JsonObject serialize() {
         /*
          * {
-         *      "outer":[r, g, b]
-         *      "inner":[r, g, b]
+         *      "inner": [r, g, b]
+         *      "outer": [r, g, b]
          * }
          */
+        JsonArray inner = ColorUtils.toJson( getBackground() );
+        JsonArray outer = ColorUtils.toJson( getForeground() );
+
         JsonObject json = new JsonObject();
 
-        json.add( "outer", ColorUtils.toJson( outer() ) );
-        json.add( "inner", ColorUtils.toJson( inner() ) );
+        json.add( "inner", inner );
+        json.add( "outer", outer );
 
         return json;
     }
