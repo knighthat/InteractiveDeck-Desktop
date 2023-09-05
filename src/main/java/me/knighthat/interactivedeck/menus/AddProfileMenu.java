@@ -126,10 +126,7 @@ public class AddProfileMenu extends javax.swing.JDialog {
 
         MenuProperty.add(profile);
         ( (MainMenu) super.getOwner() ).updateProfilesList();
-
-        JsonArray payload = new JsonArray(1);
-        payload.add( profile.serialize() );
-        new AddRequest( payload ).send();
+        MenuProperty.active(profile);
 
         finish();
     }//GEN-LAST:event_createButtonMouseClicked
