@@ -17,14 +17,21 @@ package me.knighthat.interactivedeck.component.ibutton;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.connection.request.TargetedRequest;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
@@ -75,13 +82,25 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void background( @NotNull Color color ) {
+        if (color.equals( background() ))
+            return;
+
+        Log.buttonUpdate( uuid, "background", ColorUtils.toHex( background() ), ColorUtils.toHex( color ) );
+
         icon.setBackground( color );
+        sendUpdate( json -> json.add( "background", ColorUtils.toJson( color ) ) );
     }
 
     public @NotNull Color border() {return icon.getForeground();}
 
     public void border( @NotNull Color color ) {
+        if (color.equals( border() ))
+            return;
+
+        Log.buttonUpdate( uuid, "border", ColorUtils.toHex( border() ), ColorUtils.toHex( color ) );
+
         icon.setForeground( color );
+        sendUpdate( json -> json.add( "border", ColorUtils.toJson( color ) ) );
     }
 
     public @NotNull Color foreground() {
@@ -89,7 +108,13 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void foreground( @NotNull Color color ) {
+        if (color.equals( foreground() ))
+            return;
+
+        Log.buttonUpdate( uuid, "foreground", ColorUtils.toHex( foreground() ), ColorUtils.toHex( color ) );
+
         label.setForeground( color );
+        sendUpdate( json -> json.add( "foreground", ColorUtils.toJson( color ) ) );
     }
 
     public @NotNull String text() {
@@ -97,7 +122,13 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void text( @NotNull String text ) {
+        if (text.equals( text() ))
+            return;
+
+        Log.buttonUpdate( uuid, "text", text(), text );
+
         label.text( text );
+        sendUpdate( json -> json.addProperty( "text", text ) );
     }
 
     public @NotNull Font font() {
@@ -105,15 +136,42 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void font( @NotNull Font font ) {
+        if (font.getFamily().equals( font.getFamily() ) &&
+                font.getStyle() == font().getStyle() &&
+                font.getSize() == font().getSize())
+            return;
+
+        String fontFormat = "[f=%s,s=%s,w=%s]";
+        String currentFont = fontFormat.formatted( font().getFamily(), font().getSize(), font().getStyle() );
+        String newFont = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
+        Log.buttonUpdate( uuid, "font", currentFont, newFont );
+
         label.setFont( font );
+        sendUpdate( json -> json.add( "font", FontUtils.toJson( font() ) ) );
     }
 
     public void task( @Nullable Task task ) {
+        String currentTask = this.task != null ? this.task.getClass().getName() : "null";
+        String newTask = task != null ? task.getClass().getName() : "null";
+        Log.buttonUpdate( uuid, "task", currentTask, newTask );
+
         this.task = task;
+
+        if (!( task instanceof GotoPage gotoPage ))
+            return;
+        String pUuid = gotoPage.target().toString();
+        sendUpdate( json -> json.addProperty( "goto", pUuid ) );
     }
 
     public @Nullable Task task() {
         return this.task;
+    }
+
+    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
+        JsonObject json = new JsonObject();
+        consumer.accept( json );
+
+        new UpdateRequest( TargetedRequest.Target.BUTTON, profile, json ).send();
     }
 
     @Override

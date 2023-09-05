@@ -19,6 +19,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.connection.request.AddRequest;
+import me.knighthat.interactivedeck.connection.request.RemoveRequest;
+import me.knighthat.interactivedeck.connection.request.TargetedRequest;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
+import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +31,7 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Profile implements JsonSerializable {
@@ -54,7 +60,13 @@ public class Profile implements JsonSerializable {
     }
 
     public void displayName( @NotNull String displayName ) {
+        if (displayName.equals( displayName() ))
+            return;
+
+        Log.profileUpdate( displayName, "name", this.displayName, displayName );
+
         this.displayName = displayName;
+        sendUpdate( json -> json.addProperty( "displayName", displayName ) );
     }
 
     public @NotNull String displayName() {
@@ -63,19 +75,26 @@ public class Profile implements JsonSerializable {
 
     public void columns( int columns ) {
         // If new columns is equal to current rows, then do nothing
-        if (columns == this.columns)
+        if (columns == columns())
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if (columns > this.columns)
-            addButtons( this.columns, columns, 0, this.rows );
+        if (columns > columns()) {
+            JsonArray added = addButtons( this.columns, columns, 0, this.rows );
+            new AddRequest( uuid, added ).send();
+        }
 
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (columns < this.columns)
-            removeButtons( button -> button.x >= columns );
+        if (columns < columns()) {
+            JsonArray deleted = removeButtons( button -> button.x >= columns );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        Log.profileUpdate( displayName, "columns", this.columns, columns );
 
         this.columns = columns;
+        sendUpdate( json -> json.addProperty( "columns", columns ) );
     }
 
     public int columns() {
@@ -84,23 +103,26 @@ public class Profile implements JsonSerializable {
 
     public void rows( int rows ) {
         // If new rows is equal to current rows, then do nothing
-        if (rows == this.rows)
+        if (rows == rows())
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if (rows > this.rows) {
-            JsonArray array = new JsonArray();
-
-            addButtons( 0, this.columns, this.rows, rows )
-                    .forEach( button -> array.add( button.serialize() ) );
+        if (rows > rows()) {
+            JsonArray added = addButtons( 0, this.columns, this.rows, rows );
+            new AddRequest( uuid, added ).send();
         }
 
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (rows < this.rows)
-            removeButtons( btn -> btn.y >= rows );
+        if (rows < rows()) {
+            JsonArray deleted = removeButtons( btn -> btn.y >= rows );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        Log.profileUpdate( displayName, "rows", this.rows, rows );
 
         this.rows = rows;
+        sendUpdate( json -> json.addProperty( "gap", rows ) );
     }
 
     public int rows() {
@@ -108,7 +130,13 @@ public class Profile implements JsonSerializable {
     }
 
     public void gap( int gap ) {
+        if (gap == gap())
+            return;
+
+        Log.profileUpdate( displayName, "gap between buttons", this.gap, gap );
+
         this.gap = gap;
+        sendUpdate( json -> json.addProperty( "gap", gap ) );
     }
 
     public int gap() {
@@ -123,24 +151,27 @@ public class Profile implements JsonSerializable {
         return List.copyOf( buttons );
     }
 
-    private @NotNull Collection<IButton> addButtons( int fromX, int toX, int fromY, int toY ) {
-        Collection<IButton> newButtons = new HashSet<>();
+    private @NotNull JsonArray addButtons( int fromX, int toX, int fromY, int toY ) {
+        JsonArray added = new JsonArray();
 
         for (int y = fromY ; y < toY ; y++)
             for (int x = fromX ; x < toX ; x++) {
                 IButton button = new IButton( uuid, x, y );
                 this.buttons.add( button );
                 MenuProperty.add( button );
-                newButtons.add( button );
+                added.add( button.serialize() );
             }
 
         sortButtons();
 
-        return newButtons;
+        String info = "Added %s button(s) to profile %s (%s)";
+        Log.info( info.formatted( added.size(), displayName, uuid.toString() ) );
+
+        return added;
     }
 
-    private @NotNull Collection<IButton> removeButtons( @NotNull Predicate<IButton> condition ) {
-        Collection<IButton> deletedButtons = new HashSet<>();
+    private @NotNull JsonArray removeButtons( @NotNull Predicate<IButton> condition ) {
+        JsonArray deleted = new JsonArray();
 
         Iterator<IButton> buttons = this.buttons.iterator();
         while (buttons.hasNext()) {
@@ -150,12 +181,15 @@ public class Profile implements JsonSerializable {
 
             buttons.remove();
             MenuProperty.remove( button );
-            deletedButtons.add( button );
+            deleted.add( button.uuid.toString() );
         }
 
         sortButtons();
 
-        return deletedButtons;
+        String info = "Deleted %s button(s) from profile %s (%s)";
+        Log.info( info.formatted( deleted.size(), displayName, uuid.toString() ) );
+
+        return deleted;
     }
 
     private void sortButtons() {
@@ -163,14 +197,26 @@ public class Profile implements JsonSerializable {
     }
 
     public void remove() {
-        removeButtons( button -> true );
+        JsonArray deleted = removeButtons( button -> true );
         MenuProperty.remove( this );
 
         String fileName = uuid + ".profile";
         File file = new File( WorkingDirectory.path(), fileName );
 
-        if (file.exists())
-            file.delete();
+        if (file.exists() && !file.delete())
+            Log.err( "Could not delete %s.profile".formatted( uuid.toString() ) );
+
+        new RemoveRequest( array -> array.add( uuid.toString() ) ).send();
+
+        String deleteMsg = "Profile %s (%s) with %s button(s) is deleted!";
+        Log.info( deleteMsg.formatted( displayName, uuid, deleted.size() ) );
+    }
+
+    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
+        JsonObject json = new JsonObject();
+        consumer.accept( json );
+
+        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json );
     }
 
     @Override
