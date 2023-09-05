@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class UpdateRequest extends TargetedRequest {
 
-    public <T extends JsonElement> UpdateRequest( @NotNull Target target, @Nullable UUID uuid, @NotNull T payload ) {
+    public UpdateRequest( @NotNull Target target, @Nullable UUID uuid, @NotNull JsonObject payload ) {
         super( RequestType.UPDATE, target, uuid, payload );
     }
 }

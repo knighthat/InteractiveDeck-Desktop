@@ -14,19 +14,20 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class AddRequest extends TargetedRequest {
 
-    public <T extends JsonElement> AddRequest( @Nullable UUID pUuid, @NotNull T payload ) {
-        super( RequestType.ADD, Target.BUTTON, pUuid, payload );
+    public AddRequest( @NotNull UUID uuid, @NotNull JsonArray payload ) {
+        super( RequestType.ADD, Target.BUTTON, uuid, payload );
     }
 
-    public <T extends JsonElement> AddRequest( @NotNull T payload ) {
-        super( RequestType.ADD, Target.PROFILE, null, payload );
+    public AddRequest( @NotNull Consumer<JsonArray> consumer ) {
+        super( RequestType.ADD, Target.PROFILE, null, new JsonArray() );
+        consumer.accept( content.getAsJsonArray() );
     }
 }

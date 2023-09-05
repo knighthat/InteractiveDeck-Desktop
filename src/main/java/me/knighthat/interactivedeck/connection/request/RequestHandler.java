@@ -103,12 +103,10 @@ public class RequestHandler {
             }
         } );
 
-        JsonArray profiles = new JsonArray();
-
-        for (Profile p : MenuProperty.profiles())
-            if (uuids.contains( p.uuid ))
-                profiles.add( p.serialize() );
-
-        new AddRequest( profiles ).send();
+        new AddRequest( profiles -> {
+            for (Profile p : MenuProperty.profiles())
+                if (uuids.contains( p.uuid ))
+                    profiles.add( p.serialize() );
+        } ).send();
     }
 }

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-abstract class TargetedRequest extends Request {
+public abstract class TargetedRequest extends Request {
 
     /*
      * Intended Pattern:
@@ -36,9 +36,9 @@ abstract class TargetedRequest extends Request {
      */
 
     protected final @Nullable UUID uuid;
-    protected final @NotNull TargetedRequest.Target target;
+    protected final @NotNull Target target;
 
-    protected <T extends JsonElement> TargetedRequest( @NotNull RequestType type, @NotNull TargetedRequest.Target target, @Nullable UUID uuid, @NotNull T payload ) {
+    protected <T extends JsonElement> TargetedRequest( @NotNull RequestType type, @NotNull Target target, @Nullable UUID uuid, @NotNull T payload ) {
         super( type, payload );
         this.uuid = uuid;
         this.target = target;

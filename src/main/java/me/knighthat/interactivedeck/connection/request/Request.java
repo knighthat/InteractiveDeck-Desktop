@@ -19,6 +19,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
+import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
 
 public class Request {
@@ -29,6 +30,8 @@ public class Request {
     public Request( @NotNull RequestType type, @NotNull JsonElement content ) {
         this.type = type;
         this.content = content;
+
+        Log.deb( "Request to %s is created!".formatted( type.name() ) );
     }
 
     public static @NotNull Request parse( @NotNull JsonObject json ) {

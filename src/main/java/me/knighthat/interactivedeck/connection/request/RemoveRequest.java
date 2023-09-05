@@ -14,19 +14,21 @@
 
 package me.knighthat.interactivedeck.connection.request;
 
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public final class RemoveRequest extends TargetedRequest {
 
-    public <T extends JsonElement> RemoveRequest( @Nullable UUID pUuid, @NotNull T payload ) {
+    public RemoveRequest( @Nullable UUID pUuid, @NotNull JsonArray payload ) {
         super( RequestType.REMOVE, Target.BUTTON, pUuid, payload );
     }
 
-    public <T extends JsonElement> RemoveRequest( @NotNull T payload ) {
-        super( RequestType.REMOVE, Target.PROFILE, null, payload );
+    public RemoveRequest( @NotNull Consumer<JsonArray> consumer ) {
+        super( RequestType.REMOVE, Target.PROFILE, null, new JsonArray() );
+        consumer.accept( content.getAsJsonArray() );
     }
 }
