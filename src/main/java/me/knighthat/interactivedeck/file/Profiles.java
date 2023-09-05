@@ -20,6 +20,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.ibutton.IButtons;
+import me.knighthat.interactivedeck.connection.request.AddRequest;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import org.jetbrains.annotations.NotNull;
@@ -91,10 +92,22 @@ public class Profiles {
     }
 
     public static @NotNull Profile createDefault() {
-        return new Profile( "Main", true );
+        Profile profile = new Profile( "Main", true );
+
+        String msg = "Default profile %s (%s) is created!";
+        Log.info( msg.formatted( profile.displayName(), profile.uuid ) );
+
+        return profile;
     }
 
     public static @NotNull Profile create( @NotNull String displayName ) {
-        return new Profile( displayName, false );
+        Profile profile = new Profile( displayName, false );
+
+        String msg = "Profile %s (%s) is created!";
+        Log.info( msg.formatted( displayName, profile.uuid ) );
+
+        new AddRequest( array -> array.add( profile.serialize() ) ).send();
+
+        return profile;
     }
 }
