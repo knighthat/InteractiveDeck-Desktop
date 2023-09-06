@@ -216,7 +216,7 @@ public class Profile implements JsonSerializable {
         JsonObject json = new JsonObject();
         consumer.accept( json );
 
-        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json );
+        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json ).send();
     }
 
     @Override
