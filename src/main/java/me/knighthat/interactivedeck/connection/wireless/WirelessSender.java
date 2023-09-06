@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.connection.wireless;
 
-import me.knighthat.interactivedeck.InteractiveDeck;
+import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.console.Log;
 import org.jetbrains.annotations.NotNull;
@@ -66,7 +66,7 @@ public class WirelessSender extends Thread {
 
             } catch (InterruptedException e) {
                 //TODO Needs proper error handling
-                if (InteractiveDeck.client == null)
+                if (!Client.isConnected())
                     return;
 
                 Log.err( "Thread interrupted!" );

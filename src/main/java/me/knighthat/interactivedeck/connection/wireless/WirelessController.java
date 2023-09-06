@@ -16,7 +16,7 @@ package me.knighthat.interactivedeck.connection.wireless;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import me.knighthat.interactivedeck.InteractiveDeck;
+import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.Status;
 import me.knighthat.interactivedeck.connection.request.Request;
@@ -70,7 +70,7 @@ public class WirelessController extends Thread {
 
         Connection.status( Status.DISCONNECTED );
 
-        InteractiveDeck.client = null;
+        Client.INSTANCE = null;
 
         Log.info( "Listening on: " + address() );
     }

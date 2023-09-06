@@ -27,6 +27,11 @@ public record Client(
         @NotNull String androidVersion
 ) {
 
+    public static Client INSTANCE;
+
+    public static boolean isConnected() {
+        return INSTANCE != null;
+    }
 
     public static @Nullable Client init( @NotNull JsonElement content ) {
         if (!content.isJsonObject())
@@ -46,6 +51,6 @@ public record Client(
         String model = json.get( "brand" ).getAsString();
         String version = json.get( "androidVersion" ).getAsString();
 
-        return new Client( brand, device, manufacturer, model, version );
+        return INSTANCE = new Client( brand, device, manufacturer, model, version );
     }
 }

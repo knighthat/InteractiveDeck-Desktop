@@ -17,7 +17,6 @@ package me.knighthat.interactivedeck.connection.request;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.InteractiveDeck;
 import me.knighthat.interactivedeck.component.action.ActionHandler;
 import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
@@ -57,8 +56,7 @@ public class RequestHandler {
     }
 
     static void handlePairing( @NotNull JsonElement content ) {
-        InteractiveDeck.client = Client.init( content );
-        if (InteractiveDeck.client == null)
+        if (Client.init( content ) == null)
             throw new RequestFormatException( "Not enough information" );
 
         Log.info( "Pairing approved!" );
@@ -69,11 +67,11 @@ public class RequestHandler {
     }
 
     static void logClientInfo() {
-        assert InteractiveDeck.client != null;
+        assert Client.isConnected();
 
         String deviceInfo = "Client: %s running on Android %s";
-        String model = InteractiveDeck.client.model();
-        String aVer = InteractiveDeck.client.androidVersion();
+        String model = Client.INSTANCE.model();
+        String aVer = Client.INSTANCE.androidVersion();
         String message = String.format( deviceInfo, model, aVer );
         Log.info( message );
     }

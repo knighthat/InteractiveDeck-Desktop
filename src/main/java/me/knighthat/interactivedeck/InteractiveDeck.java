@@ -13,20 +13,16 @@
  */
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author knighthat
  */
 public class InteractiveDeck {
-
-    public static @Nullable Client client = null;
 
     static {
         Thread.currentThread().setName( "MAIN" );
