@@ -1,41 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2023. Knight Hat
+  ~ All rights reserved.
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
 <configuration>
 
     <!-- Path to log file -->
     <!-- <property name="LOGS" value="./logs"/> -->
 
+    <conversionRule conversionWord="tName" converterClass="me.knighthat.interactivedeck.logging.ThreadNameConverter"/>
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>
-                %white(%d{HH:mm:ss}) %cyan(%-5t) %highlight(%-5level) %msg%n%throwable
+                %white(%d{HH:mm:ss}) %cyan(%-5tName) %highlight(%-5level) %msg%n%throwable
             </Pattern>
         </encoder>
     </appender>
 
-    <!--    <appender name="RollingFile"-->
-    <!--              class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-    <!--        <file>${LOGS}/logger.log</file>-->
-    <!--        <encoder-->
-    <!--                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
-    <!--            <charset>UTF-8</charset>-->
-    <!--            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>-->
-    <!--        </encoder>-->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <Pattern>%d{HH:mm:ss} %-5tName %-5level %m%n</Pattern>
+        </encoder>
 
-    <!--        <rollingPolicy-->
-    <!--                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-    <!--            &lt;!&ndash; rollover daily and when the file reaches 10 MegaBytes &ndash;&gt;-->
-    <!--            <fileNamePattern>${LOGS}/archived/logger-%d{yyyy-MM-dd}.%i.log-->
-    <!--            </fileNamePattern>-->
-    <!--            <timeBasedFileNamingAndTriggeringPolicy-->
-    <!--                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
-    <!--                <maxFileSize>10MB</maxFileSize>-->
-    <!--            </timeBasedFileNamingAndTriggeringPolicy>-->
-    <!--        </rollingPolicy>-->
-    <!--    </appender>-->
-    
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>${log.dir}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
     <!-- LOG everything at INFO or at "-Dlog.level=" level -->
     <root level="${log.level:-info}">
-        <!--        <appender-ref ref="RollingFile"/>-->
         <appender-ref ref="CONSOLE"/>
+    </root>
+    <!--  File logging always at DEBUG level  -->
+    <root level="debug">
+        <appender-ref ref="RollingFile"/>
     </root>
 </configuration>
