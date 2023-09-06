@@ -14,8 +14,8 @@
 
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Profiles;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +38,7 @@ public class WorkingDirectory {
             path = defaultHome.concat( ".InteractiveDeck" );
         }
         WORK_DIR = new File( path );
+        System.setProperty( "log.dir", path.concat( "/logs" ) );
 
         if (WORK_DIR.exists())
             return;

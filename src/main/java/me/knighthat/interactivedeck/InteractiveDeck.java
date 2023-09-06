@@ -14,8 +14,8 @@
 package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.file.Settings;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,6 @@ public class InteractiveDeck {
     }
 
     public static void main( String[] args ) {
-        Log.deb( "DEBUG mode is enabled!" );
-
         WorkingDirectory.init();
         WorkingDirectory.loadProfiles();
         Settings.init();

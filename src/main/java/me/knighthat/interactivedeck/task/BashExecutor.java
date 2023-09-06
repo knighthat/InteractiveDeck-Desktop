@@ -15,7 +15,7 @@
 package me.knighthat.interactivedeck.task;
 
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

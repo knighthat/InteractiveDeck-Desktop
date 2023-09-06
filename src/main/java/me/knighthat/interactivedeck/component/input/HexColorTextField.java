@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.component.input;
 
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 
 import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;

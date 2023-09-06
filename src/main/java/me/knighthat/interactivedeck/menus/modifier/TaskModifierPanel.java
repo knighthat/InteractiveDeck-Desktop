@@ -14,7 +14,7 @@ import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.BashExecutor;
 import me.knighthat.interactivedeck.task.GotoPage;

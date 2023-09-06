@@ -22,9 +22,9 @@ import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.Status;
-import me.knighthat.interactivedeck.console.Log;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 

@@ -18,7 +18,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 

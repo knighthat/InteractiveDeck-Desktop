@@ -21,7 +21,7 @@ import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.Status;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.RequestHandler;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -44,13 +44,15 @@ public class WirelessController extends Thread {
         if (IP == null) {
             Connection.status( Status.ERROR );
             interrupt();
-        }
+            return;
+        } else
+            Connection.status( Status.DISCONNECTED );
 
         while (!Thread.interrupted())
             try (ServerSocket socket = new ServerSocket( PORT, 1, IP )) {
-                resetConnection();
+                Log.info( "Listening on: " + address() );
 
-                this.handleConnection( socket.accept() );
+                handleConnection( socket.accept() );
 
                 Log.info( "Client disconnected!" );
             } catch (IOException e) {
@@ -65,22 +67,25 @@ public class WirelessController extends Thread {
             }
     }
 
-    void resetConnection() {
-        setName( "NET" );
-
-        Connection.status( Status.DISCONNECTED );
-
-        Client.INSTANCE = null;
-
-        Log.info( "Listening on: " + address() );
-    }
-
     void handleConnection( @NotNull Socket client ) throws IOException {
         String cInfo = client.getInetAddress().getHostAddress() + ":" + client.getPort();
         Log.info( "Connection from " + cInfo );
 
-        WirelessSender.start( client.getOutputStream() );
+        // Init Sender & Receiver
+        WirelessSender sender = new WirelessSender( client.getOutputStream() );
+        sender.start();
         setupReceiver( client.getInputStream() );
+
+        handleDisconnection( sender, client );
+    }
+
+    void handleDisconnection( @NotNull WirelessSender sender, @NotNull Socket client ) throws IOException {
+        Client.INSTANCE = null;
+        Connection.status( Status.DISCONNECTED );
+
+        sender.interrupt();
+        client.close();
+        setName( "NET" );
     }
 
     void setupReceiver( @NotNull InputStream inStream ) throws IOException {
@@ -88,13 +93,9 @@ public class WirelessController extends Thread {
 
         int bytesRead;
         String finalStr = "";
-        while (( bytesRead = inStream.read( BUFFER ) ) != 1) {
-            String decoded;
-            try {
-                decoded = new String( BUFFER, 0, bytesRead );
-            } catch (StringIndexOutOfBoundsException e) {
-                break;
-            }
+        while (( bytesRead = inStream.read( BUFFER ) ) != -1) {
+            String decoded = new String( BUFFER, 0, bytesRead );
+
             Log.deb( "Received: " );
             Log.deb( decoded );
 

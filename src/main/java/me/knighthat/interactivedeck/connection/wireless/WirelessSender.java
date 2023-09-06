@@ -15,8 +15,9 @@
 package me.knighthat.interactivedeck.connection.wireless;
 
 import me.knighthat.interactivedeck.connection.Client;
+import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -28,21 +29,25 @@ public class WirelessSender extends Thread {
 
     private static final @NotNull BlockingQueue<Request> QUEUE = new LinkedBlockingQueue<>( 20 );
 
-    private static @NotNull OutputStream stream;
+    private static OutputStream stream;
 
-    WirelessSender() {
-        setName( "NET/O" );
-    }
-
-    public static void start( @NotNull OutputStream stream ) {
-        QUEUE.clear();
+    public WirelessSender( @NotNull OutputStream stream ) {
         WirelessSender.stream = stream;
-        new WirelessSender().start();
+
+        setName( "NET/O" );
+        QUEUE.clear();
     }
 
     public static void send( @NotNull Request request ) {
         try {
-            QUEUE.put( request );
+            if (Connection.isConnected())
+                QUEUE.put( request );
+            else {
+                Log.warn( "Failed to send request. Connection is not established!" );
+                Log.warn( "You were not supposed to see this message. Please report" );
+                Log.warn( "https://github.com/knighthat/InteractiveDeck-Desktop/issues" );
+                Log.deb( "Request: " + request );
+            }
         } catch (InterruptedException e) {
             Log.warn( "Thread was interrupted while send request is pending!" );
             Log.warn( "Caused by: " + e.getMessage() );
@@ -50,20 +55,19 @@ public class WirelessSender extends Thread {
         }
     }
 
+
     @Override
     public void run() {
-        Request request;
         while (!Thread.interrupted())
             try {
-                request = QUEUE.take();
+                Request request = QUEUE.take();
                 String serialized = request.toString();
 
                 Log.deb( "Sending:" );
                 Log.deb( serialized );
 
-                stream.write( serialized.getBytes() );
+                stream.write( appendNullEnding( serialized ) );
                 stream.flush();
-
             } catch (InterruptedException e) {
                 //TODO Needs proper error handling
                 if (!Client.isConnected())
@@ -78,5 +82,9 @@ public class WirelessSender extends Thread {
                 e.printStackTrace();
                 break;
             }
+    }
+
+    byte[] appendNullEnding( @NotNull String serialized ) {
+        return serialized.concat( "\0".repeat( 3 ) ).getBytes();
     }
 }

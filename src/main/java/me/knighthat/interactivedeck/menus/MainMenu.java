@@ -18,7 +18,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.console.Log;
+import me.knighthat.interactivedeck.logging.Log;
 import static me.knighthat.interactivedeck.file.Settings.*;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.observable.Observable;import me.knighthat.interactivedeck.utils.ColorUtils;
@@ -315,7 +315,7 @@ public class MainMenu extends javax.swing.JFrame {
         int gap = profile.gap();
         int spaceX = profile.columns() * (IButton.DIMENSION.width + gap) - gap;     // Horizontal space (includes gaps) taken by buttons
         int spaceY = profile.rows() * (IButton.DIMENSION.height + gap) - gap;       // Vertical space (includes gaps taken by buttons
-        Dimension sectionSize = iBtnSection.getMaximumSize();
+        Dimension sectionSize = iBtnSection.getSize();
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = spaceX >= sectionSize.width ? 1D : 0D;
