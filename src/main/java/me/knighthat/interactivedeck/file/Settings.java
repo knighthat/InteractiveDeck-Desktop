@@ -42,7 +42,7 @@ public class Settings {
     public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
 
     public static void init() {
-        File settings = new File( WorkingDirectory.file(), "settings.json" );
+        File settings = new File( WorkingDirectory.FILE, "settings.json" );
         try {
             if (settings.exists()) {
                 load( settings );

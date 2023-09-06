@@ -25,35 +25,31 @@ import java.util.List;
 
 public class WorkingDirectory {
 
-    private static @NotNull File WORK_DIR;
+    public static @NotNull String PATH;
+    public static @NotNull File FILE;
 
     public static void init() {
         String osName = System.getProperty( "os.name" );
-        String defaultHome = System.getProperty( "user.home" ).concat( "/" );
-        String path = defaultHome.concat( ".config/InteractiveDeck" );
+        String home = System.getProperty( "user.home" ).concat( "/" );
 
-        if (osName.startsWith( "Windows" )) {
-            path = defaultHome.concat( "InteractiveDeck" );
+        String sub = "";
+        if (osName.startsWith( "Linux" )) {
+            sub = ".config/";
         } else if (osName.startsWith( "Mac" )) {
-            path = defaultHome.concat( ".InteractiveDeck" );
+            sub = "./";
         }
-        WORK_DIR = new File( path );
-        System.setProperty( "log.dir", path.concat( "/logs" ) );
+        FILE = new File( home + sub, "InteractiveDeck" );
 
-        if (WORK_DIR.exists())
-            return;
+        if (!FILE.exists()) {
+            Log.info( "Working folder is not exist! Making one.." );
 
-        Log.info( "Working folder is not exist! Making one.." );
-        if (!WORK_DIR.mkdirs())
-            Log.err( "Couldn't create working directory at " + WORK_DIR.getAbsolutePath() );
-    }
+            if (!FILE.mkdirs())
+                Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
+        }
 
-    public static @NotNull File file() {
-        return WORK_DIR;
-    }
+        PATH = FILE.getAbsolutePath();
 
-    public static @NotNull String path() {
-        return WORK_DIR.getAbsolutePath();
+        System.setProperty( "log.dir", PATH.concat( "/logs" ) );
     }
 
     public static void loadProfiles() {
@@ -81,17 +77,16 @@ public class WorkingDirectory {
         MenuProperty.add( Profiles.createDefault() );
     }
 
-
     private static List<File> gatherProfiles() {
         List<File> profiles = new ArrayList<>( 0 );
-        File[] files = WORK_DIR.listFiles();
+        File[] files = FILE.listFiles();
 
         if (files != null) {
             for (File f : files)
                 if (f.getName().endsWith( ".profile" ))
                     profiles.add( f );
         } else
-            Log.err( "Failed to read directory " + WorkingDirectory.file() );
+            Log.err( "Failed to read directory " + FILE );
 
         return profiles;
     }

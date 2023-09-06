@@ -62,7 +62,7 @@ public class InteractiveDeck {
     static void printSysConfig() {
         Log.info( "Java runtime version: " + jre() );
         Log.info( "Running on: " + platform() );
-        Log.info( "Working directory: " + WorkingDirectory.path() );
+        Log.info( "Working directory: " + WorkingDirectory.PATH );
     }
 
     static @NotNull String platform() {

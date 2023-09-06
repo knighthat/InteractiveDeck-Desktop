@@ -28,7 +28,7 @@ import java.io.IOException;
 public class Json {
 
     public static boolean dump( @NotNull String fileName, @NotNull JsonSerializable serializable ) {
-        File file = new File( WorkingDirectory.file(), fileName );
+        File file = new File( WorkingDirectory.FILE, fileName );
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
