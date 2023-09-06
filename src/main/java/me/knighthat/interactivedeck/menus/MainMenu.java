@@ -315,7 +315,7 @@ public class MainMenu extends javax.swing.JFrame {
         int gap = profile.gap();
         int spaceX = profile.columns() * (IButton.DIMENSION.width + gap) - gap;     // Horizontal space (includes gaps) taken by buttons
         int spaceY = profile.rows() * (IButton.DIMENSION.height + gap) - gap;       // Vertical space (includes gaps taken by buttons
-        Dimension sectionSize = iBtnSection.getSize();
+        Dimension sectionSize = iBtnSection.getPreferredSize();                     // Area buttons can be shown
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = spaceX >= sectionSize.width ? 1D : 0D;
@@ -323,7 +323,7 @@ public class MainMenu extends javax.swing.JFrame {
         constraints.ipadx = gap;
         constraints.ipady = gap;
         constraints.anchor = GridBagConstraints.CENTER;
-        constraints.fill = 1;
+        constraints.fill = GridBagConstraints.BOTH;
 
         return constraints;
     }
