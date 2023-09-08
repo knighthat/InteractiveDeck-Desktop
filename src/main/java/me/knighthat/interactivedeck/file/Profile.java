@@ -122,7 +122,7 @@ public class Profile implements JsonSerializable {
         Log.profileUpdate( displayName, "rows", this.rows, rows );
 
         this.rows = rows;
-        sendUpdate( json -> json.addProperty( "gap", rows ) );
+        sendUpdate( json -> json.addProperty( "rows", rows ) );
     }
 
     public int rows() {
