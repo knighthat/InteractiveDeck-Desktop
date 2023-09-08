@@ -50,7 +50,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         javax.swing.JLabel menuTitle = new javax.swing.JLabel();
         javax.swing.JPanel contentContainer = new javax.swing.JPanel();
         javax.swing.JLabel displayNameLabel = new javax.swing.JLabel();
-        displayNameInput = new javax.swing.JTextField(this.profile.displayName());
+        displayNameInput = new javax.swing.JTextField(profile.displayName());
         javax.swing.JLabel columnsLabel = new javax.swing.JLabel();
         columnsSpinner = new javax.swing.JSpinner();
         javax.swing.JLabel rowsLabel = new javax.swing.JLabel();
@@ -109,7 +109,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(columnsLabel, gridBagConstraints);
 
-        SpinnerNumberModel cModel = new SpinnerNumberModel(this.profile.columns(), 1, 6, 1);
+        SpinnerNumberModel cModel = new SpinnerNumberModel(profile.columns(), 1, 10, 1);
         columnsSpinner.setModel(cModel);
         columnsSpinner.getEditor().getComponent(0).setBackground(ColorUtils.DEFAULT_DARK);
         columnsSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
@@ -129,7 +129,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(rowsLabel, gridBagConstraints);
 
-        SpinnerNumberModel rModel = new SpinnerNumberModel(this.profile.rows(), 1, 4, 1);
+        SpinnerNumberModel rModel = new SpinnerNumberModel(profile.rows(), 1, 10, 1);
         rowsSpinner.setModel(rModel);
         rowsSpinner.getEditor().getComponent(0).setBackground(ColorUtils.DEFAULT_DARK);
         rowsSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
@@ -149,7 +149,7 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
         gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
         contentContainer.add(gapLabel, gridBagConstraints);
 
-        SpinnerNumberModel gModel = new SpinnerNumberModel(this.profile.gap(), 0, 10, 1);
+        SpinnerNumberModel gModel = new SpinnerNumberModel(profile.gap(), 0, 10, 1);
         gapSpinner.setModel(gModel);
         gapSpinner.setPreferredSize(new java.awt.Dimension(150, 30));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -203,12 +203,12 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
             profile.displayName(newDisplayName);
         
         int newColumns = (int) columnsSpinner.getValue();
-        newColumns = newColumns < 1 ? 1 : Math.min(newColumns, 6);
+        newColumns = newColumns < 1 ? 1 : Math.min(newColumns, 10);
         if (newColumns != profile.columns())
             profile.columns(newColumns);
                 
         int newRows = (int) rowsSpinner.getValue();
-        newRows = newRows < 1 ? 1 : Math.min(newRows, 4);
+        newRows = newRows < 1 ? 1 : Math.min(newRows, 10);
         if (newRows != profile.rows())
             profile.rows(newRows);
                 
