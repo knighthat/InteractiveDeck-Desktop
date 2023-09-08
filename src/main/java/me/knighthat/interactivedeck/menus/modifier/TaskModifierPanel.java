@@ -9,11 +9,12 @@
  */
 package me.knighthat.interactivedeck.menus.modifier;
 
-import java.io.File;import java.util.UUID;
+import java.io.File;
+import java.util.UUID;
 import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
+import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.BashExecutor;
@@ -32,13 +33,13 @@ public class TaskModifierPanel extends javax.swing.JPanel {
      * Creates new form TaskModifierPanel
      */
     public TaskModifierPanel() {
-        initComponents();
     }
-    
+
     public TaskModifierPanel(@NotNull IButton selected) {
-        this();
         this.selected = selected;
-        
+
+        initComponents();
+
         loadButtonTask();
     }
 
@@ -57,7 +58,7 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         runScriptInput = new javax.swing.JTextField();
         javax.swing.JPanel gotoTaskPanel = new javax.swing.JPanel();
         gotoButton = new javax.swing.JRadioButton();
-        profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
+        profilesList = new ProfilesComboBox();
         applyButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(36, 36, 36));
@@ -113,6 +114,7 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         gotoTaskPanel.add(gotoButton, gridBagConstraints);
 
+        MenuProperty.profile( selected.profile ).ifPresent( profilesList::removeItem );
         profilesList.setMaximumSize(new java.awt.Dimension(200, 40));
         profilesList.setMinimumSize(new java.awt.Dimension(200, 40));
         profilesList.setPreferredSize(new java.awt.Dimension(200, 40));
@@ -154,11 +156,11 @@ public class TaskModifierPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JButton applyButton;
-    private JRadioButton gotoButton;
-    private ProfilesComboBox profilesList;
-    private JRadioButton runScriptButton;
-    private JTextField runScriptInput;
+    private javax.swing.JButton applyButton;
+    private javax.swing.JRadioButton gotoButton;
+    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
+    private javax.swing.JRadioButton runScriptButton;
+    private javax.swing.JTextField runScriptInput;
     // End of variables declaration//GEN-END:variables
     private @NotNull IButton selected;
     
@@ -170,15 +172,9 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         } else if (task instanceof GotoPage gotoPage) {
             gotoButton.setSelected( true );
 
-            Profile profile = MenuProperty.defaultProfile();
-            UUID targetUuid = gotoPage.target();
-            for (Profile p : MenuProperty.profiles())
-                if (p.uuid.equals( targetUuid )) {
-                    profile = p;
-                    break;
-                }
-
-            profilesList.setSelectedItem( profile.displayName() );
+            MenuProperty
+                .profile( gotoPage.target() )
+                .ifPresent( profilesList::setSelectedItem );
         }
     }
     
