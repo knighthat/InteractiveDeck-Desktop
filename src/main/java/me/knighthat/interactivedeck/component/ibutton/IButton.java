@@ -171,7 +171,7 @@ public class IButton extends JComponent implements JsonSerializable {
         JsonObject json = new JsonObject();
         consumer.accept( json );
 
-        new UpdateRequest( TargetedRequest.Target.BUTTON, profile, json ).send();
+        new UpdateRequest( TargetedRequest.Target.BUTTON, uuid, json ).send();
     }
 
     @Override
