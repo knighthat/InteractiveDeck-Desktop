@@ -79,8 +79,8 @@ final class BIcon extends BChild {
 
         JsonObject json = new JsonObject();
 
-        json.add( "inner", inner );
-        json.add( "outer", outer );
+        json.add( "background", inner );
+        json.add( "border", outer );
 
         return json;
     }
