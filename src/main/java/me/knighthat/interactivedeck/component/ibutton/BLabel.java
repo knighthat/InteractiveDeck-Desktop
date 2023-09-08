@@ -74,7 +74,7 @@ final class BLabel extends BChild {
          */
         JsonObject json = new JsonObject();
         json.addProperty( "text", text );
-        json.add( "color", ColorUtils.toJson( getForeground() ) );
+        json.add( "foreground", ColorUtils.toJson( getForeground() ) );
         json.add( "font", FontUtils.toJson( getFont() ) );
 
         return json;
