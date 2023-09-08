@@ -16,14 +16,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.*;
-import me.knighthat.interactivedeck.component.ibutton.IButton;import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.component.netstatus.ConStatus;
+import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
+import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.logging.Log;
-import static me.knighthat.interactivedeck.file.Settings.*;
 import me.knighthat.interactivedeck.json.Json;
-import me.knighthat.interactivedeck.observable.Observable;import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.observable.Observable;
+import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
-import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.utils.UuidUtils;import org.jetbrains.annotations.NotNull;
+
+import static me.knighthat.interactivedeck.file.Settings.*;
 
 /**
  *
@@ -85,11 +90,11 @@ public class MainMenu extends javax.swing.JFrame {
         javax.swing.JButton addProfileButton = new javax.swing.JButton();
         javax.swing.JButton removeProfileButton = new javax.swing.JButton();
         javax.swing.JButton configureProfileButton = new javax.swing.JButton();
-        profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
+        profilesList = new ProfilesComboBox();
         iBtnSection = new javax.swing.JPanel();
         btnModifierSection = new javax.swing.JPanel();
         javax.swing.JPanel statusSection = new javax.swing.JPanel();
-        me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus = Connection.component();
+        ConStatus conStatus = Connection.component();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
@@ -274,7 +279,8 @@ public class MainMenu extends javax.swing.JFrame {
         }, () -> bSelected.value(selected) );
 
         String deb = "Button %s@x:%s,y:%s clicked!";
-        Log.deb( deb.formatted( selected.uuid, selected.x, selected.y) );
+        String shortUuid = UuidUtils.lastFiveChars( selected.uuid );
+        Log.deb( deb.formatted( shortUuid, selected.x, selected.y) );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
