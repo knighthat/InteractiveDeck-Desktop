@@ -21,7 +21,6 @@ import me.knighthat.interactivedeck.connection.request.TargetedRequest;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.logging.Log;
-import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
@@ -157,10 +156,8 @@ public class IButton extends JComponent implements JsonSerializable {
 
         this.task = task;
 
-        if (!( task instanceof GotoPage gotoPage ))
-            return;
-        String pUuid = gotoPage.target().toString();
-        sendUpdate( json -> json.addProperty( "goto", pUuid ) );
+        JsonElement taskElement = task == null ? JsonNull.INSTANCE : task.serialize();
+        sendUpdate( json -> json.add( "task", taskElement ) );
     }
 
     public @Nullable Task task() {
