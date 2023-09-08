@@ -37,6 +37,16 @@ public class MenuProperty {
         return INTERNAL.profiles.toArray( Profile[]::new );
     }
 
+    public static @NotNull Optional<Profile> profile( @NotNull UUID uuid ) {
+        Profile profile = null;
+        for (Profile p : profiles())
+            if (p.uuid.equals( uuid )) {
+                profile = p;
+                break;
+            }
+        return Optional.ofNullable( profile );
+    }
+
     public static void add( @NotNull Profile profile ) {
         INTERNAL.profiles.add( profile );
         INTERNAL.buttons.addAll( profile.buttons() );
