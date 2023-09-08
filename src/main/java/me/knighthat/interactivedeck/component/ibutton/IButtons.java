@@ -15,6 +15,7 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import me.knighthat.interactivedeck.task.Task;
@@ -36,7 +37,10 @@ public class IButtons {
         String idStr = json.get( "uuid" ).getAsString();
         JsonObject iconJson = json.getAsJsonObject( "icon" );
         JsonObject labelJson = json.getAsJsonObject( "label" );
-        Task task = json.has( "task" ) ? Task.fromJson( json.getAsJsonObject( "task" ) ) : null;
+        Task task = null;
+
+        if (json.has( "task" ) && json.get( "task" ) != JsonNull.INSTANCE)
+            task = Task.fromJson( json.getAsJsonObject( "task" ) );
 
         return new IButton(
                 UUID.fromString( idStr ),
