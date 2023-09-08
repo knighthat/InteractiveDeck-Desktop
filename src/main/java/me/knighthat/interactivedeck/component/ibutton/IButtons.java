@@ -55,9 +55,8 @@ public class IButtons {
         String text = json.get( "text" ).getAsString();
         label.text( text );
 
-        JsonArray colorJson = json.getAsJsonArray( "color" );
-        Color color = ColorUtils.fromJson( colorJson );
-        label.setForeground( color );
+        String fgProp = json.has( "color" ) ? "color" : "foreground";
+        label.setForeground( fromJson( json, fgProp ) );
 
         JsonObject fontJson = json.getAsJsonObject( "font" );
         Font font = FontUtils.fromJson( fontJson );
@@ -69,14 +68,17 @@ public class IButtons {
     static @NotNull BIcon icon( @NotNull JsonObject json ) {
         BIcon icon = new BIcon();
 
-        JsonArray outerArray = json.getAsJsonArray( "outer" );
-        Color outer = ColorUtils.fromJson( outerArray );
-        icon.setForeground( outer );
+        String outerProp = json.has( "outer" ) ? "outer" : "border";
+        icon.setForeground( fromJson( json, outerProp ) );
 
-        JsonArray innerArray = json.getAsJsonArray( "inner" );
-        Color inner = ColorUtils.fromJson( innerArray );
-        icon.setBackground( inner );
+        String innerProp = json.has( "inner" ) ? "inner" : "background";
+        icon.setBackground( fromJson( json, innerProp ) );
 
         return icon;
+    }
+
+    static @NotNull Color fromJson( @NotNull JsonObject json, @NotNull String property ) {
+        JsonArray array = json.getAsJsonArray( property );
+        return ColorUtils.fromJson( array );
     }
 }
