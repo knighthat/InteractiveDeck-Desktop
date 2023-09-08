@@ -13,8 +13,7 @@ import java.awt.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.input.HexColorTextField;
 import me.knighthat.interactivedeck.utils.ColorUtils;
-import org.jetbrains.annotations.NotNull;
-/**
+import org.jetbrains.annotations.NotNull;/**
  *
  * @author knighthat
  */
@@ -44,9 +43,11 @@ public class IconModifierPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         javax.swing.JLabel fgLabel = new javax.swing.JLabel();
-        javax.swing.JLabel bgLabel = new javax.swing.JLabel();
-        bgInput = new me.knighthat.interactivedeck.component.input.HexColorTextField();
         fgInput = new me.knighthat.interactivedeck.component.input.HexColorTextField();
+        javax.swing.JLabel bgLabel1 = new javax.swing.JLabel();
+        bgInput = new me.knighthat.interactivedeck.component.input.HexColorTextField();
+        javax.swing.JLabel bdLabel = new javax.swing.JLabel();
+        bdInput = new me.knighthat.interactivedeck.component.input.HexColorTextField();
 
         setBackground(new java.awt.Color(36, 36, 36));
         setMaximumSize(new java.awt.Dimension(250, 489));
@@ -60,33 +61,6 @@ public class IconModifierPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         add(fgLabel, gridBagConstraints);
-
-        bgLabel.setForeground(new java.awt.Color(255, 255, 255));
-        bgLabel.setText("Background");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        add(bgLabel, gridBagConstraints);
-
-        bgInput.setMaximumSize(new java.awt.Dimension(210, 40));
-        bgInput.setMinimumSize(new java.awt.Dimension(210, 40));
-        bgInput.setPreferredSize(new java.awt.Dimension(210, 40));
-        bgInput.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                inputLostFocusEvent(evt);
-            }
-        });
-        bgInput.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                inputEnterPressedEvent(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(bgInput, gridBagConstraints);
 
         fgInput.setMaximumSize(new java.awt.Dimension(210, 40));
         fgInput.setMinimumSize(new java.awt.Dimension(210, 40));
@@ -107,6 +81,61 @@ public class IconModifierPanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 40, 0);
         add(fgInput, gridBagConstraints);
+
+        bgLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        bgLabel1.setText("Background");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(bgLabel1, gridBagConstraints);
+
+        bgInput.setMaximumSize(new java.awt.Dimension(210, 40));
+        bgInput.setMinimumSize(new java.awt.Dimension(210, 40));
+        bgInput.setPreferredSize(new java.awt.Dimension(210, 40));
+        bgInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                inputLostFocusEvent(evt);
+            }
+        });
+        bgInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputEnterPressedEvent(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 40, 0);
+        add(bgInput, gridBagConstraints);
+
+        bdLabel.setForeground(new java.awt.Color(255, 255, 255));
+        bdLabel.setText("Border");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        add(bdLabel, gridBagConstraints);
+
+        bdInput.setMaximumSize(new java.awt.Dimension(210, 40));
+        bdInput.setMinimumSize(new java.awt.Dimension(210, 40));
+        bdInput.setPreferredSize(new java.awt.Dimension(210, 40));
+        bdInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                inputLostFocusEvent(evt);
+            }
+        });
+        bdInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputEnterPressedEvent(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        add(bdInput, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void inputLostFocusEvent(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_inputLostFocusEvent
@@ -120,17 +149,21 @@ public class IconModifierPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private HexColorTextField bgInput;
-    private HexColorTextField fgInput;
+    private me.knighthat.interactivedeck.component.input.HexColorTextField bdInput;
+    private me.knighthat.interactivedeck.component.input.HexColorTextField bgInput;
+    private me.knighthat.interactivedeck.component.input.HexColorTextField fgInput;
     // End of variables declaration//GEN-END:variables
     private @NotNull IButton selected;
 
     private void updateInputColors() {
         Color background = selected.background();
-        this.updateColor( this.bgInput, background );
+        updateColor( bgInput, background );
 
         Color foreground = selected.foreground();
-        this.updateColor( this.fgInput, foreground );
+        updateColor( fgInput, foreground );
+
+        Color border = selected.border();
+        updateColor( bdInput, border );
     }
 
     private void updateColor(@NotNull HexColorTextField target, @NotNull Color color) {
@@ -150,11 +183,12 @@ public class IconModifierPanel extends javax.swing.JPanel {
         if (hexCode.length() < 7) return;
 
         Color color = ColorUtils.fromHex( hexCode );
-        if (input == bgInput) {
-            this.selected.background(color);
-        } else {
-            this.selected.foreground(color);
-        }
+        if (input == fgInput)
+            selected.foreground(color);
+        else if (input == bgInput)
+            selected.background(color);
+        else
+            selected.border(color);
 
         updateInputColors();
     }
