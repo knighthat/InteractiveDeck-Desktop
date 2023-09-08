@@ -85,6 +85,6 @@ public class WirelessSender extends Thread {
     }
 
     byte[] appendNullEnding( @NotNull String serialized ) {
-        return serialized.concat( "\0".repeat( 3 ) ).getBytes();
+        return serialized.concat( "\0" ).getBytes();
     }
 }
