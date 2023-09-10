@@ -27,6 +27,7 @@
 🔲 Customizable, button's foreground/background/text can be changed.<br>
 🚀 Fast to connect, responsive to touch/update between devices.<br>
 ⚖️ Lightweight, built using minimal resources to maximize performance.
+Real-time update, you'll see the result as soon as you press Enter (or Apply)
 
 ## Core Functions
 
@@ -36,15 +37,19 @@
 - Remove
 - Modify
     - Title
-    - Columns (up to 6)
-    - Rows (up to 4)
+    - Columns (up to 10)
+    - Rows (up to 10)
     - Gap Between Buttons
 
 🖲️ Buttons
 
 - Label
+    - Custom texts, support UTF-8
+    - Colorful
+    - Supports styling (bold, italic, etc.)
+    - Resizable
 - Background
-- Foreground (Font Color)
+- Border
 - Task (Its Usage)
     - Executing BASH Script
     - Switch Profile on Mobile Device
@@ -56,12 +61,21 @@
 
 # Installation
 
+## Manual
+
 > These steps require [JRE](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed
 > prior.
 
 1. Clone project `git clone --depth 1 https://github.com/knighthat/InteractiveDeck-Desktop`
 2. Compile it `mvn package`
 3. Start the program (Follow [Usage](#usage))
+
+## Prebuilt
+
+> For bleeding edge features, please follow [manual steps to compile](#manual)
+
+- [ALL RELEASES](https://github.com/knighthat/InteractiveDeck-Desktop/releases)
+- [BETA/LATEST](https://github.com/knighthat/InteractiveDeck-Desktop/releases/tag/beta)
 
 <p align="center"><b>THIS SECTION IS SUBJECT TO CHANGE, PLEASE CHECK BACK FOR MORE INFORMATION</b></p>
 
