@@ -47,6 +47,7 @@ public class FontUtils {
         String weight = switch (font.getStyle()) {
             case Font.BOLD -> "bold";
             case Font.ITALIC -> "italic";
+            case Font.BOLD | Font.ITALIC -> "bold|italic";
             default -> "plain";
         };
 
