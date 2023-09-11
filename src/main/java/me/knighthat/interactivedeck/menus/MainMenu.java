@@ -11,10 +11,7 @@ package me.knighthat.interactivedeck.menus;
 
 import com.google.gson.JsonObject;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import javax.swing.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.plist.ProfileButton;
@@ -22,10 +19,12 @@ import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.file.Profile;
 
 import me.knighthat.interactivedeck.json.Json;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
-import me.knighthat.interactivedeck.utils.UuidUtils;import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.utils.UuidUtils;
+import org.jetbrains.annotations.NotNull;
 
 import static me.knighthat.interactivedeck.file.Settings.*;
 /**
@@ -39,17 +38,11 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public MainMenu() {
         super(GlobalVars.name() + " - " + GlobalVars.version());
-        setLocationRelativeTo(null);
-        setAlwaysOnTop(false);
         initComponents();
 
-        this.bSelected = Observable.of( null );
         initButtonObserver();
 
-        GridBagLayout layout = new GridBagLayout();
-        this.iBtnSection.setLayout(layout);
-        initActiveProfileObserver();
-        this.profilesList.setSelectedItem( MenuProperty.defaultProfile() );
+        MenuProperty.observeActive( profilesList::setSelectedItem );
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -72,6 +65,12 @@ public class MainMenu extends javax.swing.JFrame {
                 super.windowClosing(e);
             }
         });
+
+        // Show default profile
+        MenuProperty.active(MenuProperty.defaultProfile());
+
+        setLocationRelativeTo(null);
+        setAlwaysOnTop(false);
     }
 
     /**
@@ -223,7 +222,6 @@ public class MainMenu extends javax.swing.JFrame {
         updateProfilesList();
 
         Profile profile = MenuProperty.defaultProfile();
-        profilesList.setSelectedItem(profile);
         MenuProperty.active(profile);
     }//GEN-LAST:event_removeProfilesButtonClicked
 
@@ -236,16 +234,39 @@ public class MainMenu extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_configureProfileButtonClicked
 
-    private void profileSelected(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profileSelected
-        Profile profile = (Profile) profilesList.getSelectedItem();
-        if (profile == null)
-           return;
-        
-        MenuProperty.active( profile );
+    private void profileItemChangedEvent(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_profileItemChangedEvent
+        if (evt.getStateChange() != ItemEvent.SELECTED)
+            return;
 
-        String info = "Now showing: %s (%s)";
-        Log.info( info.formatted( profile.displayName(), profile.uuid ) );
-    }//GEN-LAST:event_profileSelected
+        Profile profile = (Profile) evt.getItem();
+
+        String shortUuid = UuidUtils.lastFiveChars( profile.uuid );
+        String info = "Now showing %s (%s) with %s button(s)";
+        Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
+
+        iBtnSection.removeAll();
+
+        bSelected.value().ifPresent( IButton::toggleSelect );
+        bSelected.value(null);
+
+        GridBagConstraints constraints = genConstraints( profile );
+
+        profile.buttons().forEach((button) -> {
+            if (button.getMouseListeners().length == 0)
+                button.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        iBtnClickEvent(e);
+                    }
+                });
+
+            constraints.gridx = button.x;
+            constraints.gridy = button.y;
+            this.iBtnSection.add(button, constraints);
+        });
+
+        iBtnSection.revalidate();
+        iBtnSection.repaint();
+    }//GEN-LAST:event_profileItemChangedEvent
 
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         IButton selected = (IButton) evt.getComponent();
@@ -267,34 +288,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JPanel iBtnSection;
     private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
     // End of variables declaration//GEN-END:variables
-    private final @NotNull Observable<IButton> bSelected;
-
-    private void initActiveProfileObserver() {
-        MenuProperty.observeActive( profile -> {
-            iBtnSection.removeAll();
-
-            bSelected.value().ifPresent( IButton::toggleSelect );
-            bSelected.value(null);
-
-            GridBagConstraints constraints = genConstraints( profile );
-
-            profile.buttons().forEach((button) -> {
-                if (button.getMouseListeners().length == 0)
-                        button.addMouseListener(new MouseAdapter() {
-                                                public void mouseClicked(MouseEvent e) {
-                                                    iBtnClickEvent(e);
-                                                }
-                                            });
-
-                constraints.gridx = button.x;
-                constraints.gridy = button.y;
-                this.iBtnSection.add(button, constraints);
-            });
-
-            iBtnSection.revalidate();
-            iBtnSection.repaint();
-        } );
-    }
+    private final @NotNull Observable<IButton> bSelected = Observable.of( null );;
 
     @NotNull GridBagConstraints genConstraints(@NotNull Profile profile) {
         int gap = profile.gap();
