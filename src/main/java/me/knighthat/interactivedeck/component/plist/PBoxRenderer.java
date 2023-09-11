@@ -16,17 +16,19 @@ package me.knighthat.interactivedeck.component.plist;
 
 
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.utils.UuidUtils;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
 
-    public PBoxRenderer() {
-    }
-
     public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
-        super.setText( profile == null ? "" : profile.displayName() );
+        String display = "NULL (You weren't supposed to see this)";
+        if (profile != null)
+            display = "%s (%s)".formatted( profile.displayName(), UuidUtils.lastFiveChars( profile.uuid ) );
+
+        super.setText( display );
         super.setBackground( isSelected ? list.getSelectionBackground() : list.getBackground() );
         super.setForeground( isSelected ? list.getSelectionForeground() : list.getForeground() );
         return this;
