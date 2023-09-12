@@ -60,7 +60,7 @@ public class Profile implements JsonSerializable {
     }
 
     public void displayName( @NotNull String displayName ) {
-        if (displayName.equals( displayName() ))
+        if (displayName.equals( displayName() ) || displayName.isBlank())
             return;
 
         Log.profileUpdate( displayName, "name", this.displayName, displayName );
