@@ -14,14 +14,18 @@
 
 package me.knighthat.interactivedeck.svg;
 
+import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.transcoder.*;
+import org.apache.batik.transcoder.image.ImageTranscoder;
+import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.svg.SVGDocument;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.URL;
 import java.util.Optional;
 
@@ -51,5 +55,26 @@ public class SVGParser {
         } catch (IOException ignored) {
         }
         return Optional.ofNullable( document );
+    }
+
+    public static @NotNull BufferedImage toBufferedImage( @NotNull SVGDocument document ) {
+        try {
+            Transcoder transcoder = new PNGTranscoder();
+            TranscodingHints hints = new TranscodingHints();
+            hints.put( ImageTranscoder.KEY_BACKGROUND_COLOR, ColorUtils.TRANSPARENT );
+            transcoder.setTranscodingHints( hints );
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            TranscoderOutput output = new TranscoderOutput( baos );
+
+            TranscoderInput input = new TranscoderInput( document );
+            transcoder.transcode( input, output );
+
+            ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
+
+            return ImageIO.read( bais );
+        } catch (TranscoderException | IOException e) {
+            throw new RuntimeException( e );
+        }
     }
 }
