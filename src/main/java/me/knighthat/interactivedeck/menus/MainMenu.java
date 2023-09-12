@@ -17,7 +17,6 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.plist.ProfileButton;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.file.Profile;
-
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
@@ -70,7 +69,6 @@ public class MainMenu extends javax.swing.JFrame {
         MenuProperty.active(MenuProperty.defaultProfile());
 
         setLocationRelativeTo(null);
-        setAlwaysOnTop(false);
     }
 
     /**
@@ -313,7 +311,7 @@ public class MainMenu extends javax.swing.JFrame {
 
             btn.toggleSelect();
 
-            ButtonModifierPanel panel = new ButtonModifierPanel(btn);
+            ModifierContainer panel = new ModifierContainer(btn);
             btnModifierSection.add( panel, BorderLayout.PAGE_START );
         } );
     }
