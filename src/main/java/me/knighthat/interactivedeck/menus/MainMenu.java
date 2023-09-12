@@ -107,9 +107,9 @@ public class MainMenu extends javax.swing.JFrame {
         profilesList.setMaximumSize(new java.awt.Dimension(300, 30));
         profilesList.setMinimumSize(new java.awt.Dimension(300, 30));
         profilesList.setPreferredSize(new java.awt.Dimension(300, 30));
-        profilesList.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                profileItemChangedEvent(evt);
+        profilesList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                profilesListActionPerformed(evt);
             }
         });
 
@@ -234,39 +234,11 @@ public class MainMenu extends javax.swing.JFrame {
         dialog.setVisible(true);
     }//GEN-LAST:event_configureProfileButtonClicked
 
-    private void profileItemChangedEvent(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_profileItemChangedEvent
-        if (evt.getStateChange() != ItemEvent.SELECTED)
-            return;
-
-        Profile profile = (Profile) evt.getItem();
-
-        String shortUuid = UuidUtils.lastFiveChars( profile.uuid );
-        String info = "Now showing %s (%s) with %s button(s)";
-        Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
-
-        iBtnSection.removeAll();
-
-        bSelected.value().ifPresent( IButton::toggleSelect );
-        bSelected.value(null);
-
-        GridBagConstraints constraints = genConstraints( profile );
-
-        profile.buttons().forEach((button) -> {
-            if (button.getMouseListeners().length == 0)
-                button.addMouseListener(new MouseAdapter() {
-                    public void mouseClicked(MouseEvent e) {
-                        iBtnClickEvent(e);
-                    }
-                });
-
-            constraints.gridx = button.x;
-            constraints.gridy = button.y;
-            this.iBtnSection.add(button, constraints);
-        });
-
-        iBtnSection.revalidate();
-        iBtnSection.repaint();
-    }//GEN-LAST:event_profileItemChangedEvent
+    private void profilesListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profilesListActionPerformed
+        Profile profile = (Profile) profilesList.getSelectedItem();
+        if (profile != null && evt.getActionCommand().equals( "comboBoxChanged" ))
+            updateButtons( profile );
+    }//GEN-LAST:event_profilesListActionPerformed
 
     void iBtnClickEvent(java.awt.event.MouseEvent evt) {
         IButton selected = (IButton) evt.getComponent();
@@ -289,6 +261,30 @@ public class MainMenu extends javax.swing.JFrame {
     private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
     // End of variables declaration//GEN-END:variables
     private final @NotNull Observable<IButton> bSelected = Observable.of( null );;
+
+    public void updateButtons(@NotNull Profile profile) {
+        iBtnSection.removeAll();
+
+        bSelected.value().ifPresent( IButton::toggleSelect );
+        bSelected.value(null);
+
+        GridBagConstraints constraints = genConstraints( profile );
+        profile.buttons().forEach((button) -> {
+            if (button.getMouseListeners().length == 0)
+                button.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        iBtnClickEvent(e);
+                    }
+                });
+
+            constraints.gridx = button.x;
+            constraints.gridy = button.y;
+            this.iBtnSection.add(button, constraints);
+        });
+
+        iBtnSection.revalidate();
+        iBtnSection.repaint();
+    }
 
     @NotNull GridBagConstraints genConstraints(@NotNull Profile profile) {
         int gap = profile.gap();
