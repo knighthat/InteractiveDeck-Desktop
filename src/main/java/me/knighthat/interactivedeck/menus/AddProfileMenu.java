@@ -11,8 +11,8 @@ package me.knighthat.interactivedeck.menus;
 
 
 import javax.swing.JRootPane;
-import com.google.gson.JsonArray;
-import me.knighthat.interactivedeck.connection.request.AddRequest;import me.knighthat.interactivedeck.file.Profiles;import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.file.Profiles;
 
 /**
  *
@@ -75,6 +75,11 @@ public class AddProfileMenu extends javax.swing.JDialog {
         displayNameInput.setMaximumSize(new java.awt.Dimension(150, 30));
         displayNameInput.setMinimumSize(new java.awt.Dimension(150, 30));
         displayNameInput.setPreferredSize(new java.awt.Dimension(150, 30));
+        displayNameInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                keyPressedEvent(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
@@ -119,25 +124,35 @@ public class AddProfileMenu extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void createButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_createButtonMouseClicked
-        String fromUser = this.displayNameInput.getText().trim();
-        if (fromUser.isBlank()) return;
-
-        Profile profile = Profiles.create( fromUser );
-
-        MenuProperty.add(profile);
-        ( (MainMenu) super.getOwner() ).updateProfilesList();
-        MenuProperty.active(profile);
-
-        finish();
+        createProfile();
     }//GEN-LAST:event_createButtonMouseClicked
 
     private void cancelButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cancelButtonMouseClicked
         finish();
     }//GEN-LAST:event_cancelButtonMouseClicked
 
+    private void keyPressedEvent(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_keyPressedEvent
+        if (evt.getKeyCode() == 27)
+            finish();
+        else if (evt.getKeyCode() == 10)
+            createProfile();
+    }//GEN-LAST:event_keyPressedEvent
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField displayNameInput;
     // End of variables declaration//GEN-END:variables
+
+    void createProfile() {
+        String fromUser = displayNameInput.getText().trim();
+        if (fromUser.isBlank()) return;  // TODO Notify user about empty input
+
+        Profile profile = Profiles.create( fromUser );
+        MenuProperty.add(profile);
+        ( (MainMenu) super.getOwner() ).updateProfilesList();
+        MenuProperty.active(profile);
+
+        finish();
+    }
     
      private void finish() {
         this.setVisible(false);
