@@ -96,12 +96,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-dom</artifactId>
-            <version>1.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>batik-swing</artifactId>
+            <artifactId>batik-all</artifactId>
             <version>1.17</version>
         </dependency>
     </dependencies>
