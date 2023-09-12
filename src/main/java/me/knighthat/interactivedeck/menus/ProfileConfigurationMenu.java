@@ -198,28 +198,14 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     }//GEN-LAST:event_cancelButtonMouseClicked
 
     private void saveButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveButtonMouseClicked
-        String newDisplayName = displayNameInput.getText();
-        if (!newDisplayName.isBlank())
-            profile.displayName(newDisplayName);
-        
-        int newColumns = (int) columnsSpinner.getValue();
-        newColumns = newColumns < 1 ? 1 : Math.min(newColumns, 10);
-        if (newColumns != profile.columns())
-            profile.columns(newColumns);
-                
-        int newRows = (int) rowsSpinner.getValue();
-        newRows = newRows < 1 ? 1 : Math.min(newRows, 10);
-        if (newRows != profile.rows())
-            profile.rows(newRows);
-                
-        int newGap = (int ) this.gapSpinner.getValue();
-        newGap = newGap < 0 ? 0 : Math.min(newGap, 10);
-        if (newGap != profile.gap())
-            profile.gap(newGap);
-        
-        MenuProperty.active(profile);
+        profile.displayName(displayNameInput.getText());
+                profile.columns(validate(columnsSpinner.getValue(), 1 ));
+                profile.rows(validate(rowsSpinner.getValue(), 1 ));
+                profile.gap(validate(gapSpinner.getValue(), 0 ));
 
-        finish();
+                ((MainMenu) getOwner()).updateButtons( profile );
+
+                finish();
     }//GEN-LAST:event_saveButtonMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -230,6 +216,12 @@ public class ProfileConfigurationMenu extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private final @NotNull Profile profile;
+
+    int validate(@NotNull Object obj, int min) {
+        if (!( obj instanceof  Integer number ))
+            return min;
+        return number < min ? min : Math.min(number, 10);
+    }
     
     private void finish() {
         this.setVisible(false);
