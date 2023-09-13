@@ -17,6 +17,7 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.plist.ProfileButton;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.file.Profile;
+import static me.knighthat.interactivedeck.file.Settings.*;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
@@ -24,8 +25,6 @@ import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
-
-import static me.knighthat.interactivedeck.file.Settings.*;
 /**
  *
  * @author knighthat
@@ -90,6 +89,7 @@ public class MainMenu extends javax.swing.JFrame {
         btnModifierSection = new javax.swing.JPanel();
         javax.swing.JPanel statusSection = new javax.swing.JPanel();
         me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus = Connection.component();
+        notificationCenter1 = new me.knighthat.interactivedeck.menus.NotificationCenter();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
@@ -195,12 +195,16 @@ public class MainMenu extends javax.swing.JFrame {
             .addGroup(statusSectionLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(conStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(855, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 349, Short.MAX_VALUE)
+                .addComponent(notificationCenter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         statusSectionLayout.setVerticalGroup(
             statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusSectionLayout.createSequentialGroup()
-                .addComponent(conStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(statusSectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(conStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(notificationCenter1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -256,6 +260,7 @@ public class MainMenu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnModifierSection;
     private javax.swing.JPanel iBtnSection;
+    private me.knighthat.interactivedeck.menus.NotificationCenter notificationCenter1;
     private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
     // End of variables declaration//GEN-END:variables
     private final @NotNull Observable<IButton> bSelected = Observable.of( null );;
