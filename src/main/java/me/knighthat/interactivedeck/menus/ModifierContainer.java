@@ -15,6 +15,7 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.icon.Icons;
+import me.knighthat.interactivedeck.component.tab.TabUI;
 import me.knighthat.interactivedeck.menus.modifier.IconModifierPanel;
 import me.knighthat.interactivedeck.menus.modifier.TaskModifierPanel;
 import me.knighthat.interactivedeck.menus.modifier.TextModifierPanel;
@@ -45,22 +46,25 @@ public class ModifierContainer extends JPanel {
         TaskModifierPanel taskModifier = new TaskModifierPanel( selected );
         var modifierTabbedPane = new JTabbedPane() {
             public void addTab( @NotNull SVGDocument svg, @NotNull Component component ) {
+                svg.getRootElement().setAttribute( "width", "48px" );
+                svg.getRootElement().setAttribute( "height", "28px" );
                 BufferedImage bufferedImage = SVGParser.toBufferedImage( svg );
                 super.addTab( "", new ImageIcon( bufferedImage ), component );
             }
         };
 
-        Dimension dimension = new java.awt.Dimension( 250, 520 );
+        Dimension dimension = new Dimension( 250, 520 );
         setMaximumSize( dimension );
         setMinimumSize( dimension );
         setPreferredSize( dimension );
         setOpaque( false );
-        setLayout( new java.awt.BorderLayout() );
+        setLayout( new BorderLayout() );
 
+        modifierTabbedPane.setUI( new TabUI() );
         modifierTabbedPane.addTab( Icons.INTERNAL.TAB_TEXT, textModifier );
         modifierTabbedPane.addTab( Icons.INTERNAL.TAB_ICON, iconModifier );
         modifierTabbedPane.addTab( Icons.INTERNAL.TAB_TASK, taskModifier );
 
-        add( modifierTabbedPane, java.awt.BorderLayout.PAGE_START );
+        add( modifierTabbedPane, BorderLayout.PAGE_START );
     }
 }
