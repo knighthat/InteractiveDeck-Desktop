@@ -29,6 +29,15 @@ import org.jetbrains.annotations.Nullable;
  */
 public class TaskModifierPanel extends javax.swing.JPanel {
 
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton applyButton;
+    private javax.swing.JRadioButton gotoButton;
+    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
+    private javax.swing.JRadioButton runScriptButton;
+    private javax.swing.JTextField runScriptInput;
+    // End of variables declaration//GEN-END:variables
+    private @NotNull IButton selected;
+
     /**
      * Creates new form TaskModifierPanel
      */
@@ -153,16 +162,6 @@ public class TaskModifierPanel extends javax.swing.JPanel {
         
         selected.task(task);
     }//GEN-LAST:event_applyButtonClicked
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton applyButton;
-    private javax.swing.JRadioButton gotoButton;
-    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
-    private javax.swing.JRadioButton runScriptButton;
-    private javax.swing.JTextField runScriptInput;
-    // End of variables declaration//GEN-END:variables
-    private @NotNull IButton selected;
     
     private void loadButtonTask() {
         Task task = selected.task();

@@ -1,18 +1,24 @@
 /*
  * Copyright (c) 2023. Knight Hat
  * All rights reserved.
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+ * to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 package me.knighthat.interactivedeck.menus.modifier;
 
-import java.awt.*;
-import javax.swing.*;
-import me.knighthat.interactivedeck.component.ibutton.IButton;import org.jetbrains.annotations.NotNull;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author knighthat
@@ -59,119 +65,120 @@ public class TextModifierPanel extends javax.swing.JPanel {
         italicButton = new javax.swing.JToggleButton();
         underlineButton = new javax.swing.JToggleButton();
         String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-        fontSelector = new javax.swing.JComboBox<>(fonts);
+        fontSelector = new javax.swing.JComboBox<>( fonts );
 
-        setBackground(new java.awt.Color(36, 36, 36));
-        setMaximumSize(new java.awt.Dimension(250, 489));
-        setMinimumSize(new java.awt.Dimension(250, 489));
-        setPreferredSize(new java.awt.Dimension(250, 489));
+        setBackground( new java.awt.Color( 36, 36, 36 ) );
+        setMaximumSize( new java.awt.Dimension( 250, 489 ) );
+        setMinimumSize( new java.awt.Dimension( 250, 489 ) );
+        setPreferredSize( new java.awt.Dimension( 250, 489 ) );
         java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
-        layout.columnWidths = new int[] {70, 70, 70};
-        setLayout(layout);
+        layout.columnWidths = new int[]{ 70, 70, 70 };
+        setLayout( layout );
 
-        titleLabel.setForeground(new java.awt.Color(255, 255, 255));
-        titleLabel.setText("Label");
+        titleLabel.setForeground( new java.awt.Color( 255, 255, 255 ) );
+        titleLabel.setText( "Label" );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        add(titleLabel, gridBagConstraints);
+        add( titleLabel, gridBagConstraints );
 
-        titleInput.setMaximumSize(new java.awt.Dimension(140, 40));
-        titleInput.setMinimumSize(new java.awt.Dimension(140, 40));
-        titleInput.setPreferredSize(new java.awt.Dimension(140, 40));
-        titleInput.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                titleInputFocusLost(evt);
+        titleInput.setMaximumSize( new java.awt.Dimension( 140, 40 ) );
+        titleInput.setMinimumSize( new java.awt.Dimension( 140, 40 ) );
+        titleInput.setPreferredSize( new java.awt.Dimension( 140, 40 ) );
+        titleInput.addFocusListener( new java.awt.event.FocusAdapter() {
+            public void focusLost( java.awt.event.FocusEvent evt ) {
+                titleInputFocusLost( evt );
             }
-        });
-        titleInput.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                titleInputEnterPressed(evt);
+        } );
+        titleInput.addKeyListener( new java.awt.event.KeyAdapter() {
+            public void keyPressed( java.awt.event.KeyEvent evt ) {
+                titleInputEnterPressed( evt );
             }
-        });
+        } );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 20, 0);
-        add(titleInput, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets( 0, 0, 20, 0 );
+        add( titleInput, gridBagConstraints );
 
-        fontSizeSpinner.setMaximumSize(new java.awt.Dimension(55, 30));
-        fontSizeSpinner.setMinimumSize(new java.awt.Dimension(55, 30));
-        fontSizeSpinner.setPreferredSize(new java.awt.Dimension(55, 30));
-        fontSizeSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                fontSizeChanged(evt);
+        fontSizeSpinner.setMaximumSize( new java.awt.Dimension( 55, 30 ) );
+        fontSizeSpinner.setMinimumSize( new java.awt.Dimension( 55, 30 ) );
+        fontSizeSpinner.setPreferredSize( new java.awt.Dimension( 55, 30 ) );
+        fontSizeSpinner.addChangeListener( new javax.swing.event.ChangeListener() {
+            public void stateChanged( javax.swing.event.ChangeEvent evt ) {
+                fontSizeChanged( evt );
             }
-        });
+        } );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        add(fontSizeSpinner, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets( 0, 0, 10, 0 );
+        add( fontSizeSpinner, gridBagConstraints );
 
-        boldButton.setText("B");
-        boldButton.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                boldButtonStateChanged(evt);
+        boldButton.setText( "B" );
+        boldButton.addChangeListener( new javax.swing.event.ChangeListener() {
+            public void stateChanged( javax.swing.event.ChangeEvent evt ) {
+                boldButtonStateChanged( evt );
             }
-        });
+        } );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        add(boldButton, gridBagConstraints);
+        add( boldButton, gridBagConstraints );
 
-        italicButton.setText("I");
-        italicButton.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                italicButtonStateChanged(evt);
+        italicButton.setText( "I" );
+        italicButton.addChangeListener( new javax.swing.event.ChangeListener() {
+            public void stateChanged( javax.swing.event.ChangeEvent evt ) {
+                italicButtonStateChanged( evt );
             }
-        });
+        } );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        add(italicButton, gridBagConstraints);
+        add( italicButton, gridBagConstraints );
 
-        underlineButton.setText("U");
+        underlineButton.setText( "U" );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
-        add(underlineButton, gridBagConstraints);
+        add( underlineButton, gridBagConstraints );
 
-        fontSelector.setMaximumSize(new java.awt.Dimension(140, 30));
-        fontSelector.setMinimumSize(new java.awt.Dimension(140, 30));
-        fontSelector.setPreferredSize(new java.awt.Dimension(140, 30));
-        fontSelector.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fontSelectedEvent(evt);
+        fontSelector.setMaximumSize( new java.awt.Dimension( 140, 30 ) );
+        fontSelector.setMinimumSize( new java.awt.Dimension( 140, 30 ) );
+        fontSelector.setPreferredSize( new java.awt.Dimension( 140, 30 ) );
+        fontSelector.addActionListener( new java.awt.event.ActionListener() {
+            public void actionPerformed( java.awt.event.ActionEvent evt ) {
+                fontSelectedEvent( evt );
             }
-        });
+        } );
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        add(fontSelector, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets( 0, 0, 10, 0 );
+        add( fontSelector, gridBagConstraints );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void titleInputFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_titleInputFocusLost
-         this.applyTitle( evt.getSource() );
+    private void titleInputFocusLost( java.awt.event.FocusEvent evt ) {//GEN-FIRST:event_titleInputFocusLost
+        this.applyTitle( evt.getSource() );
     }//GEN-LAST:event_titleInputFocusLost
 
-    private void titleInputEnterPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_titleInputEnterPressed
-         if (evt.getKeyCode() != 10) return;
-         this.applyTitle( evt.getSource() );
+    private void titleInputEnterPressed( java.awt.event.KeyEvent evt ) {//GEN-FIRST:event_titleInputEnterPressed
+        if (evt.getKeyCode() != 10)
+            return;
+        this.applyTitle( evt.getSource() );
     }//GEN-LAST:event_titleInputEnterPressed
 
-    private void fontSizeChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_fontSizeChanged
+    private void fontSizeChanged( javax.swing.event.ChangeEvent evt ) {//GEN-FIRST:event_fontSizeChanged
         int value = (int) this.fontSizeSpinner.getValue();
         this.apply( null, null, value );
     }//GEN-LAST:event_fontSizeChanged
 
-    private void boldButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_boldButtonStateChanged
+    private void boldButtonStateChanged( javax.swing.event.ChangeEvent evt ) {//GEN-FIRST:event_boldButtonStateChanged
         int style = this.boldButton.isSelected() ? Font.BOLD : Font.PLAIN;
 
         if (this.italicButton.isSelected())
@@ -180,7 +187,7 @@ public class TextModifierPanel extends javax.swing.JPanel {
         this.apply( null, style, null );
     }//GEN-LAST:event_boldButtonStateChanged
 
-    private void italicButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_italicButtonStateChanged
+    private void italicButtonStateChanged( javax.swing.event.ChangeEvent evt ) {//GEN-FIRST:event_italicButtonStateChanged
         int style = this.italicButton.isSelected() ? Font.ITALIC : Font.PLAIN;
 
         if (this.boldButton.isSelected())
@@ -189,19 +196,19 @@ public class TextModifierPanel extends javax.swing.JPanel {
         this.apply( null, style, null );
     }//GEN-LAST:event_italicButtonStateChanged
 
-    private void fontSelectedEvent(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSelectedEvent
+    private void fontSelectedEvent( java.awt.event.ActionEvent evt ) {//GEN-FIRST:event_fontSelectedEvent
         String family = (String) this.fontSelector.getSelectedItem();
         this.apply( family, null, null );
     }//GEN-LAST:event_fontSelectedEvent
 
-    private void applyTitle(@NotNull Object source) {
+    private void applyTitle( @NotNull Object source ) {
         JTextField input = (JTextField) source;
         String text = input.getText();
 
-        selected.text(text);
+        selected.text( text );
     }
 
-    private void apply(@Nullable String family, @Nullable Integer style, @Nullable Integer size) {
+    private void apply( @Nullable String family, @Nullable Integer style, @Nullable Integer size ) {
         Font currentFont = selected.font();
         Font newFont = new Font(
                 family != null ? family : currentFont.getFamily(),
@@ -209,7 +216,7 @@ public class TextModifierPanel extends javax.swing.JPanel {
                 size != null ? size : currentFont.getSize()
         );
 
-        selected.font(newFont);
+        selected.font( newFont );
     }
 
     private void loadButtonTextProperties() {
