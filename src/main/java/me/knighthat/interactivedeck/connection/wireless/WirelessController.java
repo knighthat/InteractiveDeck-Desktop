@@ -22,6 +22,7 @@ import me.knighthat.interactivedeck.connection.Status;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.RequestHandler;
 import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.menus.NotificationCenter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -50,7 +51,9 @@ public class WirelessController extends Thread {
 
         while (!Thread.interrupted())
             try (ServerSocket socket = new ServerSocket( PORT, 1, IP )) {
-                Log.info( "Listening on: " + address() );
+                String message = "Listening on: " + address();
+                Log.info( message );
+                NotificationCenter.createConstantMessage( message );
 
                 handleConnection( socket.accept() );
 
