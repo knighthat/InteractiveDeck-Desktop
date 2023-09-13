@@ -211,9 +211,9 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add(statusSection, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addButtonClicked
-        JDialog dialog = new AddProfileMenu(this);
-        dialog.setVisible(true);
+    private void addButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_addButtonClicked
+        PopupMenu dialog = new AddProfilePopup( this );
+        dialog.setVisible( true );
     }//GEN-LAST:event_addButtonClicked
 
     private void removeProfilesButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_removeProfilesButtonClicked
@@ -227,13 +227,9 @@ public class MainMenu extends javax.swing.JFrame {
         MenuProperty.active(profile);
     }//GEN-LAST:event_removeProfilesButtonClicked
 
-    private void configureProfileButtonClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_configureProfileButtonClicked
-        Profile selected = (Profile) profilesList.getSelectedItem();
-        if (selected == null)
-            return;
-
-        JDialog dialog = new ProfileConfigurationMenu(this);
-        dialog.setVisible(true);
+    private void configureProfileButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_configureProfileButtonClicked
+        PopupMenu dialog = new ProfileConfigurationPopup( this );
+        dialog.setVisible( true );
     }//GEN-LAST:event_configureProfileButtonClicked
 
     private void profilesListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_profilesListActionPerformed
