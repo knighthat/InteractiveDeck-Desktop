@@ -30,6 +30,9 @@ public class InternalIcons {
     public final @NotNull SVGDocument PROFILE_REMOVE_HOVER;
     public final @NotNull SVGDocument PROFILE_CONFIGURE;
     public final @NotNull SVGDocument PROFILE_CONFIGURE_HOVER;
+    public final @NotNull SVGDocument TAB_TEXT;
+    public final @NotNull SVGDocument TAB_ICON;
+    public final @NotNull SVGDocument TAB_TASK;
 
     public InternalIcons() {
         PROFILE_ADD = fromResource( "add" );
@@ -38,6 +41,9 @@ public class InternalIcons {
         PROFILE_REMOVE_HOVER = fromResource( "remove-hover" );
         PROFILE_CONFIGURE = fromResource( "configure" );
         PROFILE_CONFIGURE_HOVER = fromResource( "configure-hover" );
+        TAB_TEXT = fromResource( "tab-text" );
+        TAB_ICON = fromResource( "tab-icon" );
+        TAB_TASK = fromResource( "tab-task" );
     }
 
     @NotNull SVGDocument fromResource( @NotNull String name ) {
