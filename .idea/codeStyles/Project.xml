@@ -4,8 +4,6 @@
     <option name="DO_NOT_FORMAT">
       <list>
         <fileSet type="globPattern" pattern="*.form" />
-        <fileSet type="globPattern" pattern="*Menu.java" />
-        <fileSet type="globPattern" pattern="*Panel.java" />
       </list>
     </option>
     <JavaCodeStyleSettings>
@@ -27,6 +25,18 @@
       <option name="WRAP_LONG_LINES" value="true" />
       <option name="SPACE_WITHIN_ANNOTATION_PARENTHESES" value="true" />
       <option name="WRAP_ON_TYPING" value="1" />
+      <arrangement>
+        <groups>
+          <group>
+            <type>GETTERS_AND_SETTERS</type>
+            <order>KEEP</order>
+          </group>
+          <group>
+            <type>OVERRIDDEN_METHODS</type>
+            <order>KEEP</order>
+          </group>
+        </groups>
+      </arrangement>
     </codeStyleSettings>
   </code_scheme>
 </component>
