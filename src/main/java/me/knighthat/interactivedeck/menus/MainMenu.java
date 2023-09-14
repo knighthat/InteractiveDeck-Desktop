@@ -64,6 +64,7 @@ public class MainMenu extends javax.swing.JFrame {
         this.addProfilePopup = new AddProfilePopup( this );
         this.profileConfigurationPopup = new ProfileConfigurationPopup( this );
         this.removeProfilePopup = new RemoveProfilePopup( this );
+        WarningPopup.INSTANCE = new WarningPopup( this );
 
         initComponents();
 
