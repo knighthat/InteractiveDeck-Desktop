@@ -61,6 +61,11 @@ public class TabUI extends BasicTabbedPaneUI {
     }
 
     @Override
+    protected void paintContentBorderBottomEdge( Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h ) {
+        paintTransparent( g, x, y, w, h );
+    }
+
+    @Override
     protected void paintContentBorderRightEdge( Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h ) {
         paintTransparent( g, x, y, w, h );
     }
