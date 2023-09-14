@@ -23,6 +23,7 @@ import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
 import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
+import me.knighthat.interactivedeck.menus.popup.WarningPopup;
 import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
@@ -49,7 +50,7 @@ public class MainMenu extends javax.swing.JFrame {
     private final @NotNull RemoveProfilePopup removeProfilePopup;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel btnModifierSection;
+    private me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer buttonModifier;
     private javax.swing.JPanel iBtnSection;
     private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
     // End of variables declaration//GEN-END:variables
@@ -113,8 +114,8 @@ public class MainMenu extends javax.swing.JFrame {
         me.knighthat.interactivedeck.component.plist.ProfileButton addProfileButton = new ProfileButton( ProfileButton.ButtonType.ADD );
         me.knighthat.interactivedeck.component.plist.ProfileButton removeProfileButton = new ProfileButton( ProfileButton.ButtonType.REMOVE );
         me.knighthat.interactivedeck.component.plist.ProfileButton configureProfileButton = new ProfileButton( ProfileButton.ButtonType.CONFIGURE );
+        buttonModifier = new me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer();
         iBtnSection = new javax.swing.JPanel();
-        btnModifierSection = new javax.swing.JPanel();
         javax.swing.JPanel statusSection = new javax.swing.JPanel();
         me.knighthat.interactivedeck.component.netstatus.ConStatus conStatus = Connection.component();
         me.knighthat.interactivedeck.menus.NotificationCenter notificationCenter1 = new me.knighthat.interactivedeck.menus.NotificationCenter();
@@ -160,6 +161,7 @@ public class MainMenu extends javax.swing.JFrame {
         configureProfileButton.setMaximumSize( new java.awt.Dimension( 30, 30 ) );
         configureProfileButton.setMinimumSize( new java.awt.Dimension( 30, 30 ) );
         configureProfileButton.setPreferredSize( new java.awt.Dimension( 30, 30 ) );
+        configureProfileButton.setRecenterOnResize( false );
         configureProfileButton.addMouseListener( new java.awt.event.MouseAdapter() {
             public void mouseClicked( java.awt.event.MouseEvent evt ) {
                 configureProfileButtonClicked( evt );
@@ -194,6 +196,7 @@ public class MainMenu extends javax.swing.JFrame {
         );
 
         getContentPane().add( profilesSection, java.awt.BorderLayout.NORTH );
+        getContentPane().add( buttonModifier, java.awt.BorderLayout.CENTER );
 
         iBtnSection.setBackground( new java.awt.Color( 51, 51, 51 ) );
         iBtnSection.setDoubleBuffered( false );
@@ -202,14 +205,6 @@ public class MainMenu extends javax.swing.JFrame {
         iBtnSection.setPreferredSize( new java.awt.Dimension( 750, 520 ) );
         iBtnSection.setLayout( new java.awt.GridBagLayout() );
         getContentPane().add( iBtnSection, java.awt.BorderLayout.WEST );
-
-        btnModifierSection.setBackground( new java.awt.Color( 36, 36, 36 ) );
-        btnModifierSection.setDoubleBuffered( false );
-        btnModifierSection.setMaximumSize( new java.awt.Dimension( 250, 520 ) );
-        btnModifierSection.setMinimumSize( new java.awt.Dimension( 250, 520 ) );
-        btnModifierSection.setPreferredSize( new java.awt.Dimension( 250, 520 ) );
-        btnModifierSection.setLayout( new java.awt.BorderLayout() );
-        getContentPane().add( btnModifierSection, java.awt.BorderLayout.CENTER );
 
         statusSection.setBackground( new java.awt.Color( 36, 36, 36 ) );
         statusSection.setAlignmentX( 0.0F );
@@ -318,18 +313,12 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     void initButtonObserver() {
-        bSelected.observe( btn -> {
-            btnModifierSection.removeAll();
-            btnModifierSection.revalidate();
-            btnModifierSection.repaint();
-
-            if (btn == null)
-                return;
-
-            btn.toggleSelect();
-
-            ModifierContainer panel = new ModifierContainer( btn );
-            btnModifierSection.add( panel, BorderLayout.PAGE_START );
+        bSelected.observe( button -> {
+            if (button != null) {
+                buttonModifier.updateSelectedButton( button );
+                button.toggleSelect();
+            } else
+                buttonModifier.setVisible( false );
         } );
     }
 
