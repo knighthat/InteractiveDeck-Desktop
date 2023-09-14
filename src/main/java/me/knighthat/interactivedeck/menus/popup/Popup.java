@@ -68,6 +68,7 @@ public abstract class Popup extends JDialog {
 
     protected void finish() {
         setVisible( false );
+        dispose();
     }
 
     public @NotNull JButton addButton( @NotNull Consumer<JButton> consumer ) {
