@@ -47,6 +47,7 @@ public class ProfileButton extends JSVGCanvas {
 
         setBackground( TRANSPARENT );
         setDocument( ICON );
+        setRecenterOnResize( false );
 
         addMouseListener( new MouseAdapter() {
             @Override
