@@ -24,46 +24,37 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class AddProfilePopup extends PopupMenu {
+public class AddProfilePopup extends YesNoPopup {
 
     private JTextField displayNameInput;
 
-    public AddProfilePopup( @NotNull Window owner ) {
-        super( owner, "Add Profile" );
+    public AddProfilePopup( @NotNull Window window ) {
+        super( window, "Add Profile", "Create", "Cancel" );
+    }
 
-        // Create and add "Create" button
-        addButton( button -> {
-            button.setText( "Create" );
-            button.addMouseListener( new MouseAdapter() {
-                @Override
-                public void mouseClicked( MouseEvent e ) {
-                    createProfile();
-                }
-            } );
-        } );
+    private void createProfile() {
+        String fromUser = displayNameInput.getText().trim();
+        if (fromUser.isBlank())
+            return;  // TODO Notify user about empty input
 
-        // Create and add "Cancel" button
-        addButton( button -> {
-            button.setText( "Cancel" );
-            button.addMouseListener( new MouseAdapter() {
-                public void mouseClicked( MouseEvent evt ) {
-                    finish();
-                }
-            } );
-        } );
+        Profile profile = Profiles.create( fromUser );
+        MenuProperty.add( profile );
+        ( (MainMenu) super.getOwner() ).updateProfilesList();
+        MenuProperty.active( profile );
+
+        finish();
     }
 
     @Override
-    void initContent() {
-
+    protected void loadContent() {
         addContent( new JLabel( "Display Name:" ), label -> {}, constraints -> {
             constraints.fill = GridBagConstraints.HORIZONTAL;
             constraints.anchor = GridBagConstraints.WEST;
             constraints.insets = new Insets( 0, 0, 0, 10 );
         } );
+
         addContent(
                 new JTextField(),
                 comp -> {
@@ -87,16 +78,15 @@ public class AddProfilePopup extends PopupMenu {
         );
     }
 
-    private void createProfile() {
-        String fromUser = displayNameInput.getText().trim();
-        if (fromUser.isBlank())
-            return;  // TODO Notify user about empty input
+    @Override
+    public void present() {
+        super.present();
+        displayNameInput.setText( "" );
+        displayNameInput.requestFocus();
+    }
 
-        Profile profile = Profiles.create( fromUser );
-        MenuProperty.add( profile );
-        ( (MainMenu) super.getOwner() ).updateProfilesList();
-        MenuProperty.active( profile );
-
-        finish();
+    @Override
+    protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
+        createProfile();
     }
 }

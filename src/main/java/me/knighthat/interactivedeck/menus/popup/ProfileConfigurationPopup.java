@@ -16,51 +16,67 @@ package me.knighthat.interactivedeck.menus.popup;
 
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class ProfileConfigurationPopup extends PopupMenu {
+public class ProfileConfigurationPopup extends ProfilePopup {
 
-    private Profile profile;
     private JTextField displayNameInput;
     private JSpinner columns;
     private JSpinner rows;
     private JSpinner gap;
 
-    public ProfileConfigurationPopup( @NotNull Window owner ) {
-        super( owner, "Profile Configuration" );
+    public ProfileConfigurationPopup( @NotNull Window window ) {
+        super( window, "Profile Configuration", "Apply", "Cancel" );
+    }
 
-        // Create and add "Create" button
-        addButton( button -> {
-            button.setText( "Apply" );
-            button.addMouseListener( new MouseAdapter() {
-                @Override
-                public void mouseClicked( MouseEvent e ) {
-                    apply();
+    private @NotNull JSpinner spinner( @NotNull String name, int gridy, int min ) {
+        addContent(
+                new JLabel( name ),
+                label -> setDimension( label, 150, 20 ),
+                constraints -> {
+                    constraints.gridy = gridy;
+                    constraints.anchor = GridBagConstraints.WEST;
+                    constraints.insets = new Insets( 10, 0, 0, 0 );
                 }
-            } );
-        } );
+        );
+        JSpinner spinner = new JSpinner();
+        addContent(
+                spinner,
+                comp -> {
+                    setDimension( comp, 150, 30 );
+                    SpinnerModel model = new SpinnerNumberModel( min, min, 10, 1 );
+                    ( (JSpinner) comp ).setModel( model );
+                },
+                constraints -> constraints.gridy = gridy + 1
+        );
+        return spinner;
+    }
 
-        // Create and add "Cancel" button
-        addButton( button -> {
-            button.setText( "Cancel" );
-            button.addMouseListener( new MouseAdapter() {
-                public void mouseClicked( MouseEvent evt ) {
-                    finish();
-                }
-            } );
-        } );
+    private void apply() {
+        profile.displayName( displayNameInput.getText() );
+        profile.columns( validate( columns.getValue(), 1 ) );
+        profile.rows( validate( rows.getValue(), 1 ) );
+        profile.gap( validate( gap.getValue(), 0 ) );
+
+        MainMenu menu = (MainMenu) getOwner();
+        menu.updateProfilesList();
+        menu.updateButtons( profile );
+
+        finish();
+    }
+
+    private int validate( @NotNull Object obj, int min ) {
+        if (!( obj instanceof Integer number ))
+            return min;
+        return number < min ? min : Math.min( number, 10 );
     }
 
     @Override
-    void initContent() {
-        profile = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
-
+    protected void loadContent() {
         addContent(
                 new JLabel( "Display Name" ),
                 label -> setDimension( label, 150, 20 ),
@@ -71,53 +87,25 @@ public class ProfileConfigurationPopup extends PopupMenu {
                 comp -> {
                     setDimension( comp, 150, 30 );
                     displayNameInput = (JTextField) comp;
-                    displayNameInput.setText( profile.displayName() );
                 },
                 constraints -> constraints.gridy = 1
         );
-
-
-        columns = spinner( "Columns", 2, profile.columns(), 1 );
-        rows = spinner( "Rows", 4, profile.rows(), 1 );
-        gap = spinner( "Gap", 6, profile.gap(), 0 );
+        columns = spinner( "Columns", 2, 1 );
+        rows = spinner( "Rows", 4, 1 );
+        gap = spinner( "Gap", 6, 0 );
     }
 
-    private @NotNull JSpinner spinner( @NotNull String name, int gridy, int curValue, int min ) {
-        addContent(
-                new JLabel( name ),
-                label -> setDimension( label, 150, 20 ),
-                constraints -> {
-                    constraints.gridy = gridy;
-                    constraints.anchor = GridBagConstraints.WEST;
-                    constraints.insets = new Insets( 10, 0, 0, 0 );
-                }
-        );
-        return (JSpinner) addContent(
-                new JSpinner(),
-                comp -> {
-                    setDimension( comp, 150, 30 );
-
-                    SpinnerModel model = new SpinnerNumberModel( curValue, min, 10, 1 );
-                    ( (JSpinner) comp ).setModel( model );
-                },
-                constraints -> constraints.gridy = gridy + 1
-        );
+    @Override
+    protected void loadProfile( @NotNull Profile profile ) {
+        displayNameInput.setText( profile.displayName() );
+        columns.setValue( profile.columns() );
+        rows.setValue( profile.rows() );
+        gap.setValue( profile.gap() );
+        displayNameInput.requestFocus();
     }
 
-    private void apply() {
-        profile.displayName( displayNameInput.getText() );
-        profile.columns( validate( columns.getValue(), 1 ) );
-        profile.rows( validate( rows.getValue(), 1 ) );
-        profile.gap( validate( gap.getValue(), 0 ) );
-
-        ( (MainMenu) getOwner() ).updateButtons( profile );
-
-        finish();
-    }
-
-    int validate( @NotNull Object obj, int min ) {
-        if (!( obj instanceof Integer number ))
-            return min;
-        return number < min ? min : Math.min( number, 10 );
+    @Override
+    protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
+        apply();
     }
 }

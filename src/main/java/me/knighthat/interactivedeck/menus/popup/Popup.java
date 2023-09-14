@@ -20,13 +20,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public abstract class PopupMenu extends JDialog {
+public abstract class Popup extends JDialog {
 
-    protected final @NotNull JPanel content;
-    private final @NotNull JPanel buttonContainer;
+    protected JPanel contentContainer;
+    protected JPanel buttonContainer;
 
-    public PopupMenu( @NotNull Window owner, @NotNull String title ) {
-        super( owner );
+    public Popup( @NotNull Window window, @NotNull String title ) {
+        super( window );
 
         setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
         setBackground( new Color( 51, 51, 51 ) );
@@ -34,43 +34,31 @@ public abstract class PopupMenu extends JDialog {
         getRootPane().setWindowDecorationStyle( JRootPane.NONE );
         setUndecorated( true );
 
-        title( title );
-
-        this.content = new JPanel();
-        content.setOpaque( false );
-        content.setLayout( new GridBagLayout() );
-        initContent();
-        getContentPane().add( content, BorderLayout.CENTER );
-
-        this.buttonContainer = new JPanel();
-        initButtons();
-        getContentPane().add( buttonContainer, BorderLayout.SOUTH );
-
-        pack();
-        setLocationRelativeTo( owner );
+        setupTitle( title );
+        setupContentContainer();
+        setupButtonContainer();
     }
 
-    abstract void initContent();
+    protected abstract void loadContent();
 
-    void title( @NotNull String title ) {
+    protected abstract void loadButtons();
+
+    private void setupTitle( @NotNull String title ) {
         JLabel label = new JLabel( title );
-
         label.setHorizontalAlignment( SwingConstants.CENTER );
-
-        Dimension dimension = new Dimension( 300, 30 );
-        label.setMaximumSize( dimension );
-        label.setMinimumSize( dimension );
-        label.setPreferredSize( dimension );
-
+        setDimension( label, 300, 30 );
         getContentPane().add( label, BorderLayout.PAGE_START );
     }
 
-    void initButtons() {
-        Dimension dimension = new Dimension( 300, 50 );
-        buttonContainer.setMaximumSize( dimension );
-        buttonContainer.setMinimumSize( dimension );
-        buttonContainer.setPreferredSize( dimension );
+    private void setupContentContainer() {
+        this.contentContainer = new JPanel();
+        contentContainer.setOpaque( false );
+        contentContainer.setLayout( new GridBagLayout() );
+    }
 
+    private void setupButtonContainer() {
+        this.buttonContainer = new JPanel();
+        setDimension( buttonContainer, 300, 50 );
         buttonContainer.setOpaque( false );
 
         FlowLayout layout = new FlowLayout( FlowLayout.RIGHT, 20, 15 );
@@ -78,35 +66,43 @@ public abstract class PopupMenu extends JDialog {
         buttonContainer.setLayout( layout );
     }
 
-    void addButton( @NotNull Consumer<JButton> consumer ) {
-        JButton button = new JButton();
-
-        Dimension dimension = new java.awt.Dimension( 80, 25 );
-        button.setMaximumSize( dimension );
-        button.setMinimumSize( dimension );
-        button.setPreferredSize( dimension );
-
-        consumer.accept( button );
-        buttonContainer.add( button );
+    protected void finish() {
+        setVisible( false );
     }
 
-    @NotNull JComponent addContent( @NotNull JComponent component, @NotNull Consumer<JComponent> conComp, @NotNull Consumer<GridBagConstraints> conCons ) {
+    public @NotNull JButton addButton( @NotNull Consumer<JButton> consumer ) {
+        JButton button = new JButton();
+        setDimension( button, 80, 25 );
+        consumer.accept( button );
+        buttonContainer.add( button );
+
+        return button;
+    }
+
+    public @NotNull JComponent addContent( @NotNull JComponent component, @NotNull Consumer<JComponent> conComp, @NotNull Consumer<GridBagConstraints> conCons ) {
         GridBagConstraints constraints = new GridBagConstraints();
         conCons.accept( constraints );
         conComp.accept( component );
-        content.add( component, constraints );
+        contentContainer.add( component, constraints );
 
         return component;
     }
 
-    void setDimension( @NotNull JComponent component, int width, int height ) {
+    public void setDimension( @NotNull JComponent component, int width, int height ) {
         Dimension dimension = new Dimension( width, height );
         component.setMaximumSize( dimension );
         component.setMinimumSize( dimension );
         component.setPreferredSize( dimension );
     }
 
-    void finish() {
-        this.setVisible( false );
+    public void present() {
+        loadContent();
+        getContentPane().add( contentContainer, BorderLayout.CENTER );
+        loadButtons();
+        getContentPane().add( buttonContainer, BorderLayout.SOUTH );
+        setVisible( true );
+        pack();
+
+        setLocationRelativeTo( getOwner() );
     }
 }
