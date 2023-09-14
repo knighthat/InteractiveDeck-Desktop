@@ -21,8 +21,8 @@ import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
-import me.knighthat.interactivedeck.menus.popup.PopupMenu;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
+import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
 import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
@@ -44,6 +44,9 @@ import static me.knighthat.interactivedeck.file.Settings.*;
 public class MainMenu extends javax.swing.JFrame {
 
     private final @NotNull Observable<IButton> bSelected = Observable.of( null );
+    private final @NotNull AddProfilePopup addProfilePopup;
+    private final @NotNull ProfileConfigurationPopup profileConfigurationPopup;
+    private final @NotNull RemoveProfilePopup removeProfilePopup;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel btnModifierSection;
@@ -56,6 +59,11 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public MainMenu() {
         super( GlobalVars.name() + " - " + GlobalVars.version() );
+
+        this.addProfilePopup = new AddProfilePopup( this );
+        this.profileConfigurationPopup = new ProfileConfigurationPopup( this );
+        this.removeProfilePopup = new RemoveProfilePopup( this );
+
         initComponents();
 
         initButtonObserver();
@@ -232,24 +240,19 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_addButtonClicked
-        PopupMenu dialog = new AddProfilePopup( this );
-        dialog.setVisible( true );
+        addProfilePopup.present();
     }//GEN-LAST:event_addButtonClicked
 
     private void removeProfilesButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_removeProfilesButtonClicked
         Profile selected = (Profile) profilesList.getSelectedItem();
         if (selected == null || selected.isDefault)
             return;
-        selected.remove();
-        updateProfilesList();
-
-        Profile profile = MenuProperty.defaultProfile();
-        MenuProperty.active( profile );
+        removeProfilePopup.present( selected );
     }//GEN-LAST:event_removeProfilesButtonClicked
 
     private void configureProfileButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_configureProfileButtonClicked
-        PopupMenu dialog = new ProfileConfigurationPopup( this );
-        dialog.setVisible( true );
+        Profile profile = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
+        profileConfigurationPopup.present( profile );
     }//GEN-LAST:event_configureProfileButtonClicked
 
     private void profilesListActionPerformed( java.awt.event.ActionEvent evt ) {//GEN-FIRST:event_profilesListActionPerformed
@@ -331,9 +334,12 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     public void updateProfilesList() {
+        Profile active = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
+
         profilesList.removeAll();
         ComboBoxModel<Profile> model = new DefaultComboBoxModel<>( MenuProperty.profileArray() );
         profilesList.setModel( model );
+        profilesList.setSelectedItem( active );
         profilesList.revalidate();
         profilesList.repaint();
     }
