@@ -15,12 +15,18 @@
 package me.knighthat.interactivedeck.component.tab;
 
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import java.awt.*;
 import java.awt.geom.QuadCurve2D;
 
 public class TabUI extends BasicTabbedPaneUI {
+
+    private void paintTransparent( @NotNull Graphics g, int x, int y, int w, int h ) {
+        g.setColor( ColorUtils.TRANSPARENT );
+        g.fillRect( x, y, w, h );
+    }
 
     @Override
     protected LayoutManager createLayoutManager() {
@@ -51,14 +57,12 @@ public class TabUI extends BasicTabbedPaneUI {
 
     @Override
     protected void paintContentBorderLeftEdge( Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h ) {
-        g.setColor( ColorUtils.TRANSPARENT );
-        g.fillRect( x, y, w, h );
+        paintTransparent( g, x, y, w, h );
     }
 
     @Override
     protected void paintContentBorderRightEdge( Graphics g, int tabPlacement, int selectedIndex, int x, int y, int w, int h ) {
-        g.setColor( ColorUtils.TRANSPARENT );
-        g.fillRect( x, y, w, h );
+        paintTransparent( g, x, y, w, h );
     }
 
     private class SpacedLayout extends BasicTabbedPaneUI.TabbedPaneLayout {
