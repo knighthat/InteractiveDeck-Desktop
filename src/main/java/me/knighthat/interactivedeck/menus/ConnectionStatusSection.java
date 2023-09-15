@@ -15,8 +15,7 @@
 package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.Flexible;
-import me.knighthat.interactivedeck.component.netstatus.ConStatus;
-import me.knighthat.interactivedeck.connection.Connection;
+import me.knighthat.interactivedeck.component.netstatus.NetStatus;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,11 +27,11 @@ import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 public class ConnectionStatusSection extends JPanel implements Flexible {
 
     private final @NotNull NotificationCenter notificationCenter;
-    private final @NotNull ConStatus connectionStatus;
+    //    private final @NotNull ConStatus connectionStatus;
 
     public ConnectionStatusSection() {
         this.notificationCenter = new NotificationCenter();
-        this.connectionStatus = Connection.component();
+        //        this.connectionStatus = Connection.component();
 
         setBackground( ColorUtils.DEFAULT_DARK );
         setDimension( this, 1000, 30 );
@@ -45,28 +44,32 @@ public class ConnectionStatusSection extends JPanel implements Flexible {
     private void setupLayout() {
         GroupLayout layout = (GroupLayout) getLayout();
 
-        GroupLayout.SequentialGroup horizontalSequentialG =
-                layout
-                        .createSequentialGroup()
-                        .addGap( 30 )
-                        .addComponent( connectionStatus )
-                        .addPreferredGap( RELATED, 349, Short.MAX_VALUE )
-                        .addComponent( notificationCenter )
-                        .addContainerGap();
-        layout.setHorizontalGroup(
-                layout.createParallelGroup( LEADING ).addGroup( horizontalSequentialG )
-        );
+        GroupLayout.ParallelGroup horizontalParallelG = layout.createParallelGroup( LEADING );
+        horizontalParallelG
+                .addGroup(
+                        layout
+                                .createSequentialGroup()
+                                .addGap( 30 )
+                                .addComponent( NetStatus.ICON )
+                                .addGap( 5 )
+                                .addComponent( NetStatus.LABEL )
+                                .addPreferredGap( RELATED, 349, Short.MAX_VALUE )
+                                .addComponent( notificationCenter )
+                                .addContainerGap()
+                );
+        layout.setHorizontalGroup( horizontalParallelG );
 
-        GroupLayout.SequentialGroup verticalSequentialG =
-                layout
-                        .createSequentialGroup()
-                        .addGroup( layout.createParallelGroup( LEADING )
-                                .addComponent( connectionStatus )
-                                .addComponent( notificationCenter ) )
-                        .addGap( 0 );
-        layout.setVerticalGroup(
-                layout.createParallelGroup( LEADING ).addGroup( verticalSequentialG )
-        );
+        GroupLayout.ParallelGroup verticalParallelG = layout.createParallelGroup( LEADING );
+        verticalParallelG
+                .addGroup(
+                        layout
+                                .createSequentialGroup()
+                                .addGap( 5 )
+                                .addComponent( NetStatus.ICON )
+                )
+                .addComponent( NetStatus.LABEL )
+                .addComponent( notificationCenter );
+        layout.setVerticalGroup( verticalParallelG );
     }
     // </editor-fold>
 
