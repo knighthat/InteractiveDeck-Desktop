@@ -26,7 +26,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-public class AddProfilePopup extends YesNoPopup {
+public final class AddProfilePopup extends YesNoPopup {
+
+    public static AddProfilePopup INSTANCE;
 
     private JTextField displayNameInput;
 

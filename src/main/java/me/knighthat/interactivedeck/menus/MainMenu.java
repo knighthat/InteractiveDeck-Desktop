@@ -61,9 +61,9 @@ public class MainMenu extends javax.swing.JFrame {
     public MainMenu() {
         super( GlobalVars.name() + " - " + GlobalVars.version() );
 
-        this.addProfilePopup = new AddProfilePopup( this );
-        this.profileConfigurationPopup = new ProfileConfigurationPopup( this );
-        this.removeProfilePopup = new RemoveProfilePopup( this );
+        AddProfilePopup.INSTANCE = new AddProfilePopup( this );
+        RemoveProfilePopup.INSTANCE = new RemoveProfilePopup( this );
+        ProfileConfigurationPopup.INSTANCE = new ProfileConfigurationPopup( this );
         WarningPopup.INSTANCE = new WarningPopup( this );
 
         initComponents();

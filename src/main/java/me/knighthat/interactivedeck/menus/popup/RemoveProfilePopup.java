@@ -24,7 +24,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class RemoveProfilePopup extends ProfilePopup {
+public final class RemoveProfilePopup extends ProfilePopup {
+
+    public static RemoveProfilePopup INSTANCE;
 
     private JLabel message;
 

@@ -22,7 +22,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class ProfileConfigurationPopup extends ProfilePopup {
+public final class ProfileConfigurationPopup extends ProfilePopup {
+
+    public static ProfileConfigurationPopup INSTANCE;
 
     private JTextField displayNameInput;
     private JSpinner columns;
