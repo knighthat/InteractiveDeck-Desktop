@@ -27,11 +27,8 @@ import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
 public class ProfileButton extends JSVGCanvas {
 
-    private @Nullable SVGDocument ICON;
-    private @Nullable SVGDocument ICON_HOVER;
-
-    public ProfileButton() {
-    }
+    private final @Nullable SVGDocument ICON;
+    private final @Nullable SVGDocument ICON_HOVER;
 
     public ProfileButton( @NotNull ButtonType type ) {
         ICON = switch (type) {
