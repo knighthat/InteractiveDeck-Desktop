@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.component.icon;
 
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.svg.SVGNotFound;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import org.jetbrains.annotations.NotNull;
@@ -33,8 +34,15 @@ public class InternalIcons {
     public final @NotNull SVGDocument TAB_TEXT;
     public final @NotNull SVGDocument TAB_ICON;
     public final @NotNull SVGDocument TAB_TASK;
+    public final @NotNull SVGDocument CONNECTION_ERROR;
+    public final @NotNull SVGDocument CONNECTION_CONNECTED;
+    public final @NotNull SVGDocument CONNECTION_UNKNOWN;
+    public final @NotNull SVGDocument CONNECTION_DISCONNECTED;
+
 
     public InternalIcons() {
+        Log.info( "Loading icons..." );
+
         PROFILE_ADD = fromResource( "add" );
         PROFILE_ADD_HOVER = fromResource( "add-hover" );
         PROFILE_REMOVE = fromResource( "remove" );
@@ -44,6 +52,12 @@ public class InternalIcons {
         TAB_TEXT = fromResource( "tab-text" );
         TAB_ICON = fromResource( "tab-icon" );
         TAB_TASK = fromResource( "tab-task" );
+        CONNECTION_ERROR = fromResource( "connection-error" );
+        CONNECTION_CONNECTED = fromResource( "connection-connected" );
+        CONNECTION_UNKNOWN = fromResource( "connection-unknown" );
+        CONNECTION_DISCONNECTED = fromResource( "connection-disconnected" );
+
+        Log.info( "Icons loaded!" );
     }
 
     @NotNull SVGDocument fromResource( @NotNull String name ) {
