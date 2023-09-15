@@ -15,7 +15,6 @@ package me.knighthat.interactivedeck.menus;
 
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.component.plist.ProfileButton;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.Json;
@@ -30,7 +29,6 @@ import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -45,14 +43,11 @@ import static me.knighthat.interactivedeck.file.Settings.*;
 public class MainMenu extends javax.swing.JFrame {
 
     private final @NotNull Observable<IButton> bSelected = Observable.of( null );
-    private final @NotNull AddProfilePopup addProfilePopup;
-    private final @NotNull ProfileConfigurationPopup profileConfigurationPopup;
-    private final @NotNull RemoveProfilePopup removeProfilePopup;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer buttonModifier;
     private javax.swing.JPanel iBtnSection;
-    private me.knighthat.interactivedeck.component.plist.ProfilesComboBox profilesList;
+    private me.knighthat.interactivedeck.menus.ProfileSection profileSection;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -69,8 +64,6 @@ public class MainMenu extends javax.swing.JFrame {
         initComponents();
 
         initButtonObserver();
-
-        MenuProperty.observeActive( profilesList::setSelectedItem );
 
         addWindowListener( new WindowAdapter() {
             @Override
@@ -110,11 +103,7 @@ public class MainMenu extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.JPanel profilesSection = new javax.swing.JPanel();
-        profilesList = new me.knighthat.interactivedeck.component.plist.ProfilesComboBox();
-        me.knighthat.interactivedeck.component.plist.ProfileButton addProfileButton = new ProfileButton( ProfileButton.ButtonType.ADD );
-        me.knighthat.interactivedeck.component.plist.ProfileButton removeProfileButton = new ProfileButton( ProfileButton.ButtonType.REMOVE );
-        me.knighthat.interactivedeck.component.plist.ProfileButton configureProfileButton = new ProfileButton( ProfileButton.ButtonType.CONFIGURE );
+        profileSection = new me.knighthat.interactivedeck.menus.ProfileSection();
         buttonModifier = new me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer();
         iBtnSection = new javax.swing.JPanel();
         javax.swing.JPanel statusSection = new javax.swing.JPanel();
@@ -127,76 +116,7 @@ public class MainMenu extends javax.swing.JFrame {
         setMaximumSize( new java.awt.Dimension( 1000, 600 ) );
         setMinimumSize( new java.awt.Dimension( 1000, 600 ) );
         setResizable( false );
-
-        profilesSection.setBackground( new java.awt.Color( 36, 36, 36 ) );
-        profilesSection.setPreferredSize( new java.awt.Dimension( 1000, 50 ) );
-
-        profilesList.setBackground( new java.awt.Color( 51, 51, 51 ) );
-        profilesList.setMaximumSize( new java.awt.Dimension( 300, 30 ) );
-        profilesList.setMinimumSize( new java.awt.Dimension( 300, 30 ) );
-        profilesList.setPreferredSize( new java.awt.Dimension( 300, 30 ) );
-        profilesList.addActionListener( new java.awt.event.ActionListener() {
-            public void actionPerformed( java.awt.event.ActionEvent evt ) {
-                profilesListActionPerformed( evt );
-            }
-        } );
-
-        addProfileButton.setMaximumSize( new java.awt.Dimension( 30, 30 ) );
-        addProfileButton.setMinimumSize( new java.awt.Dimension( 30, 30 ) );
-        addProfileButton.setPreferredSize( new java.awt.Dimension( 30, 30 ) );
-        addProfileButton.addMouseListener( new java.awt.event.MouseAdapter() {
-            public void mouseClicked( java.awt.event.MouseEvent evt ) {
-                addButtonClicked( evt );
-            }
-        } );
-
-        removeProfileButton.setMaximumSize( new java.awt.Dimension( 30, 30 ) );
-        removeProfileButton.setMinimumSize( new java.awt.Dimension( 30, 30 ) );
-        removeProfileButton.setPreferredSize( new java.awt.Dimension( 30, 30 ) );
-        removeProfileButton.addMouseListener( new java.awt.event.MouseAdapter() {
-            public void mouseClicked( java.awt.event.MouseEvent evt ) {
-                removeProfilesButtonClicked( evt );
-            }
-        } );
-
-        configureProfileButton.setMaximumSize( new java.awt.Dimension( 30, 30 ) );
-        configureProfileButton.setMinimumSize( new java.awt.Dimension( 30, 30 ) );
-        configureProfileButton.setPreferredSize( new java.awt.Dimension( 30, 30 ) );
-        configureProfileButton.setRecenterOnResize( false );
-        configureProfileButton.addMouseListener( new java.awt.event.MouseAdapter() {
-            public void mouseClicked( java.awt.event.MouseEvent evt ) {
-                configureProfileButtonClicked( evt );
-            }
-        } );
-
-        javax.swing.GroupLayout profilesSectionLayout = new javax.swing.GroupLayout( profilesSection );
-        profilesSection.setLayout( profilesSectionLayout );
-        profilesSectionLayout.setHorizontalGroup(
-                profilesSectionLayout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                        .addGroup( profilesSectionLayout.createSequentialGroup()
-                                .addGap( 30, 30, 30 )
-                                .addComponent( profilesList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                .addGap( 18, 18, 18 )
-                                .addComponent( addProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.RELATED )
-                                .addComponent( removeProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                .addPreferredGap( javax.swing.LayoutStyle.ComponentPlacement.UNRELATED )
-                                .addComponent( configureProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                .addContainerGap( 544, Short.MAX_VALUE ) )
-        );
-        profilesSectionLayout.setVerticalGroup(
-                profilesSectionLayout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                        .addGroup( profilesSectionLayout.createSequentialGroup()
-                                .addGap( 10, 10, 10 )
-                                .addGroup( profilesSectionLayout.createParallelGroup( javax.swing.GroupLayout.Alignment.LEADING )
-                                        .addComponent( configureProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                        .addComponent( removeProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                        .addComponent( addProfileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE )
-                                        .addComponent( profilesList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE ) )
-                                .addContainerGap( 10, Short.MAX_VALUE ) )
-        );
-
-        getContentPane().add( profilesSection, java.awt.BorderLayout.NORTH );
+        getContentPane().add( profileSection, java.awt.BorderLayout.PAGE_START );
         getContentPane().add( buttonModifier, java.awt.BorderLayout.CENTER );
 
         iBtnSection.setBackground( new java.awt.Color( 51, 51, 51 ) );
@@ -234,28 +154,6 @@ public class MainMenu extends javax.swing.JFrame {
 
         getContentPane().add( statusSection, java.awt.BorderLayout.SOUTH );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void addButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_addButtonClicked
-        addProfilePopup.present();
-    }//GEN-LAST:event_addButtonClicked
-
-    private void removeProfilesButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_removeProfilesButtonClicked
-        Profile selected = (Profile) profilesList.getSelectedItem();
-        if (selected == null || selected.isDefault)
-            return;
-        removeProfilePopup.present( selected );
-    }//GEN-LAST:event_removeProfilesButtonClicked
-
-    private void configureProfileButtonClicked( java.awt.event.MouseEvent evt ) {//GEN-FIRST:event_configureProfileButtonClicked
-        Profile profile = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
-        profileConfigurationPopup.present( profile );
-    }//GEN-LAST:event_configureProfileButtonClicked
-
-    private void profilesListActionPerformed( java.awt.event.ActionEvent evt ) {//GEN-FIRST:event_profilesListActionPerformed
-        Profile profile = (Profile) profilesList.getSelectedItem();
-        if (profile != null && evt.getActionCommand().equals( "comboBoxChanged" ))
-            updateButtons( profile );
-    }//GEN-LAST:event_profilesListActionPerformed
 
     void iBtnClickEvent( java.awt.event.MouseEvent evt ) {
         IButton selected = (IButton) evt.getComponent();
@@ -324,13 +222,6 @@ public class MainMenu extends javax.swing.JFrame {
     }
 
     public void updateProfilesList() {
-        Profile active = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
-
-        profilesList.removeAll();
-        ComboBoxModel<Profile> model = new DefaultComboBoxModel<>( MenuProperty.profileArray() );
-        profilesList.setModel( model );
-        profilesList.setSelectedItem( active );
-        profilesList.revalidate();
-        profilesList.repaint();
+        profileSection.updateProfileList();
     }
 }
