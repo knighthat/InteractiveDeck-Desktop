@@ -14,21 +14,25 @@
 
 package me.knighthat.interactivedeck.component.netstatus;
 
+import me.knighthat.interactivedeck.component.Flexible;
+import me.knighthat.interactivedeck.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class StatusLabel extends JLabel {
+final class NetLabel extends JLabel implements Flexible {
 
-    private final @NotNull Font font = new Font( "Open Sans", Font.PLAIN, 14 );
+    public NetLabel() {
+        setDimension( this, 100, 30 );
+        setOpaque( false );
 
-    public StatusLabel() {
-        Dimension dimension = new Dimension( 100, 30 );
-        setPreferredSize( dimension );
-        setMinimumSize( dimension );
-        setMaximumSize( dimension );
-
+        Font font = new Font( "Open Sans", Font.PLAIN, 14 );
         setFont( font );
+    }
+
+    public void setText( @NotNull Connection.Status status ) {
+        setText( status.label() );
+        setForeground( status.color() );
     }
 }
