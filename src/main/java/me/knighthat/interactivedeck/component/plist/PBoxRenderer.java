@@ -24,7 +24,7 @@ import java.awt.*;
 public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
 
     public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
-        String display = "NULL (You weren't supposed to see this)";
+        String display = "No available profile";
         if (profile != null)
             display = "%s (%s)".formatted( profile.displayName(), UuidUtils.lastFiveChars( profile.uuid ) );
 
