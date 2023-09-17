@@ -15,7 +15,6 @@
 package me.knighthat.interactivedeck.file;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
@@ -23,7 +22,7 @@ import me.knighthat.interactivedeck.connection.request.AddRequest;
 import me.knighthat.interactivedeck.connection.request.RemoveRequest;
 import me.knighthat.interactivedeck.connection.request.TargetedRequest;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
-import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.json.SaveAsJson;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Profile implements JsonSerializable {
+public class Profile implements SaveAsJson {
 
     public final @NotNull UUID uuid;
     public final boolean isDefault;
@@ -67,10 +66,6 @@ public class Profile implements JsonSerializable {
 
         this.displayName = displayName;
         sendUpdate( json -> json.addProperty( "displayName", displayName ) );
-    }
-
-    public @NotNull String displayName() {
-        return this.displayName;
     }
 
     public void columns( int columns ) {
@@ -220,7 +215,22 @@ public class Profile implements JsonSerializable {
     }
 
     @Override
-    public @NotNull JsonElement serialize() {
+    public @NotNull String displayName() {
+        return this.displayName;
+    }
+
+    @Override
+    public @NotNull String fileName() {
+        return uuid.toString();
+    }
+
+    @Override
+    public @NotNull String extension() {
+        return "profile";
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
         /* Template
          * {
          *      "uuid": $uuid,
