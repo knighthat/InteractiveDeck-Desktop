@@ -15,6 +15,7 @@
 package me.knighthat.interactivedeck.menus.modifier;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.font.FontFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,8 +29,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class TextModifier extends ModifierPanel {
-
-    private static final @NotNull String[] FONT_FAMILIES = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     private JTextField labelInput;
     private JComboBox<String> fontSelector;
@@ -106,7 +105,7 @@ public class TextModifier extends ModifierPanel {
 
     private void addFontSelector() {
         addContent(
-                fontSelector = new JComboBox<>( FONT_FAMILIES ),
+                fontSelector = new JComboBox<>( FontFactory.availableFamilyNames() ),
                 selector -> {
                     setDimension( selector, 140, 30 );
                     ( (JComboBox<?>) selector ).addActionListener( event -> {
