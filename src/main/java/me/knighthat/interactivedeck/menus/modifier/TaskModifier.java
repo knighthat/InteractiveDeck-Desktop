@@ -126,7 +126,11 @@ public class TaskModifier extends ModifierPanel {
         runScriptInput.setText( "" );
 
         gotoButton.setSelected( false );
-        profilesList.setSelectedIndex( 0 );
+        if (profilesList.getModel().getSize() == 0) {
+            gotoButton.setEnabled( false );
+            profilesList.setEnabled( false );
+        } else
+            profilesList.setSelectedIndex( 0 );
 
         Task task = button.task();
         if (task instanceof BashExecutor executor) {
