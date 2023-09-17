@@ -1,0 +1,20 @@
+# [SIL Open Font License Version 1.1](https://scripts.sil.org/cms/scripts/page.php?item_id=OFL_web)
+
+- [StardosStencil-Bold.ttf](StardosStencil-Bold.ttf)
+- [StardosStencil-Regular.ttf](StardosStencil-Regular.ttf)
+- [Comfortaa_Bold.ttf](Comfortaa_Bold.ttf)
+- [Comfortaa_Regular.ttf](Comfortaa_Regular.ttf)
+- [Comfortaa_Thin.ttf](Comfortaa_Thin.ttf)
+
+# [Apache License Version 2.0](https://apache.org/licenses/LICENSE-2.0)
+
+- [OpenSans-Bold.ttf](OpenSans-Bold.ttf)
+- [OpenSans-BoldItalic.ttf](OpenSans-BoldItalic.ttf)
+- [OpenSans-ExtraBold.ttf](OpenSans-ExtraBold.ttf)
+- [OpenSans-ExtraBoldItalic.ttf](OpenSans-ExtraBoldItalic.ttf)
+- [OpenSans-Italic.ttf](OpenSans-Italic.ttf)
+- [OpenSans-Light.ttf](OpenSans-Light.ttf)
+- [OpenSans-LightItalic.ttf](OpenSans-LightItalic.ttf)
+- [OpenSans-Regular.ttf](OpenSans-Regular.ttf)
+- [OpenSans-Semibold.ttf](OpenSans-Semibold.ttf)
+- [OpenSans-SemiboldItalic.ttf](OpenSans-SemiboldItalic.ttf)
