@@ -30,7 +30,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static me.knighthat.interactivedeck.file.Settings.*;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public class WirelessController extends Thread {
 
@@ -49,8 +49,8 @@ public class WirelessController extends Thread {
             Connection.status( Connection.Status.DISCONNECTED );
 
         while (!Thread.interrupted())
-            try (ServerSocket socket = new ServerSocket( PORT, 1, IP )) {
-                String message = "Listening on: " + address();
+            try (ServerSocket socket = new ServerSocket( SETTINGS.port(), 1, IP )) {
+                String message = "Listening on: " + SETTINGS.fullAddress();
                 Log.info( message );
                 NotificationCenter.createConstantMessage( message );
 
@@ -61,7 +61,7 @@ public class WirelessController extends Thread {
                 setName( "NET" );
                 //TODO Implement proper handler
 
-                Log.err( "Could not start listening on " + address() );
+                Log.err( "Could not start listening on " + SETTINGS.fullAddress() );
                 Log.err( e.getMessage() );
 
                 Connection.status( Connection.Status.ERROR );
@@ -93,10 +93,11 @@ public class WirelessController extends Thread {
     void setupReceiver( @NotNull InputStream inStream ) throws IOException {
         setName( "NET/I" );
 
+        byte[] buffer = SETTINGS.buffer();
         int bytesRead;
         String finalStr = "";
-        while (( bytesRead = inStream.read( BUFFER ) ) != -1) {
-            String decoded = new String( BUFFER, 0, bytesRead );
+        while (( bytesRead = inStream.read( buffer ) ) != -1) {
+            String decoded = new String( buffer, 0, bytesRead );
 
             Log.deb( "Received: " );
             Log.deb( decoded );

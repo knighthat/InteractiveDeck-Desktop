@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
 final class BIcon extends BChild {
@@ -56,7 +56,7 @@ final class BIcon extends BChild {
         g2d.setColor( getBackground() );
         g2d.fillRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
-        g2d.setColor( isSelected ? SELECTED_COLOR : getForeground() );
+        g2d.setColor( isSelected ? SETTINGS.selectedColor() : getForeground() );
         g2d.drawRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
         super.paintComponent( g );
