@@ -13,7 +13,6 @@
  */
 package me.knighthat.interactivedeck.menus;
 
-import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer;
@@ -21,14 +20,14 @@ import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
 import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.WarningPopup;
-import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.concurrent.CompletableFuture;
 
-import static me.knighthat.interactivedeck.file.Settings.*;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 /**
  * @author knighthat
@@ -59,18 +58,12 @@ public class MainMenu extends javax.swing.JFrame {
             public void windowClosing( WindowEvent e ) {
                 buttonsDisplaySection.unselectAll();
 
-                Json.dump( FILE.getName(), () -> {
-                    JsonObject json = new JsonObject();
-                    json.addProperty( "address", ADDRESS );
-                    json.addProperty( "port", PORT );
-                    json.addProperty( "buffer", BUFFER.length );
-                    json.add( "selected_color", ColorUtils.toJson( SELECTED_COLOR ) );
+                CompletableFuture.runAsync( () -> {
+                    Thread.currentThread().setName( "FILE" );
 
-                    return json;
-                } );
-                MenuProperty
-                        .profiles()
-                        .forEach( profile -> Json.dump( profile.uuid + ".profile", profile ) );
+                    Json.dump( SETTINGS );
+                    MenuProperty.profiles().forEach( Json::dump );
+                } ).join();
 
                 super.windowClosing( e );
             }
