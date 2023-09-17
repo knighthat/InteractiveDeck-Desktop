@@ -1,54 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (c) 2023. Knight Hat
-  ~ All rights reserved.
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use,copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  -->
-
 <configuration>
-
-    <!-- Path to log file -->
-    <!-- <property name="LOGS" value="./logs"/> -->
-
+    <!--  By default, every event from AWT is executed  under thread AWT-EventQueue -->
+    <!--  To prevent this ugliness, a class is designated to convert thread's name of  -->
+    <!--  every log that is executed under this thread to "GUI"  -->
     <conversionRule conversionWord="tName" converterClass="me.knighthat.interactivedeck.logging.ThreadNameConverter"/>
 
+    <!-- Log to CONSOLE at INFO or at "-Dlog.level=" level -->
+    <property name="LOG_LEVEL" value="${log.level:-INFO}"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
+                <charset>UTF-8</charset>
                 %white(%d{HH:mm:ss}) %cyan(%-5tName) %highlight(%-5level) %msg%n%throwable
             </Pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${LOG_LEVEL}</level>
+        </filter>
     </appender>
 
-    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${log.dir}/logs.log</file>
-        <encoder
-                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>UTF-8</charset>
-            <Pattern>%d{HH:mm:ss} %-5tName %-5level %m%n</Pattern>
+            <Pattern>%d{HH:mm:ss} %-5tName %-5level %msg%n%throwable</Pattern>
         </encoder>
 
-        <rollingPolicy
-                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily and when the file reaches 10 MegaBytes -->
-            <fileNamePattern>${log.dir}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--  Rollover daily and use Gzip compression algorithm to compress file  -->
+            <fileNamePattern>${log.dir}/%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!--  Or compress when file reaches 10 Megabytes  -->
+            <maxFileSize>1MB</maxFileSize>
+            <!--  Keep logs for 30 days  -->
+            <maxHistory>30</maxHistory>
+            <!--  If total logs size reaches 1 Gigabytes before 30 days  -->
+            <!--  then delete older ones  -->
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
     </appender>
 
-    <!-- LOG everything at INFO or at "-Dlog.level=" level -->
-    <root level="${log.level:-info}">
-        <appender-ref ref="CONSOLE"/>
-    </root>
     <!--  File logging always at DEBUG level  -->
     <root level="debug">
-        <appender-ref ref="RollingFile"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>
