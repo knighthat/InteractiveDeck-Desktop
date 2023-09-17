@@ -4,6 +4,9 @@
       <element module="Production" copyright="MIT License" />
       <element module="All" copyright="MIT License" />
     </module2copyright>
+    <LanguageOptions name="Properties">
+      <option name="fileTypeOverride" value="1" />
+    </LanguageOptions>
     <LanguageOptions name="SVG">
       <option name="fileTypeOverride" value="1" />
     </LanguageOptions>
