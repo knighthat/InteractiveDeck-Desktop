@@ -21,6 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 final class BLabel extends BChild {
 
     @NotNull
@@ -30,7 +32,7 @@ final class BLabel extends BChild {
         super();
         setForeground( Color.WHITE );
 
-        setFont( new Font( "Stardos Stencil", Font.PLAIN, 14 ) );
+        setFont( SETTINGS.defaultButtonFont() );
     }
 
     public void text( @NotNull String text ) {

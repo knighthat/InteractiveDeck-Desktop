@@ -19,7 +19,8 @@ import me.knighthat.interactivedeck.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
+
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 final class NetLabel extends JLabel implements Flexible {
 
@@ -27,8 +28,7 @@ final class NetLabel extends JLabel implements Flexible {
         setDimension( this, 100, 30 );
         setOpaque( false );
 
-        Font font = new Font( "Open Sans", Font.PLAIN, 14 );
-        setFont( font );
+        setFont( SETTINGS.UIFont() );
     }
 
     public void setText( @NotNull Connection.Status status ) {

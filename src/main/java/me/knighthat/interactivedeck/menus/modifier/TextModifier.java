@@ -28,6 +28,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 public class TextModifier extends ModifierPanel {
 
     private JTextField labelInput;
@@ -151,7 +153,10 @@ public class TextModifier extends ModifierPanel {
         // Button's label input
         addContent(
                 new JLabel( "Label" ),
-                label -> label.setForeground( Color.WHITE ),
+                label -> {
+                    label.setForeground( Color.WHITE );
+                    label.setFont( SETTINGS.UIFont() );
+                },
                 constraints -> constraints.anchor = GridBagConstraints.LINE_START
         );
         addLabelInput();

@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 /**
  * @author Knight Hat
  */
@@ -64,6 +66,7 @@ public class NotificationCenter extends javax.swing.JPanel {
         label.setPreferredSize( dimension );
 
         label.setForeground( Color.WHITE );
+        label.setFont( SETTINGS.UIFont() );
 
         add( label );
     }

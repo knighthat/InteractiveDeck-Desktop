@@ -33,6 +33,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.function.Consumer;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 public class TaskModifier extends ModifierPanel {
 
     private JRadioButton runScriptButton;
@@ -101,6 +103,7 @@ public class TaskModifier extends ModifierPanel {
     }
 
     private void addSection( @NotNull JRadioButton button, @NotNull JComponent input, int gridy ) {
+        button.setFont( SETTINGS.UIFont() );
         button.setForeground( Color.WHITE );
         button.addItemListener( this::buttonStateChange );
         GridBagConstraints buttonConstraints = new GridBagConstraints();

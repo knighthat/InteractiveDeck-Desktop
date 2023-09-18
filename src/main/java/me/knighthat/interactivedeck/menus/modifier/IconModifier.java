@@ -27,6 +27,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 public class IconModifier extends ModifierPanel {
 
     private HexColorTextField bdInput;
@@ -65,7 +67,10 @@ public class IconModifier extends ModifierPanel {
     private void addContent( @NotNull String name, @NotNull HexColorTextField field, int gridy ) {
         addContent(
                 new JLabel( name ),
-                label -> label.setForeground( Color.WHITE ),
+                label -> {
+                    label.setForeground( Color.WHITE );
+                    label.setFont( SETTINGS.UIFont() );
+                },
                 constraints -> {
                     constraints.gridy = gridy;
                     constraints.anchor = GridBagConstraints.LINE_START;
