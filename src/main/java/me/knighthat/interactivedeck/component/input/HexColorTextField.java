@@ -30,12 +30,10 @@ public class HexColorTextField extends JFormattedTextField {
             MaskFormatter formatter = new MaskFormatter( "'#HHHHHH" );
             formatter.setValidCharacters( "0123456789abcdefABCDEF" );
 
-            super.setFormatterFactory( new DefaultFormatterFactory( formatter ) );
-            super.setColumns( 7 );
-
+            setFormatterFactory( new DefaultFormatterFactory( formatter ) );
+            setColumns( 7 );
         } catch (ParseException e) {
-            Log.err( e.getMessage() );
-            e.printStackTrace();
+            Log.wexc( "Falied to parse HEX string", e, false );
         }
     }
 }

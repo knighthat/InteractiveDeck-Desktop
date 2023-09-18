@@ -45,21 +45,12 @@ public class Profiles {
             profile = fromJson( json.getAsJsonObject() );
 
         } catch (ProfileFormatException e) {
-
-            Log.warn( file.getName() + " does not meet requirements. Skipping..." );
-            Log.warn( "Cause: " + e.getMessage() );
-
+            Log.wexc( file.getName() + " does not meet requirements. Skipping...", e, false );
         } catch (JsonParseException e) {
-
-            Log.warn( file.getName() + " is not a valid JSON file. Skipping..." );
-            Log.warn( "Cause: " + e.getMessage() );
-
+            Log.wexc( file.getName() + " is not a valid JSON file. Skipping...", e, false );
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
-
-            Log.err( "Could not read " + file.getName() + ". Perhaps permission error?" );
-            Log.err( "Error message: " + e.getMessage() );
-
+            Log.exc( "Could not read " + file.getName(), e, true );
         }
         return Optional.ofNullable( profile );
     }

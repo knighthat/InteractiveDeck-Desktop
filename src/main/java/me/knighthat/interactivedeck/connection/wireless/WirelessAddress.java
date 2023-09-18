@@ -54,7 +54,7 @@ public class WirelessAddress {
             SETTINGS.address( DEF_IP );
             return get();
         } catch (SocketException e) {
-            Log.err( "No functional interface found!" );
+            Log.exc( "", e, false );
             return null;
         }
     }

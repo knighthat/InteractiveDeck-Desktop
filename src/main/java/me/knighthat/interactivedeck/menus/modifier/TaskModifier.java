@@ -88,7 +88,7 @@ public class TaskModifier extends ModifierPanel {
 
         File file = new File( filePath );
         if (!file.exists()) {
-            Log.err( "File \"" + file.getAbsolutePath() + "\" does NOT exist!" );
+            Log.warn( "File \"" + file.getAbsolutePath() + "\" does NOT exist!" );
             return null;
         }
         return new BashExecutor( file );

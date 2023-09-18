@@ -49,9 +49,7 @@ public class WirelessSender extends Thread {
                 Log.deb( "Request: " + request );
             }
         } catch (InterruptedException e) {
-            Log.warn( "Thread was interrupted while send request is pending!" );
-            Log.warn( "Caused by: " + e.getMessage() );
-            e.printStackTrace();
+            Log.exc( "Thread was interrupted while send request is pending!", e, true );
         }
     }
 
@@ -63,8 +61,7 @@ public class WirelessSender extends Thread {
                 Request request = QUEUE.take();
                 String serialized = request.toString();
 
-                Log.deb( "Sending:" );
-                Log.deb( serialized );
+                Log.deb( "Sending:\n" + serialized );
 
                 stream.write( appendNullEnding( serialized ) );
                 stream.flush();
@@ -73,13 +70,11 @@ public class WirelessSender extends Thread {
                 if (!Client.isConnected())
                     return;
 
-                Log.err( "Thread interrupted!" );
-                e.printStackTrace();
+                Log.exc( "Thread interrupted!", e, true );
                 break;
             } catch (IOException e) {
                 //TODO Needs proper error handling
-                Log.err( "Error occurs while sending out request" );
-                e.printStackTrace();
+                Log.exc( "Error occurs while sending out request", e, true );
                 break;
             }
     }

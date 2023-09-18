@@ -42,8 +42,7 @@ public class FontFactory {
                 Font font = Font.createFont( Font.TRUETYPE_FONT, fontFile );
                 GRAPHICS_ENVIRONMENT.registerFont( font );
             } catch (IOException | FontFormatException e) {
-                Log.err( "Could not register font " + fontFile.getName() );
-                Log.err( "Caused by: " + e.getMessage() );
+                Log.exc( "Could not register font " + fontFile.getName(), e, false );
             }
 
         Log.deb( "Fonts loaded!" );
@@ -59,8 +58,7 @@ public class FontFactory {
                 if (file.isFile() && file.getName().endsWith( ".ttf" ))
                     fontFiles.add( file );
         } catch (NullPointerException | URISyntaxException e) {
-            Log.err( "Error while loading internal fonts" );
-            Log.err( "Caused by: " + e.getMessage() );
+            Log.exc( "Error while loading internal fonts", e, false );
         }
 
         return fontFiles.toArray( File[]::new );

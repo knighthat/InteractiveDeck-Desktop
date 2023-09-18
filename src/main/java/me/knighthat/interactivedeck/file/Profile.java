@@ -199,7 +199,7 @@ public class Profile implements SaveAsJson {
         File file = new File( WorkingDirectory.PATH, fileName );
 
         if (file.exists() && !file.delete())
-            Log.err( "Could not delete %s.profile".formatted( uuid.toString() ) );
+            Log.err( "Could not delete " + uuid + ".profile" );
 
         new RemoveRequest( array -> array.add( uuid.toString() ) ).send();
 

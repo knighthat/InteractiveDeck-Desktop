@@ -53,8 +53,7 @@ public class Settings implements SaveAsJson {
                 SETTINGS.load( json.getAsJsonObject() );
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
-            Log.err( "Could not read " + SETTINGS.fullName() );
-            Log.err( "Caused by: " + e.getMessage() );
+            Log.exc( "Could not read " + SETTINGS.fullName(), e, false );
         }
     }
 

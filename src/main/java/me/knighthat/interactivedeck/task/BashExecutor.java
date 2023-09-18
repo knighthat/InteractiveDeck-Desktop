@@ -62,9 +62,7 @@ public final class BashExecutor extends ExecutableTask {
 
         } catch (IOException | InterruptedException e) {
             //TODO More error handler needed
-            Log.err( "Error occurs while executing " + this.filePath );
-            Log.err( e.getMessage() );
-            e.printStackTrace();
+            Log.exc( "Error occurs while executing " + this.filePath, e, true );
         }
 
         String s = exit == 0

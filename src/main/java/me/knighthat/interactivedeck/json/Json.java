@@ -39,8 +39,7 @@ public class Json {
 
             Log.info( "Saved " + instance.displayName() + " under name " + instance.fullName() );
         } catch (IOException e) {
-            Log.err( "Failed to save " + instance.displayName() );
-            Log.err( "Caused by: " + e.getMessage() );
+            Log.exc( "Failed to save " + instance.displayName(), e, false );
         }
     }
 }

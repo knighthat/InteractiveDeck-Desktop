@@ -40,7 +40,7 @@ public class InteractiveDeck {
         new WirelessController().start();
 
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold default-state="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
@@ -52,9 +52,7 @@ public class InteractiveDeck {
                 }
             }
         } catch (Exception e) {
-            Log.err( "Error occurs while loading graphical interface - Look&Feel" );
-            Log.err( "Reason: " + e.getMessage() );
-            e.printStackTrace();
+            Log.exc( "Error occurs while loading Look&Feel", e, true );
         }
         //</editor-fold>
 

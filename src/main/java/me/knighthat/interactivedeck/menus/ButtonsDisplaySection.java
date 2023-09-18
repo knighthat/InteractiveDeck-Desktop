@@ -17,9 +17,7 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
-import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -69,10 +67,6 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
             this.selected.value( currentlySelected == selected ? null : selected );
 
         }, () -> this.selected.value( selected ) );
-
-        String deb = "Button %s@x:%s,y:%s clicked!";
-        String shortUuid = UuidUtils.lastFiveChars( selected.uuid );
-        Log.deb( deb.formatted( shortUuid, selected.x, selected.y ) );
     }
 
     public void updateButtons( @NotNull Profile profile ) {

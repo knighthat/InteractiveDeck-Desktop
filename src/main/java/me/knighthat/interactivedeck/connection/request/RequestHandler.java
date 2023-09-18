@@ -102,7 +102,7 @@ public class RequestHandler {
             try {
                 uuids.add( UUID.fromString( uuidStr ) );
             } catch (IllegalArgumentException e) {
-                Log.warn( uuidStr + " is not a valid UUID" );
+                Log.wexc( uuidStr + " is not a valid UUID", e, false );
             }
         } );
 

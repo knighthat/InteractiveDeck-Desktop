@@ -60,9 +60,7 @@ public class WirelessController extends Thread {
             } catch (IOException e) {
                 setName( "NET" );
                 //TODO Implement proper handler
-
-                Log.err( "Could not start listening on " + SETTINGS.fullAddress() );
-                Log.err( e.getMessage() );
+                Log.exc( "Could not start listening on " + SETTINGS.fullAddress(), e, true );
 
                 Connection.status( Connection.Status.ERROR );
                 interrupt();
