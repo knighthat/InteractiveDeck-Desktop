@@ -16,10 +16,7 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer;
-import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
-import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
-import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
-import me.knighthat.interactivedeck.menus.popup.WarningPopup;
+import me.knighthat.interactivedeck.menus.popup.*;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +47,7 @@ public class MainMenu extends javax.swing.JFrame {
         RemoveProfilePopup.INSTANCE = new RemoveProfilePopup( this );
         ProfileConfigurationPopup.INSTANCE = new ProfileConfigurationPopup( this );
         WarningPopup.INSTANCE = new WarningPopup( this );
+        AppSettingsPopup.INSTANCE = new AppSettingsPopup( this );
 
         initComponents();
 

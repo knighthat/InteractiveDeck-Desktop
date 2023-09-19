@@ -17,8 +17,10 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.plist.ProfileButton;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
+import me.knighthat.interactivedeck.component.setting.SettingButton;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
+import me.knighthat.interactivedeck.menus.popup.AppSettingsPopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
 import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
 import me.knighthat.interactivedeck.utils.ColorUtils;
@@ -38,12 +40,14 @@ public class ProfileSection extends JPanel implements Flexible {
     private final @NotNull ProfileButton addProfileButton;
     private final @NotNull ProfileButton removeProfileButton;
     private final @NotNull ProfileButton configProfileButton;
+    private final @NotNull SettingButton settingButton;
 
     public ProfileSection() {
         this.profiles = new ProfilesComboBox();
         this.addProfileButton = new ProfileButton( ProfileButton.ButtonType.ADD );
         this.removeProfileButton = new ProfileButton( ProfileButton.ButtonType.REMOVE );
         this.configProfileButton = new ProfileButton( ProfileButton.ButtonType.CONFIGURE );
+        this.settingButton = new SettingButton();
 
         setBackground( ColorUtils.DEFAULT_DARK );
         setDimension( this, 1000, 50 );
@@ -92,6 +96,15 @@ public class ProfileSection extends JPanel implements Flexible {
             }
         } );
 
+        // Settings button
+        setDimension( settingButton, 30, 30 );
+        settingButton.addMouseListener( new MouseAdapter() {
+            @Override
+            public void mouseClicked( MouseEvent e ) {
+                AppSettingsPopup.INSTANCE.present();
+            }
+        } );
+
         MenuProperty.observeActive( profiles::setSelectedItem );
     }
     // </editor-fold>
@@ -101,38 +114,34 @@ public class ProfileSection extends JPanel implements Flexible {
         GroupLayout layout = new GroupLayout( this );
         setLayout( layout );
 
-        GroupLayout.SequentialGroup horizontalSequentialG =
-                layout
-                        .createSequentialGroup()
-                        .addGap( 30 )
-                        .addComponent( profiles )
-                        .addGap( 18 )
-                        .addComponent( addProfileButton )
-                        .addPreferredGap( RELATED )
-                        .addComponent( removeProfileButton )
-                        .addPreferredGap( UNRELATED )
-                        .addComponent( configProfileButton )
-                        .addContainerGap( 544, Short.MAX_VALUE );
-        layout.setHorizontalGroup(
-                layout.createParallelGroup( LEADING ).addGroup( horizontalSequentialG )
-        );
+        GroupLayout.SequentialGroup horizontalSequentialG = layout.createSequentialGroup();
+        horizontalSequentialG
+                .addGap( 30 )
+                .addComponent( profiles )
+                .addGap( 18 )
+                .addComponent( addProfileButton )
+                .addPreferredGap( RELATED )
+                .addComponent( removeProfileButton )
+                .addPreferredGap( UNRELATED )
+                .addComponent( configProfileButton )
+                .addGap( 500 )
+                .addComponent( settingButton )
+                .addGap( 20 );
+        layout.setHorizontalGroup( horizontalSequentialG );
 
-        GroupLayout.SequentialGroup verticalSequentialG =
-                layout
-                        .createSequentialGroup()
-                        .addGap( 10 )
-                        .addGroup(
-                                layout
-                                        .createParallelGroup( LEADING, false )
-                                        .addComponent( configProfileButton )
-                                        .addComponent( removeProfileButton )
-                                        .addComponent( addProfileButton )
-                                        .addComponent( profiles )
-                        )
-                        .addGap( 20 );
-        layout.setVerticalGroup(
-                layout.createParallelGroup( LEADING ).addGroup( verticalSequentialG )
-        );
+        GroupLayout.SequentialGroup verticalSequentialG = layout.createSequentialGroup();
+        verticalSequentialG
+                .addGap( 10 )
+                .addGroup(
+                        layout
+                                .createParallelGroup( LEADING, false )
+                                .addComponent( configProfileButton )
+                                .addComponent( removeProfileButton )
+                                .addComponent( addProfileButton )
+                                .addComponent( profiles )
+                                .addComponent( settingButton )
+                );
+        layout.setVerticalGroup( verticalSequentialG );
     }
     // </editor-fold>
 
