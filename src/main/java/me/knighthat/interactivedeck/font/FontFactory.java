@@ -45,7 +45,7 @@ public class FontFactory {
                 Log.exc( "Could not register font " + fontFile.getName(), e, false );
             }
 
-        Log.deb( "Fonts loaded!" );
+        Log.info( "Fonts loaded!" );
     }
 
     private static @NotNull File[] getFontFiles() {

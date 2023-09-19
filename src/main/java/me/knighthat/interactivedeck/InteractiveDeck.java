@@ -13,6 +13,7 @@
  */
 package me.knighthat.interactivedeck;
 
+import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
@@ -32,6 +33,7 @@ public class InteractiveDeck {
     public static void main( String[] args ) {
         WorkingDirectory.init();
         FontFactory.init();
+        Icons.loadIcons();
         WorkingDirectory.loadProfiles();
         Settings.init();
 

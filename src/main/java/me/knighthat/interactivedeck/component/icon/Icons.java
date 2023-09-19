@@ -14,9 +14,11 @@
 
 package me.knighthat.interactivedeck.component.icon;
 
-import org.jetbrains.annotations.NotNull;
+public class Icons {
 
-public interface Icons {
+    public static InternalIcons INTERNAL;
 
-    @NotNull InternalIcons INTERNAL = new InternalIcons();
+    public static void loadIcons() {
+        INTERNAL = new InternalIcons();
+    }
 }
