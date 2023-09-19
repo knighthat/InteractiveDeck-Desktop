@@ -99,8 +99,20 @@ public class Settings implements SaveAsJson {
         return this.port;
     }
 
+    public void port( @Range( from = 0x400, to = 0xFFFF ) int port ) {
+        this.port = port;
+    }
+
     public @NotNull String fullAddress() {
         return address + ":" + port;
+    }
+
+    public int bufferSize() {
+        return this.bufferSize;
+    }
+
+    public void bufferSize( int size ) {
+        this.bufferSize = size;
     }
 
     public byte[] buffer() {
@@ -111,12 +123,24 @@ public class Settings implements SaveAsJson {
         return this.selectedColor;
     }
 
+    public void selectedColor( @NotNull Color color ) {
+        this.selectedColor = color;
+    }
+
     public @NotNull Font UIFont() {
         return this.UIFont;
     }
 
+    public void UIFont( @NotNull Font font ) {
+        this.UIFont = font;
+    }
+
     public @NotNull Font defaultButtonFont() {
         return this.defaultButtonFont;
+    }
+
+    public void defaultButtonFont( @NotNull Font font ) {
+        this.defaultButtonFont = font;
     }
 
     @Override
