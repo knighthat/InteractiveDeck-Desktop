@@ -38,7 +38,8 @@ public class InternalIcons {
     public final @NotNull SVGDocument CONNECTION_CONNECTED;
     public final @NotNull SVGDocument CONNECTION_UNKNOWN;
     public final @NotNull SVGDocument CONNECTION_DISCONNECTED;
-
+    public final @NotNull SVGDocument APP_SETTINGS;
+    public final @NotNull SVGDocument APP_SETTINGS_HOVER;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -56,6 +57,8 @@ public class InternalIcons {
         CONNECTION_CONNECTED = fromResource( "connection-connected" );
         CONNECTION_UNKNOWN = fromResource( "connection-unknown" );
         CONNECTION_DISCONNECTED = fromResource( "connection-disconnected" );
+        APP_SETTINGS = fromResource( "app-settings" );
+        APP_SETTINGS_HOVER = fromResource( "app-settings-hover" );
 
         Log.info( "Icons loaded!" );
     }
