@@ -20,9 +20,7 @@ import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.apache.batik.swing.JSVGCanvas;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Element;
 import org.w3c.dom.svg.SVGDocument;
-import org.w3c.dom.svg.SVGSVGElement;
 
 final class NetIcon extends JSVGCanvas implements Flexible {
 
@@ -39,17 +37,6 @@ final class NetIcon extends JSVGCanvas implements Flexible {
             case ERROR -> Icons.INTERNAL.CONNECTION_ERROR;
             case UNKNOWN -> Icons.INTERNAL.CONNECTION_UNKNOWN;
         };
-
-        SVGSVGElement root = iconDoc.getRootElement();
-        String hexColor = ColorUtils.toHex( status.color() );
-
-        Element stroke = root.getElementById( "stroke-color" );
-        if (stroke != null)
-            stroke.setAttribute( "stroke", hexColor );
-
-        Element fill = root.getElementById( "fill-color" );
-        if (fill != null)
-            fill.setAttribute( "fill", hexColor );
 
         setDocument( iconDoc );
         revalidate();
