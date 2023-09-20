@@ -14,32 +14,25 @@
 
 package me.knighthat.interactivedeck.component.netstatus;
 
-import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.icon.Icons;
+import me.knighthat.interactivedeck.component.icon.SVGIcon;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.utils.ColorUtils;
-import org.apache.batik.swing.JSVGCanvas;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.svg.SVGDocument;
 
-final class NetIcon extends JSVGCanvas implements Flexible {
+final class NetIcon extends SVGIcon {
 
     public NetIcon() {
-        setBackground( ColorUtils.TRANSPARENT );
-        setDimension( this, 20, 20 );
-        setRecenterOnResize( false );
+        super( 20, 20 );
     }
 
     public void setDocument( @NotNull Connection.Status status ) {
-        SVGDocument iconDoc = switch (status) {
-            case DISCONNECTED -> Icons.INTERNAL.CONNECTION_DISCONNECTED;
-            case CONNECTED -> Icons.INTERNAL.CONNECTION_CONNECTED;
-            case ERROR -> Icons.INTERNAL.CONNECTION_ERROR;
-            case UNKNOWN -> Icons.INTERNAL.CONNECTION_UNKNOWN;
-        };
-
-        setDocument( iconDoc );
-        revalidate();
-        repaint();
+        setDocument(
+                switch (status) {
+                    case DISCONNECTED -> Icons.INTERNAL.CONNECTION_DISCONNECTED;
+                    case CONNECTED -> Icons.INTERNAL.CONNECTION_CONNECTED;
+                    case ERROR -> Icons.INTERNAL.CONNECTION_ERROR;
+                    case UNKNOWN -> Icons.INTERNAL.CONNECTION_UNKNOWN;
+                }
+        );
     }
 }

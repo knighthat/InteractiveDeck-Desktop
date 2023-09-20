@@ -14,49 +14,27 @@
 
 package me.knighthat.interactivedeck.component.plist;
 
+import me.knighthat.interactivedeck.component.icon.HoverableSVGIcon;
 import me.knighthat.interactivedeck.component.icon.Icons;
-import org.apache.batik.swing.JSVGCanvas;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.svg.SVGDocument;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
-
-public class ProfileButton extends JSVGCanvas {
-
-    private final @Nullable SVGDocument ICON;
-    private final @Nullable SVGDocument ICON_HOVER;
+public class ProfileButton extends HoverableSVGIcon {
 
     public ProfileButton( @NotNull ButtonType type ) {
-        ICON = switch (type) {
+        super( 30, 30 );
+
+        icon = switch (type) {
             case ADD -> Icons.INTERNAL.PROFILE_ADD;
             case REMOVE -> Icons.INTERNAL.PROFILE_REMOVE;
             case CONFIGURE -> Icons.INTERNAL.PROFILE_CONFIGURE;
         };
-        ICON_HOVER = switch (type) {
+        hoverIcon = switch (type) {
             case ADD -> Icons.INTERNAL.PROFILE_ADD_HOVER;
             case REMOVE -> Icons.INTERNAL.PROFILE_REMOVE_HOVER;
             case CONFIGURE -> Icons.INTERNAL.PROFILE_CONFIGURE_HOVER;
         };
 
-        setBackground( TRANSPARENT );
-        setDocument( ICON );
-        setRecenterOnResize( false );
-
-        addMouseListener( new MouseAdapter() {
-            @Override
-            public void mouseEntered( MouseEvent e ) {
-                setDocument( ICON_HOVER );
-            }
-
-            @Override
-            public void mouseExited( MouseEvent e ) {
-                setDocument( ICON );
-            }
-        } );
+        setDocument( icon );
     }
 
     public enum ButtonType {

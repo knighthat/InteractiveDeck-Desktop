@@ -31,7 +31,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static javax.swing.GroupLayout.Alignment.LEADING;
-import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 import static javax.swing.LayoutStyle.ComponentPlacement.UNRELATED;
 
 public class ProfileSection extends JPanel implements Flexible {
@@ -59,7 +58,6 @@ public class ProfileSection extends JPanel implements Flexible {
     // <editor-fold default-state="collapsed" desc="Init Components">
     private void initComponents() {
         // Profile list
-        setDimension( profiles, 300, 30 );
         profiles.addActionListener( event -> {
             Profile profile = (Profile) profiles.getSelectedItem();
             if (profile != null && event.getActionCommand().equals( "comboBoxChanged" ))
@@ -67,7 +65,6 @@ public class ProfileSection extends JPanel implements Flexible {
         } );
 
         // Add profile button
-        setDimension( addProfileButton, 30, 30 );
         addProfileButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked( MouseEvent e ) {
@@ -76,7 +73,6 @@ public class ProfileSection extends JPanel implements Flexible {
         } );
 
         // Remove profile button
-        setDimension( removeProfileButton, 30, 30 );
         removeProfileButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked( MouseEvent e ) {
@@ -88,7 +84,6 @@ public class ProfileSection extends JPanel implements Flexible {
         } );
 
         // Profile configuration button
-        setDimension( configProfileButton, 30, 30 );
         configProfileButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked( MouseEvent e ) {
@@ -97,7 +92,6 @@ public class ProfileSection extends JPanel implements Flexible {
         } );
 
         // Settings button
-        setDimension( settingButton, 30, 30 );
         settingButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked( MouseEvent e ) {
@@ -120,7 +114,7 @@ public class ProfileSection extends JPanel implements Flexible {
                 .addComponent( profiles )
                 .addGap( 18 )
                 .addComponent( addProfileButton )
-                .addPreferredGap( RELATED )
+                .addPreferredGap( UNRELATED )
                 .addComponent( removeProfileButton )
                 .addPreferredGap( UNRELATED )
                 .addComponent( configProfileButton )

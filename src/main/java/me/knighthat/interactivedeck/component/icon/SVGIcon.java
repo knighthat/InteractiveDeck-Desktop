@@ -12,19 +12,21 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.component.setting;
+package me.knighthat.interactivedeck.component.icon;
 
-import me.knighthat.interactivedeck.component.icon.HoverableSVGIcon;
-import me.knighthat.interactivedeck.component.icon.Icons;
+import me.knighthat.interactivedeck.component.Flexible;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import org.apache.batik.swing.JSVGCanvas;
+import org.w3c.dom.svg.SVGDocument;
 
-public class SettingButton extends HoverableSVGIcon {
 
-    public SettingButton() {
-        super( 30, 30 );
+public class SVGIcon extends JSVGCanvas implements Flexible {
 
-        icon = Icons.INTERNAL.APP_SETTINGS;
-        hoverIcon = Icons.INTERNAL.APP_SETTINGS_HOVER;
+    protected SVGDocument icon;
 
-        setDocument( icon );
+    public SVGIcon( int width, int height ) {
+        setBackground( ColorUtils.TRANSPARENT );
+        setDimension( this, width, height );
+        setRecenterOnResize( false );
     }
 }

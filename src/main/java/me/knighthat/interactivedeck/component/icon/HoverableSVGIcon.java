@@ -12,19 +12,30 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.component.setting;
+package me.knighthat.interactivedeck.component.icon;
 
-import me.knighthat.interactivedeck.component.icon.HoverableSVGIcon;
-import me.knighthat.interactivedeck.component.icon.Icons;
+import org.w3c.dom.svg.SVGDocument;
 
-public class SettingButton extends HoverableSVGIcon {
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-    public SettingButton() {
-        super( 30, 30 );
+public class HoverableSVGIcon extends SVGIcon {
 
-        icon = Icons.INTERNAL.APP_SETTINGS;
-        hoverIcon = Icons.INTERNAL.APP_SETTINGS_HOVER;
+    protected SVGDocument hoverIcon;
 
-        setDocument( icon );
+    public HoverableSVGIcon( int width, int height ) {
+        super( width, height );
+
+        addMouseListener( new MouseAdapter() {
+            @Override
+            public void mouseEntered( MouseEvent e ) {
+                setDocument( hoverIcon );
+            }
+
+            @Override
+            public void mouseExited( MouseEvent e ) {
+                setDocument( icon );
+            }
+        } );
     }
 }
