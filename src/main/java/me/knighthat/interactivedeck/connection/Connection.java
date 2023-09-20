@@ -33,21 +33,21 @@ public class Connection {
     }
 
     public enum Status {
-        DISCONNECTED( ColorUtils.fromHex( "#6c757d" ), "Disconnected" ),
-        CONNECTED( ColorUtils.fromHex( "#70e000" ), "Connected" ),
-        ERROR( Color.RED, "ERROR" ),
-        UNKNOWN( ColorUtils.fromHex( "#fb8500" ), "Unknown" );
+        DISCONNECTED( "#6c757d", "Disconnected" ),
+        CONNECTED( "#70e000", "Connected" ),
+        ERROR( "#ff0000", "ERROR" ),
+        UNKNOWN( "#fb8500", "Unknown" );
 
-        private final Color color;
+        private final String hexColor;
         private final String label;
 
-        Status( Color color, String label ) {
-            this.color = color;
+        Status( String hexColor, String label ) {
+            this.hexColor = hexColor;
             this.label = label;
         }
 
         public final Color color() {
-            return this.color;
+            return ColorUtils.fromHex( this.hexColor );
         }
 
         public final String label() {
