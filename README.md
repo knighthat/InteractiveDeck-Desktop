@@ -59,11 +59,18 @@ Real-time update, you'll see the result as soon as you press Enter (or Apply)
 - Executing BASH Script
 - Switch Profile on Mobile Device
 
+🗔 User Interface
+
+- Friendly & easy-to-use UI
+- Font can be changed to any installed font
+- Most buttons are showed as icon
+- Interactive, responsive to changes
+
 # Installation
 
 ## Manual
 
-> These steps require [JRE](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed
+> These steps require [JDK](https://jdk.java.net/20/) and [MAVEN](https://maven.apache.org/download.cgi) to be installed
 > prior.
 
 1. Clone project `git clone --depth 1 https://github.com/knighthat/InteractiveDeck-Desktop`
