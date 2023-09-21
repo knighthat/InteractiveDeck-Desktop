@@ -15,17 +15,19 @@
 package me.knighthat.interactivedeck.menus.modifier;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.component.input.HexColorTextField;
-import me.knighthat.interactivedeck.menus.popup.WarningPopup;
-import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.menus.popup.ColorPallet;
+import me.knighthat.interactivedeck.svg.SVGParser;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
@@ -35,36 +37,17 @@ public class IconModifier extends ModifierPanel {
     private HexColorTextField bgInput;
     private HexColorTextField fgInput;
 
-    private void updateColor( @NotNull HexColorTextField target, @NotNull Color color ) {
-        Color contrast = ColorUtils.getContrast( color );
-        String bgHex = ColorUtils.toHex( color );
-        target.setBackground( color );
-        target.setForeground( contrast );
-        target.setText( bgHex );
-    }
-
-    private void applyColor( @NotNull Object source ) {
-        if (!( source instanceof HexColorTextField input ))
-            return;
-
-        String hexCode = input.getText().trim();
-        if (hexCode.length() < 7) {
-            WarningPopup.showWarning( "Hex string must have 7 digits of 0-9 a-f A-F" );
-            return;
-        }
-
-        Color color = ColorUtils.fromHex( hexCode );
+    private void applyColor( @NotNull HexColorTextField input ) {
+        Color color = input.getBackground();
         if (input == fgInput)
             button.foreground( color );
         else if (input == bgInput)
             button.background( color );
         else
             button.border( color );
-
-        updateSelectedButton( button );
     }
 
-    private void addContent( @NotNull String name, @NotNull HexColorTextField field, int gridy ) {
+    private void addContent( @NotNull String name, @NotNull HexColorTextField field, int gridy, @NotNull BufferedImage icon ) {
         addContent(
                 new JLabel( name ),
                 label -> {
@@ -76,57 +59,67 @@ public class IconModifier extends ModifierPanel {
                     constraints.anchor = GridBagConstraints.LINE_START;
                 }
         );
+        Insets insets = new Insets( 0, 0, 40, 0 );
         addContent(
                 field,
                 comp -> {
-                    setDimension( comp, 210, 40 );
-                    comp.addFocusListener( new FocusAdapter() {
+                    setDimension( comp, 150, 40 );
+                    field.addColorChangeEvent( event -> applyColor( field ) );
+                },
+                constraints -> {
+                    constraints.gridy = gridy + 1;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    constraints.insets = insets;
+                }
+        );
+        addContent(
+                new JLabel( new ImageIcon( icon ) ),
+                comp -> {
+                    setDimension( comp, 40, 40 );
+
+                    ( (JLabel) comp ).setHorizontalAlignment( SwingConstants.RIGHT );
+                    ( (JLabel) comp ).setVerticalAlignment( SwingConstants.CENTER );
+
+                    comp.addMouseListener( new MouseAdapter() {
                         @Override
-                        public void focusLost( FocusEvent e ) {
-                            applyColor( e.getSource() );
-                        }
-                    } );
-                    comp.addKeyListener( new KeyAdapter() {
-                        @Override
-                        public void keyPressed( KeyEvent e ) {
-                            if (e.getKeyCode() != 10)
-                                return;
-                            applyColor( e.getSource() );
+                        public void mouseClicked( MouseEvent e ) {
+                            ColorPallet.INSTANCE.present( field );
                         }
                     } );
                 },
                 constraints -> {
                     constraints.gridy = gridy + 1;
-                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                    constraints.insets = new Insets( 0, 0, 40, 0 );
+                    constraints.anchor = GridBagConstraints.BASELINE;
+                    constraints.insets = insets;
                 }
         );
     }
 
     @Override
     protected void configureLayout( @NotNull GridBagLayout layout ) {
-        layout.columnWidths = new int[]{ 150 };
+        layout.columnWidths = new int[]{ 150, 40 };
     }
 
     @Override
     protected void loadContent() {
+        SVGDocument document = Icons.INTERNAL.COLOR_PALETTE;
+        Element root = document.getRootElement();
+        root.setAttribute( "width", "25px" );
+        root.setAttribute( "height", "25px" );
+        BufferedImage bufferedImage = SVGParser.toBufferedImage( document );
+
         this.fgInput = new HexColorTextField();
-        addContent( "Foreground", fgInput, 0 );
+        addContent( "Foreground", fgInput, 0, bufferedImage );
         this.bgInput = new HexColorTextField();
-        addContent( "Background", bgInput, 2 );
+        addContent( "Background", bgInput, 2, bufferedImage );
         this.bdInput = new HexColorTextField();
-        addContent( "Border", bdInput, 4 );
+        addContent( "Border", bdInput, 4, bufferedImage );
     }
 
     @Override
     protected void loadProperties( @NotNull IButton button ) {
-        Color background = this.button.background();
-        updateColor( bgInput, background );
-
-        Color foreground = this.button.foreground();
-        updateColor( fgInput, foreground );
-
-        Color border = this.button.border();
-        updateColor( bdInput, border );
+        bgInput.setColor( button.background() );
+        fgInput.setColor( button.foreground() );
+        bdInput.setColor( button.border() );
     }
 }
