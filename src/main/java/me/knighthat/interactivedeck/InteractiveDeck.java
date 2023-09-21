@@ -13,8 +13,10 @@
  */
 package me.knighthat.interactivedeck;
 
+import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.file.Settings;
+import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,8 @@ public class InteractiveDeck {
 
     public static void main( String[] args ) {
         WorkingDirectory.init();
+        FontFactory.init();
+        Icons.loadIcons();
         WorkingDirectory.loadProfiles();
         Settings.init();
 
@@ -38,7 +42,7 @@ public class InteractiveDeck {
         new WirelessController().start();
 
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        //<editor-fold default-state="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
@@ -50,9 +54,7 @@ public class InteractiveDeck {
                 }
             }
         } catch (Exception e) {
-            Log.err( "Error occurs while loading graphical interface - Look&Feel" );
-            Log.err( "Reason: " + e.getMessage() );
-            e.printStackTrace();
+            Log.exc( "Error occurs while loading Look&Feel", e, true );
         }
         //</editor-fold>
 

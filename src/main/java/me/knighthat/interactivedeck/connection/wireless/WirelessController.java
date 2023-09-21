@@ -18,10 +18,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.connection.Status;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.RequestHandler;
 import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.menus.NotificationCenter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static me.knighthat.interactivedeck.file.Settings.*;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public class WirelessController extends Thread {
 
@@ -42,15 +42,17 @@ public class WirelessController extends Thread {
     public void run() {
         InetAddress IP = WirelessAddress.get();
         if (IP == null) {
-            Connection.status( Status.ERROR );
+            Connection.status( Connection.Status.ERROR );
             interrupt();
             return;
         } else
-            Connection.status( Status.DISCONNECTED );
+            Connection.status( Connection.Status.DISCONNECTED );
 
         while (!Thread.interrupted())
-            try (ServerSocket socket = new ServerSocket( PORT, 1, IP )) {
-                Log.info( "Listening on: " + address() );
+            try (ServerSocket socket = new ServerSocket( SETTINGS.port(), 1, IP )) {
+                String message = "Listening on: " + SETTINGS.fullAddress();
+                Log.info( message );
+                NotificationCenter.createConstantMessage( message );
 
                 handleConnection( socket.accept() );
 
@@ -58,11 +60,9 @@ public class WirelessController extends Thread {
             } catch (IOException e) {
                 setName( "NET" );
                 //TODO Implement proper handler
+                Log.exc( "Could not start listening on " + SETTINGS.fullAddress(), e, true );
 
-                Log.err( "Could not start listening on " + address() );
-                Log.err( e.getMessage() );
-
-                Connection.status( Status.ERROR );
+                Connection.status( Connection.Status.ERROR );
                 interrupt();
             }
     }
@@ -81,7 +81,7 @@ public class WirelessController extends Thread {
 
     void handleDisconnection( @NotNull WirelessSender sender, @NotNull Socket client ) throws IOException {
         Client.INSTANCE = null;
-        Connection.status( Status.DISCONNECTED );
+        Connection.status( Connection.Status.DISCONNECTED );
 
         sender.interrupt();
         client.close();
@@ -91,10 +91,11 @@ public class WirelessController extends Thread {
     void setupReceiver( @NotNull InputStream inStream ) throws IOException {
         setName( "NET/I" );
 
+        byte[] buffer = SETTINGS.buffer();
         int bytesRead;
         String finalStr = "";
-        while (( bytesRead = inStream.read( BUFFER ) ) != -1) {
-            String decoded = new String( BUFFER, 0, bytesRead );
+        while (( bytesRead = inStream.read( buffer ) ) != -1) {
+            String decoded = new String( buffer, 0, bytesRead );
 
             Log.deb( "Received: " );
             Log.deb( decoded );

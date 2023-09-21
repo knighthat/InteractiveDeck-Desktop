@@ -39,17 +39,11 @@ public class WorkingDirectory {
             sub = "./";
         }
         FILE = new File( home + sub, "InteractiveDeck" );
-
-        if (!FILE.exists()) {
-            Log.info( "Working folder is not exist! Making one.." );
-
-            if (!FILE.mkdirs())
-                Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
-        }
-
         PATH = FILE.getAbsolutePath();
-
         System.setProperty( "log.dir", PATH.concat( "/logs" ) );
+
+        if (!FILE.exists() && !FILE.mkdirs())
+            Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
     }
 
     public static void loadProfiles() {

@@ -48,7 +48,7 @@ public record Client(
         String brand = json.get( "brand" ).getAsString();
         String device = json.get( "device" ).getAsString();
         String manufacturer = json.get( "brand" ).getAsString();
-        String model = json.get( "brand" ).getAsString();
+        String model = json.get( "model" ).getAsString();
         String version = json.get( "androidVersion" ).getAsString();
 
         return INSTANCE = new Client( brand, device, manufacturer, model, version );

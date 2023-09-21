@@ -13,24 +13,45 @@
  */
 package me.knighthat.interactivedeck.connection;
 
-import me.knighthat.interactivedeck.component.netstatus.ConStatus;
+import me.knighthat.interactivedeck.component.netstatus.NetStatus;
+import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
 
 public class Connection {
 
-    private static final @NotNull ConStatus COMPONENT = new ConStatus();
     private static @NotNull Status status = Status.UNKNOWN;
 
     public static void status( @NotNull Status status ) {
         Connection.status = status;
-        COMPONENT.update( status );
-    }
-
-    public static @NotNull ConStatus component() {
-        return COMPONENT;
+        NetStatus.updateStatus( status );
     }
 
     public static boolean isConnected() {
         return status.equals( Status.CONNECTED );
+    }
+
+    public enum Status {
+        DISCONNECTED( "#6c757d", "Disconnected" ),
+        CONNECTED( "#70e000", "Connected" ),
+        ERROR( "#ff0000", "ERROR" ),
+        UNKNOWN( "#fb8500", "Unknown" );
+
+        private final String hexColor;
+        private final String label;
+
+        Status( String hexColor, String label ) {
+            this.hexColor = hexColor;
+            this.label = label;
+        }
+
+        public final Color color() {
+            return ColorUtils.fromHex( this.hexColor );
+        }
+
+        public final String label() {
+            return this.label;
+        }
     }
 }

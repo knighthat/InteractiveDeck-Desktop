@@ -53,6 +53,36 @@ public class Log {
         log( LogLevel.ERROR, s );
     }
 
+    /**
+     * A shorthand to print error to console or file.<br>
+     *
+     * @param s Custom/Additional message
+     * @param e Exception
+     * @param b Print stack trace
+     */
+    public static void exc( @NotNull String s, @NotNull Exception e, boolean b ) {
+        if (!s.isBlank())
+            err( s );
+        err( "Reason: " + e.getMessage() );
+        if (b)
+            e.printStackTrace();
+    }
+
+    /**
+     * Prints out exception but at warning levell
+     *
+     * @param s Custom/Additional message
+     * @param e Exception
+     * @param b Print stack trace
+     */
+    public static void wexc( @NotNull String s, @NotNull Exception e, boolean b ) {
+        if (!s.isBlank())
+            warn( s );
+        err( "Reason: " + e.getMessage() );
+        if (b)
+            e.printStackTrace();
+    }
+
     private static void update( @NotNull String object, @NotNull String id, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
         String info = "%s %s changed %s from \"%s\" to \"%s\"";
         info = info.formatted( object, id, property, from, to );

@@ -24,16 +24,16 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import static me.knighthat.interactivedeck.file.Settings.ADDRESS;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public class WirelessAddress {
 
     private static final @NotNull String DEF_IP = "0.0.0.0";
 
     static @Nullable InetAddress get() {
-        if (ADDRESS.equals( DEF_IP ))
+        if (SETTINGS.address().equals( DEF_IP ))
             try {
-                return InetAddress.getByAddress( addressToByteArray() );
+                return InetAddress.getByAddress( SETTINGS.addressInBytes() );
             } catch (UnknownHostException e) {
                 return null;
             }
@@ -45,29 +45,17 @@ public class WirelessAddress {
                 Enumeration<InetAddress> iAddresses = nif.getInetAddresses();
                 while (iAddresses.hasMoreElements()) {
                     InetAddress address = iAddresses.nextElement();
-                    if (address.getHostAddress().equals( ADDRESS ))
+                    if (address.getHostAddress().equals( SETTINGS.address() ))
                         return address;
                 }
             }
-            Log.warn( "There is no interface has address " + ADDRESS );
+            Log.warn( "There is no interface has address " + SETTINGS.address() );
             Log.warn( "Reversing address to " + DEF_IP );
-            ADDRESS = DEF_IP;
+            SETTINGS.address( DEF_IP );
             return get();
         } catch (SocketException e) {
-            Log.err( "No functional interface found!" );
+            Log.exc( "", e, false );
             return null;
         }
-    }
-
-    static byte[] addressToByteArray() {
-        byte[] address = new byte[4];
-        String[] splitAddr = ADDRESS.split( "\\." );
-        for (int i = 0 ; i < 4 ; i++)
-            address[i] = Byte.parseByte( splitAddr[i] );
-
-        String debStr = "Address in bytes array: [%s,%s,%s,%s]";
-        Log.deb( String.format( debStr, address[0], address[1], address[2], address[3] ) );
-
-        return address;
     }
 }

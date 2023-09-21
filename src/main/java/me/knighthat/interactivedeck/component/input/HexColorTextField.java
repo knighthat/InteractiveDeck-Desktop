@@ -15,28 +15,112 @@
 package me.knighthat.interactivedeck.component.input;
 
 import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.menus.popup.WarningPopup;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
+import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HexColorTextField extends JFormattedTextField {
 
+    private final @NotNull List<ColorChangedEvent> events = new ArrayList<>();
+
     public HexColorTextField() {
         super();
+        setupFormatter();
+        addDefaultEventListeners();
+    }
 
+    private void setupFormatter() {
         try {
             MaskFormatter formatter = new MaskFormatter( "'#HHHHHH" );
-            formatter.setValidCharacters( "0123456789abcdefABCDEF" );
 
-            super.setFormatterFactory( new DefaultFormatterFactory( formatter ) );
-            super.setColumns( 7 );
-
+            setFormatterFactory( new DefaultFormatterFactory( formatter ) );
+            setColumns( 7 );
         } catch (ParseException e) {
-            Log.err( e.getMessage() );
-            e.printStackTrace();
+            Log.wexc( "Failed to parse HEX string", e, false );
         }
+    }
+
+    private void addDefaultEventListeners() {
+        addFocusListener( new FocusAdapter() {
+            @Override
+            public void focusLost( FocusEvent e ) {
+                updateColor();
+            }
+        } );
+        addKeyListener( new KeyAdapter() {
+            @Override
+            public void keyPressed( KeyEvent e ) {
+                if (e.getKeyCode() == 10)
+                    updateColor();
+            }
+        } );
+    }
+
+    /**
+     * Sets background, foreground and border color based on input color.<br>
+     * Unlike {@link #updateColor()} or {@link #updateColor(Color)}, this method does not trigger
+     * {@link ColorChangedEvent}
+     *
+     * @param color new color
+     */
+    public void setColor( @NotNull Color color ) {
+        Color contrast = ColorUtils.getContrast( color );
+        setBackground( color );
+        setForeground( contrast );
+        String hex = ColorUtils.toHex( color );
+        setText( hex );
+    }
+
+    /**
+     * Extracts HEX value from {@link #getText()} and validates before
+     * settings background, foreground, and border color. Finally, triggers {@link ColorChangedEvent}.<br>
+     * If {@link ColorChangedEvent} is undesirable, use {@link #setColor(Color)}.<br>
+     * Or use {@link #updateColor(Color)} if different color is preferred.
+     */
+    public void updateColor() {
+        String hex = getText().trim();
+        if (hex.length() < 7) {
+            String warning = "Hex string must have 7 digits of 0-9 a-f A-F";
+            Log.warn( warning );
+            WarningPopup.showWarning( warning );
+            return;
+        }
+        Color color = ColorUtils.fromHex( hex );
+        setColor( color );
+
+        fireColorChangedEvent( color );
+    }
+
+    /**
+     * Sets background, foreground and border color based
+     * on input color, then triggers {@link ColorChangedEvent}.<br>
+     *
+     * @param color new color
+     */
+    public void updateColor( @NotNull Color color ) {
+        setColor( color );
+        fireColorChangedEvent( color );
+    }
+
+    public void addColorChangeEvent( @NotNull ColorChangedEvent event ) {
+        this.events.add( event );
+    }
+
+    private void fireColorChangedEvent( @NotNull Color color ) {
+        for (ColorChangedEvent event : events)
+            event.onColorChanged( color );
     }
 }
 

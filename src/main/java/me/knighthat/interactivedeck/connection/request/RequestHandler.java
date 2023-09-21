@@ -21,11 +21,11 @@ import me.knighthat.interactivedeck.component.action.ActionHandler;
 import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
-import me.knighthat.interactivedeck.connection.Status;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.menus.NotificationCenter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -62,18 +62,23 @@ public class RequestHandler {
         Log.info( "Pairing approved!" );
         logClientInfo();
 
-        Connection.status( Status.CONNECTED );
+        Connection.status( Connection.Status.CONNECTED );
         new PairRequest().send();
     }
 
     static void logClientInfo() {
         assert Client.isConnected();
 
-        String deviceInfo = "Client: %s running on Android %s";
-        String model = Client.INSTANCE.model();
-        String aVer = Client.INSTANCE.androidVersion();
-        String message = String.format( deviceInfo, model, aVer );
-        Log.info( message );
+        Client client = Client.INSTANCE;
+        String manufacturer = client.manufacturer();
+        String model = client.model();
+        String aVer = client.androidVersion();
+
+        String deviceInfo = "Client %s %s running on Android %s".formatted( manufacturer, model, aVer );
+        Log.info( deviceInfo );
+
+        String device = "%s %s (Android %s)".formatted( manufacturer, model, aVer );
+        NotificationCenter.createConstantMessage( device );
     }
 
     static void handleAction( @NotNull JsonElement content ) {
@@ -97,7 +102,7 @@ public class RequestHandler {
             try {
                 uuids.add( UUID.fromString( uuidStr ) );
             } catch (IllegalArgumentException e) {
-                Log.warn( uuidStr + " is not a valid UUID" );
+                Log.wexc( uuidStr + " is not a valid UUID", e, false );
             }
         } );
 

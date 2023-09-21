@@ -16,7 +16,6 @@ package me.knighthat.interactivedeck.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
@@ -27,27 +26,20 @@ import java.io.IOException;
 
 public class Json {
 
-    public static boolean dump( @NotNull String fileName, @NotNull JsonSerializable serializable ) {
-        File file = new File( WorkingDirectory.FILE, fileName );
+    public static void dump( @NotNull SaveAsJson instance ) {
+        File file = new File( WorkingDirectory.FILE, instance.fullName() );
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try {
+        try (FileWriter writer = new FileWriter( file )) {
             if (!file.exists() && !file.createNewFile()) {
-                Log.warn( "Couldn't create " + fileName + ". Please make sure permission is sufficient!" );
-                return false;
+                Log.warn( "Failed to create " + instance.fullName() );
+                return;
             }
-            JsonObject json = serializable.serialize().getAsJsonObject();
-            FileWriter writer = new FileWriter( file );
-            gson.toJson( json, writer );
-            writer.close();
+            gson.toJson( instance.serialize(), writer );
 
-            Log.info( "Saved under " + fileName );
-            return true;
+            Log.info( "Saved " + instance.displayName() + " under name " + instance.fullName() );
         } catch (IOException e) {
-            Log.err( "Failed to save " + fileName );
-            Log.err( "Caused by: " + e.getMessage() );
-
-            return false;
+            Log.exc( "Failed to save " + instance.displayName(), e, false );
         }
     }
 }

@@ -135,7 +135,7 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void font( @NotNull Font font ) {
-        if (font.getFamily().equals( font.getFamily() ) &&
+        if (font.getFamily().equals( font().getFamily() ) &&
                 font.getStyle() == font().getStyle() &&
                 font.getSize() == font().getSize())
             return;

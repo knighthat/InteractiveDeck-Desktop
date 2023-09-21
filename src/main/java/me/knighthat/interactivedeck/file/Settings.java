@@ -14,74 +14,155 @@
 
 package me.knighthat.interactivedeck.file;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
+import me.knighthat.interactivedeck.json.SaveAsJson;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 
-public class Settings {
+public class Settings implements SaveAsJson {
 
-    public static @NotNull File FILE;
+    public static final @NotNull Settings SETTINGS = new Settings();
 
-    public static String ADDRESS = "0.0.0.0";
-
-    public static int PORT = 9129;
-
-    public static byte[] BUFFER = new byte[1024];
-
+    // NET
+    private @NotNull String address = "0.0.0.0";
+    private @Range( from = 0x400, to = 0xFFFF ) int port = 9129;
+    private int bufferSize = 1024;
     // UI
-    public static @NotNull Color SELECTED_COLOR = Color.YELLOW;
+    private @NotNull Color selectedColor = Color.YELLOW;
+    private @NotNull Font UIFont = new Font( "Comfortaa", Font.PLAIN, 14 );
+    private @NotNull Font defaultButtonFont = new Font( "StardosStencil", Font.PLAIN, 14 );
 
     public static void init() {
-        File settings = new File( WorkingDirectory.FILE, "settings.json" );
-        try {
-            if (settings.exists()) {
-                load( settings );
-            } else
-                settings.createNewFile();
-        } catch (IOException e) {
-            Log.err( "Couldn't generate settings.yml. Perhaps permission error?" );
-            Log.err( "Reason: " + e.getMessage() );
-        } finally {
-            FILE = settings;
-        }
-    }
-
-    static void load( @NotNull File file ) {
-        try (Reader reader = new FileReader( file )) {
+        File settingsFile = new File( WorkingDirectory.FILE, SETTINGS.fullName() );
+        try (FileReader reader = new FileReader( settingsFile )) {
             JsonElement json = JsonParser.parseReader( reader );
-            if (!json.isJsonNull())
-                load( json.getAsJsonObject() );
+            if (!json.isJsonNull() && json.isJsonObject())
+                SETTINGS.load( json.getAsJsonObject() );
+        } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
-            Log.err( "Error occurs while reading settings." );
-            Log.err( "New settings file will be save at shutdown" );
-            Log.err( "Caused by: " + e.getMessage() );
+            Log.exc( "Could not read " + SETTINGS.fullName(), e, false );
         }
     }
 
-    static void load( @NotNull JsonObject json ) {
+    public void load( @NotNull JsonObject json ) {
         if (json.has( "address" ))
-            ADDRESS = json.get( "address" ).getAsString();
+            address = json.get( "address" ).getAsString();
         if (json.has( "port" ))
-            PORT = json.get( "port" ).getAsInt();
-        if (json.has( "buffer" )) {
-            int size = json.get( "buffer" ).getAsInt();
-            BUFFER = new byte[size];
+            port = json.get( "port" ).getAsInt();
+        if (json.has( "buffer" ))
+            bufferSize = json.get( "buffer" ).getAsInt();
+        if (json.has( "selected_color" )) {
+            JsonArray color = json.getAsJsonArray( "selected_color" );
+            selectedColor = ColorUtils.fromJson( color );
         }
-        if (json.has( "selected_color" ))
-            SELECTED_COLOR = ColorUtils.fromJson( json.getAsJsonArray( "selected_color" ) );
+        if (json.has( "ui_font" )) {
+            JsonObject font = json.getAsJsonObject( "ui_font" );
+            UIFont = FontUtils.fromJson( font );
+        }
+        if (json.has( "default_button_font" )) {
+            JsonObject font = json.getAsJsonObject( "default_button_font" );
+            defaultButtonFont = FontUtils.fromJson( font );
+        }
     }
 
-    public static @NotNull String address() {
-        return ADDRESS + ":" + PORT;
+    public @NotNull String address() {
+        return this.address;
+    }
+
+    public void address( @NotNull String address ) {
+        this.address = address;
+    }
+
+    public byte[] addressInBytes() {
+        byte[] bytes = new byte[4];
+        String[] splitAddr = address.split( "\\." );
+        for (int i = 0 ; i < bytes.length ; i++)
+            bytes[i] = Byte.parseByte( splitAddr[i] );
+
+        return bytes;
+    }
+
+    public @Range( from = 0x400, to = 0xFFFF ) int port() {
+        return this.port;
+    }
+
+    public void port( @Range( from = 0x400, to = 0xFFFF ) int port ) {
+        this.port = port;
+    }
+
+    public @NotNull String fullAddress() {
+        return address + ":" + port;
+    }
+
+    public int bufferSize() {
+        return this.bufferSize;
+    }
+
+    public void bufferSize( int size ) {
+        this.bufferSize = size;
+    }
+
+    public byte[] buffer() {
+        return new byte[bufferSize];
+    }
+
+    public @NotNull Color selectedColor() {
+        return this.selectedColor;
+    }
+
+    public void selectedColor( @NotNull Color color ) {
+        this.selectedColor = color;
+    }
+
+    public @NotNull Font UIFont() {
+        return this.UIFont;
+    }
+
+    public void UIFont( @NotNull Font font ) {
+        this.UIFont = font;
+    }
+
+    public @NotNull Font defaultButtonFont() {
+        return this.defaultButtonFont;
+    }
+
+    public void defaultButtonFont( @NotNull Font font ) {
+        this.defaultButtonFont = font;
+    }
+
+    @Override
+    public @NotNull String displayName() {
+        return "settings file";
+    }
+
+    @Override
+    public @NotNull String fileName() {
+        return "settings";
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty( "address", address );
+        json.addProperty( "port", port );
+        json.addProperty( "buffer", bufferSize );
+        json.add( "selected_color", ColorUtils.toJson( selectedColor ) );
+        json.add( "ui_font", FontUtils.toJson( UIFont ) );
+        json.add( "default_button_font", FontUtils.toJson( defaultButtonFont ) );
+
+        return json;
     }
 }

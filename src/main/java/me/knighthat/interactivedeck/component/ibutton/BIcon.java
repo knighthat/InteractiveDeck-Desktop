@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SELECTED_COLOR;
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
 final class BIcon extends BChild {
@@ -48,19 +48,15 @@ final class BIcon extends BChild {
 
     @Override
     protected void paintComponent( Graphics g ) {
-        /*
-         * Enabling antialiasing results in visual artifacts or "residue" on corners
-         * TODO: Find a way to enable antialiasing without leaving "residue" after color transition
-         *
-         * g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-         */
         int width = getWidth() - 1, height = getHeight() - 1;
 
         Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+
         g2d.setColor( getBackground() );
         g2d.fillRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
-        g2d.setColor( isSelected ? SELECTED_COLOR : getForeground() );
+        g2d.setColor( isSelected ? SETTINGS.selectedColor() : getForeground() );
         g2d.drawRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
         super.paintComponent( g );

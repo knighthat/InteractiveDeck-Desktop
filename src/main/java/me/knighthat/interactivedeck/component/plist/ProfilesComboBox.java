@@ -27,4 +27,12 @@ public class ProfilesComboBox extends JComboBox<Profile> {
         MenuProperty.active().ifPresent( this::setSelectedItem );
         this.setRenderer( new PBoxRenderer() );
     }
+
+    public void reload() {
+        removeAll();
+        Profile[] profiles = MenuProperty.profileArray();
+        setModel( new DefaultComboBoxModel<>( profiles ) );
+        revalidate();
+        repaint();
+    }
 }
