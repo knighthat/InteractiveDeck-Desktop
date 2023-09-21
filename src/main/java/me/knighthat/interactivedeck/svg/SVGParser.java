@@ -21,13 +21,15 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.svg.SVGDocument;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 
 public class SVGParser {
 
@@ -38,23 +40,14 @@ public class SVGParser {
         FACTORY = new SAXSVGDocumentFactory( parser );
     }
 
-    public static @NotNull Optional<SVGDocument> fromString( @NotNull String SVGString ) {
-        SVGDocument document = null;
+    public static @NotNull SVGDocument fromURL( @Nullable URL url ) {
+        SVGDocument document = SVGNotFound.DOCUMENT;
         try {
-            Reader reader = new StringReader( SVGString );
-            document = FACTORY.createSVGDocument( null, reader );
+            if (url != null)
+                document = FACTORY.createSVGDocument( url.toExternalForm() );
         } catch (IOException ignored) {
         }
-        return Optional.ofNullable( document );
-    }
-
-    public static @NotNull Optional<SVGDocument> fromURL( @NotNull URL url ) {
-        SVGDocument document = null;
-        try {
-            document = FACTORY.createSVGDocument( url.toExternalForm() );
-        } catch (IOException ignored) {
-        }
-        return Optional.ofNullable( document );
+        return document;
     }
 
     public static @NotNull BufferedImage toBufferedImage( @NotNull SVGDocument document ) {
