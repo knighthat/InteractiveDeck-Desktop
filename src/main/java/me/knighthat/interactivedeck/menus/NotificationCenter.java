@@ -40,7 +40,9 @@ public class NotificationCenter extends javax.swing.JPanel {
     }
 
     public static void createConstantMessage( @NotNull String message ) {
-        label.setText( message );
+        synchronized (label) {
+            label.setText( message );
+        }
     }
 
     /**
