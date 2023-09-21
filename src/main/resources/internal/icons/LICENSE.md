@@ -11,6 +11,7 @@
 - [Text Tab](tab-text.svg)
 - [app-settings.svg](app-settings.svg)
 - [app-settings-hover.svg](app-settings-hover.svg)
+- [color-pallet.svg](color-pallet.svg)
 
 # [Public Domain](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
 

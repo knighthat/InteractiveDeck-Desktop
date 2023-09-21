@@ -48,6 +48,7 @@ public class MainMenu extends javax.swing.JFrame {
         ProfileConfigurationPopup.INSTANCE = new ProfileConfigurationPopup( this );
         WarningPopup.INSTANCE = new WarningPopup( this );
         AppSettingsPopup.INSTANCE = new AppSettingsPopup( this );
+        ColorPallet.INSTANCE = new ColorPallet( this );
 
         initComponents();
 

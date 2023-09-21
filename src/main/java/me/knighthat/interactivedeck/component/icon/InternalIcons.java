@@ -15,13 +15,11 @@
 package me.knighthat.interactivedeck.component.icon;
 
 import me.knighthat.interactivedeck.logging.Log;
-import me.knighthat.interactivedeck.svg.SVGNotFound;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.svg.SVGDocument;
 
 import java.net.URL;
-import java.util.Optional;
 
 public class InternalIcons {
 
@@ -40,6 +38,7 @@ public class InternalIcons {
     public final @NotNull SVGDocument CONNECTION_DISCONNECTED;
     public final @NotNull SVGDocument APP_SETTINGS;
     public final @NotNull SVGDocument APP_SETTINGS_HOVER;
+    public final @NotNull SVGDocument COLOR_PALETTE;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -59,6 +58,7 @@ public class InternalIcons {
         CONNECTION_DISCONNECTED = fromResource( "connection-disconnected" );
         APP_SETTINGS = fromResource( "app-settings" );
         APP_SETTINGS_HOVER = fromResource( "app-settings-hover" );
+        COLOR_PALETTE = fromResource( "color-palette" );
 
         Log.info( "Icons loaded!" );
     }
@@ -66,12 +66,6 @@ public class InternalIcons {
     @NotNull SVGDocument fromResource( @NotNull String name ) {
         String path = "/internal/icons/%s.svg".formatted( name );
         URL url = getClass().getResource( path );
-        SVGDocument document = SVGNotFound.DOCUMENT;
-        if (url != null) {
-            Optional<SVGDocument> parsed = SVGParser.fromURL( url );
-            if (parsed.isPresent())
-                document = parsed.get();
-        }
-        return document;
+        return SVGParser.fromURL( url );
     }
 }
