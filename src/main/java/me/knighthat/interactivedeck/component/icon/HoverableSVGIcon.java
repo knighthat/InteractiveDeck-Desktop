@@ -29,12 +29,12 @@ public class HoverableSVGIcon extends SVGIcon {
         addMouseListener( new MouseAdapter() {
             @Override
             public void mouseEntered( MouseEvent e ) {
-                setDocument( hoverIcon );
+                setSVGDocument( hoverIcon );
             }
 
             @Override
             public void mouseExited( MouseEvent e ) {
-                setDocument( icon );
+                setSVGDocument( icon );
             }
         } );
     }

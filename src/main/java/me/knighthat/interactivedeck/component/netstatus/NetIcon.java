@@ -26,7 +26,7 @@ final class NetIcon extends SVGIcon {
     }
 
     public void setDocument( @NotNull Connection.Status status ) {
-        setDocument(
+        setSVGDocument(
                 switch (status) {
                     case DISCONNECTED -> Icons.INTERNAL.CONNECTION_DISCONNECTED;
                     case CONNECTED -> Icons.INTERNAL.CONNECTION_CONNECTED;
