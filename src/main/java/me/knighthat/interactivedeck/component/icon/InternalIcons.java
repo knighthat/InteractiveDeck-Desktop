@@ -15,11 +15,17 @@
 package me.knighthat.interactivedeck.component.icon;
 
 import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.svg.SVGNotFound;
 import me.knighthat.interactivedeck.svg.SVGParser;
+import me.knighthat.interactivedeck.utils.Resources;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.svg.SVGDocument;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class InternalIcons {
 
@@ -63,9 +69,26 @@ public class InternalIcons {
         Log.info( "Icons loaded!" );
     }
 
-    @NotNull SVGDocument fromResource( @NotNull String name ) {
-        String path = "/internal/icons/%s.svg".formatted( name );
-        URL url = getClass().getResource( path );
-        return SVGParser.fromURL( url );
+    private @NotNull SVGDocument fromResource( @NotNull String name ) {
+        String dir = "internal/icons/";
+        String fullName = name + ".svg";
+        SVGDocument document = SVGNotFound.DOCUMENT;
+
+        Optional<JarEntry> jarEntryOptional = Resources.jarEntry( dir, fullName );
+        if (jarEntryOptional.isEmpty()) {
+            Log.warn( "File " + fullName + " does NOT exist. Switching to fallback!" );
+            return document;
+        }
+        try (JarFile jar = new JarFile( Resources.getJARLocation() )) {
+            document = convertEntryToSVG( jar, jarEntryOptional.get() );
+        } catch (IOException e) {
+            Log.exc( "Error occurs while reading icon " + fullName, e, true );
+        }
+        return document;
+    }
+
+    private @NotNull SVGDocument convertEntryToSVG( @NotNull JarFile jar, @NotNull JarEntry entry ) throws IOException {
+        InputStream inStream = jar.getInputStream( entry );
+        return SVGParser.fromInputStream( inStream );
     }
 }
