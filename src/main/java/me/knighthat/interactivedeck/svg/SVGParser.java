@@ -16,12 +16,12 @@ package me.knighthat.interactivedeck.svg;
 
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
+import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.transcoder.*;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.batik.util.XMLResourceDescriptor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.svg.SVGDocument;
 
 import javax.imageio.ImageIO;
@@ -29,7 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 
 public class SVGParser {
 
@@ -40,14 +40,8 @@ public class SVGParser {
         FACTORY = new SAXSVGDocumentFactory( parser );
     }
 
-    public static @NotNull SVGDocument fromURL( @Nullable URL url ) {
-        SVGDocument document = SVGNotFound.DOCUMENT;
-        try {
-            if (url != null)
-                document = FACTORY.createSVGDocument( url.toExternalForm() );
-        } catch (IOException ignored) {
-        }
-        return document;
+    public static @NotNull SVGDocument fromInputStream( @NotNull InputStream stream ) throws IOException {
+        return FACTORY.createSVGDocument( SVGDOMImplementation.SVG_NAMESPACE_URI, stream );
     }
 
     public static @NotNull BufferedImage toBufferedImage( @NotNull SVGDocument document ) {

@@ -15,15 +15,15 @@
 package me.knighthat.interactivedeck.font;
 
 import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.utils.Resources;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -38,60 +38,40 @@ public class FontFactory {
     public static void init() {
         Log.info( "Loading fonts..." );
 
-        String jarLoc = getJARLocation();
-        for (Font font : getInternalFonts( jarLoc ))
+        for (Font font : getInternalFonts())
             GRAPHICS_ENVIRONMENT.registerFont( font );
 
         Log.info( "Fonts loaded!" );
     }
 
-    private static @NotNull String getJARLocation() {
-        URL url = FontFactory.class.getResource( "" );
-        String uri = url == null ? "" : url.toExternalForm();
-        int start = uri.lastIndexOf( ":" ) + 1;
-        int end = uri.indexOf( "!" );
+    private static @NotNull Font[] getInternalFonts() {
+        List<Font> fonts = new ArrayList<>( 15 );
 
-        return uri.substring( start, end );
-    }
-
-    private static @NotNull Font[] getInternalFonts( @NotNull String path ) {
-        List<Font> fonts = new ArrayList<>( 12 );
-
-        try (JarFile jarFile = new JarFile( path )) {
-
-            getFontFiles( jarFile ).forEach( entry -> {
+        try (JarFile jarFile = new JarFile( Resources.getJARLocation() )) {
+            for (JarEntry entry : Resources.jarEntries( "fonts/", ".ttf" )) {
                 Font font = convertJarEntryToFont( jarFile, entry );
                 if (font != null)
                     fonts.add( font );
-            } );
+            }
         } catch (IOException e) {
-            Log.exc( "Could not read \"fonts\" folder inside .jar file", e, true );
+            Log.exc( "Error occurs while reading \"fonts\" folder", e, true );
         }
 
         return fonts.toArray( Font[]::new );
     }
 
-    private static Collection<JarEntry> getFontFiles( @NotNull JarFile jar ) {
-        Collection<JarEntry> files = new HashSet<>();
-
-        Enumeration<JarEntry> entries = jar.entries();
-        while (entries.hasMoreElements()) {
-            JarEntry entry = entries.nextElement();
-            String name = entry.getName();
-            if (name.startsWith( "fonts/" ) && name.endsWith( ".ttf" ))
-                files.add( entry );
-        }
-
-        return files;
-    }
-
     private static @Nullable Font convertJarEntryToFont( @NotNull JarFile jar, @NotNull JarEntry entry ) {
+        String name = entry.getName();
+        int start = name.lastIndexOf( "/" ) + 1;
+        name = name.substring( start );
         try {
+            Log.deb( "Loading font: " + name );
+
             InputStream stream = jar.getInputStream( entry );
             int fontType = entry.getName().endsWith( ".ttf" ) ? Font.TRUETYPE_FONT : 0;
             return Font.createFont( fontType, stream );
         } catch (IOException | FontFormatException e) {
-            Log.exc( "Error occurs while loading font " + entry.getRealName(), e, true );
+            Log.exc( "Error occurs while loading font " + name, e, true );
             return null;
         }
     }
