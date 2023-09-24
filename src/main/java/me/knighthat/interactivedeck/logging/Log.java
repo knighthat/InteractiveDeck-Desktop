@@ -83,6 +83,11 @@ public class Log {
             e.printStackTrace();
     }
 
+    public static void reportBug() {
+        err( "Unexpected error occurs, please report this to:" );
+        err( "https://github.com/knighthat/InteractiveDeck-Desktop/issues" );
+    }
+
     private static void update( @NotNull String object, @NotNull String id, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
         String info = "%s %s changed %s from \"%s\" to \"%s\"";
         info = info.formatted( object, id, property, from, to );
