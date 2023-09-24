@@ -87,7 +87,7 @@ public class MainMenu extends javax.swing.JFrame {
         profileSection = new me.knighthat.interactivedeck.menus.ProfileSection();
         buttonsDisplaySection = new me.knighthat.interactivedeck.menus.ButtonsDisplaySection();
         buttonModifier = new me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer();
-        me.knighthat.interactivedeck.menus.ConnectionStatusSection connectionStatusSection = new me.knighthat.interactivedeck.menus.ConnectionStatusSection();
+        ConnectionStatusSection connectionStatusSection = new ConnectionStatusSection();
 
         setDefaultCloseOperation( javax.swing.WindowConstants.EXIT_ON_CLOSE );
         setBackground( new java.awt.Color( 153, 153, 153 ) );
