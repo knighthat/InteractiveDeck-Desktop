@@ -27,11 +27,9 @@ import static javax.swing.LayoutStyle.ComponentPlacement.RELATED;
 public class ConnectionStatusSection extends JPanel implements Flexible {
 
     private final @NotNull NotificationCenter notificationCenter;
-    //    private final @NotNull ConStatus connectionStatus;
 
     public ConnectionStatusSection() {
         this.notificationCenter = new NotificationCenter();
-        //        this.connectionStatus = Connection.component();
 
         setBackground( ColorUtils.DEFAULT_DARK );
         setDimension( this, 1000, 30 );
@@ -72,5 +70,4 @@ public class ConnectionStatusSection extends JPanel implements Flexible {
         layout.setVerticalGroup( verticalParallelG );
     }
     // </editor-fold>
-
 }
