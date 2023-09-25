@@ -18,6 +18,7 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
 import me.knighthat.interactivedeck.component.ui.UIButton;
 import me.knighthat.interactivedeck.component.ui.UIComponent;
+import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.BashExecutor;
 import me.knighthat.interactivedeck.task.GotoPage;
@@ -154,8 +155,11 @@ public class TaskModifier extends ModifierPanel {
         // Reset everything to default value first
         runScriptButton.setSelected( false );
         runScriptInput.setText( "" );
-
+        gotoButton.setEnabled( true );
         gotoButton.setSelected( false );
+        profilesList.setEnabled( true );
+
+        // Disable gotoButton & profilesList if profilesList is empty
         MenuProperty.profile( button.profile ).ifPresent( profilesList::reloadExcept );
         if (profilesList.getModel().getSize() == 0) {
             gotoButton.setEnabled( false );
