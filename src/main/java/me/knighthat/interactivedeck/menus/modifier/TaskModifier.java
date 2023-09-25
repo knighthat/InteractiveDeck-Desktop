@@ -103,20 +103,23 @@ public class TaskModifier extends ModifierPanel {
         }
     }
 
-    private void applyButtonClicked() {
-        Task task = null;
+    private void applyButtonClickedEvent( @NotNull MouseEvent event ) {
+        Class<? extends Task> clazz = null;
+        List<Object> params = new ArrayList<>();
 
-        if (this.gotoButton.isSelected())
-            task = createGotoPageTask();
-        if (this.runScriptButton.isSelected())
-            task = createBashExecutorTask();
+        if (this.gotoButton.isSelected()) {
+            clazz = GotoPage.class;
+            params.add( profilesList.getSelectedItem() );
+        }
+        if (this.runScriptButton.isSelected()) {
+            clazz = BashExecutor.class;
+            params.add( runScriptInput.getText() );
+        }
 
-        button.task( task );
-    }
-
-    private @Nullable Task createGotoPageTask() {
-        Profile selected = (Profile) profilesList.getSelectedItem();
-        return selected != null ? new GotoPage( selected.uuid ) : null;
+        if (clazz != null) {
+            Task task = TaskManager.create( clazz, params.toArray() );
+            button.task( task );
+        }
     }
 
     @Override
