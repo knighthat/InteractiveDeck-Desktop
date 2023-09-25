@@ -13,35 +13,33 @@
  */
 package me.knighthat.interactivedeck.menus;
 
+import me.knighthat.interactivedeck.component.Flexible;
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
-
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 /**
  * @author Knight Hat
  */
-public class NotificationCenter extends javax.swing.JPanel {
+public class NotificationCenter extends JPanel implements Flexible {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    private static final @NotNull JLabel label = new JLabel();
-
-    private final @NotNull Dimension dimension = new Dimension( 500, 30 );
+    private static final @NotNull UILabel LABEL = new UILabel( "", SwingConstants.RIGHT );
 
     /**
      * Creates new form NotificationContainer
      */
     public NotificationCenter() {
         initComponents();
-        addLabel();
+        setDimension( LABEL, 500, 30 );
+        add( LABEL );
     }
 
-    public static void createConstantMessage( @NotNull String message ) {
-        synchronized (label) {
-            label.setText( message );
+    public static void setConstantMessage( @NotNull String message ) {
+        synchronized (LABEL) {
+            LABEL.setText( message );
         }
     }
 
@@ -54,22 +52,8 @@ public class NotificationCenter extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setMaximumSize( dimension );
-        setMinimumSize( dimension );
+        setDimension( this, 500, 30 );
         setOpaque( false );
-        setPreferredSize( dimension );
         setLayout( new javax.swing.BoxLayout( this, javax.swing.BoxLayout.LINE_AXIS ) );
     }// </editor-fold>//GEN-END:initComponents
-
-    void addLabel() {
-        label.setHorizontalAlignment( SwingConstants.RIGHT );
-        label.setMaximumSize( dimension );
-        label.setMinimumSize( dimension );
-        label.setPreferredSize( dimension );
-
-        label.setForeground( Color.WHITE );
-        label.setFont( SETTINGS.UIFont() );
-
-        add( label );
-    }
 }

@@ -78,7 +78,7 @@ public class RequestHandler {
         Log.info( deviceInfo );
 
         String device = "%s %s (Android %s)".formatted( manufacturer, model, aVer );
-        NotificationCenter.createConstantMessage( device );
+        NotificationCenter.setConstantMessage( device );
     }
 
     static void handleAction( @NotNull JsonElement content ) {
