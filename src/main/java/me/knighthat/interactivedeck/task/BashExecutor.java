@@ -19,6 +19,7 @@ import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,6 +30,17 @@ public final class BashExecutor extends ExecutableTask {
 
     public BashExecutor( @NotNull File file ) {
         this.filePath = file.getAbsolutePath();
+        this.process = new ProcessBuilder( "bash", filePath );
+    }
+
+    public BashExecutor( @NotNull String filePath ) throws FileNotFoundException {
+        if (filePath.isBlank())
+            throw new FileNotFoundException( "Path cannot be empty!" );
+        this.filePath = filePath;
+
+        File file = new File( filePath );
+        if (!file.exists())
+            throw new FileNotFoundException( filePath + " does not exist!" );
         this.process = new ProcessBuilder( "bash", filePath );
     }
 
