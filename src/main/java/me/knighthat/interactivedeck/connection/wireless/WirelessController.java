@@ -52,7 +52,7 @@ public class WirelessController extends Thread {
             try (ServerSocket socket = new ServerSocket( SETTINGS.port(), 1, IP )) {
                 String message = "Listening on: " + SETTINGS.fullAddress();
                 Log.info( message );
-                NotificationCenter.createConstantMessage( message );
+                NotificationCenter.setConstantMessage( message );
 
                 handleConnection( socket.accept() );
 
