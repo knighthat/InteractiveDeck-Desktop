@@ -110,7 +110,10 @@ public class TaskModifier extends ModifierPanel {
 
         if (this.gotoButton.isSelected()) {
             clazz = GotoPage.class;
-            params.add( profilesList.getSelectedItem() );
+            Profile profile = (Profile) profilesList.getSelectedItem();
+            if (profile == null)
+                return;
+            params.add( profile.uuid );
         }
         if (this.runScriptButton.isSelected()) {
             clazz = BashExecutor.class;
