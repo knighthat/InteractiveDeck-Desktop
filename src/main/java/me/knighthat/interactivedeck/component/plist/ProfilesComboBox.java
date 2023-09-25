@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.component.plist;
 
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -34,5 +35,10 @@ public class ProfilesComboBox extends JComboBox<Profile> {
         setModel( new DefaultComboBoxModel<>( profiles ) );
         revalidate();
         repaint();
+    }
+
+    public void reloadExcept( @NotNull Profile profile ) {
+        reload();
+        removeItem( profile );
     }
 }
