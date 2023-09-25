@@ -150,6 +150,9 @@ public class IButton extends JComponent implements JsonSerializable {
     }
 
     public void task( @Nullable Task task ) {
+        if (task == this.task)
+            return;
+
         String currentTask = this.task != null ? this.task.getClass().getName() : "null";
         String newTask = task != null ? task.getClass().getName() : "null";
         Log.buttonUpdate( uuid, "task", currentTask, newTask );
