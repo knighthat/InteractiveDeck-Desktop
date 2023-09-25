@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.menus.modifier;
 
+import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.component.tab.TabUI;
@@ -26,38 +27,36 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class ButtonModifierContainer extends JPanel implements IButtonProperty {
+public class ButtonModifierContainer extends JPanel implements IButtonProperty, Flexible {
 
-    private final @NotNull SVGIconTabbedPane pane;
-    private final @NotNull TextModifier textModifier;
-    private final @NotNull IconModifier iconModifier;
-    private final @NotNull TaskModifier taskModifier;
+    private final @NotNull SVGIconTabbedPane tabbedPane;
+
+    private final @NotNull ModifierPanel textModifier;
+    private final @NotNull ModifierPanel iconModifier;
+    private final @NotNull ModifierPanel taskModifier;
 
     public ButtonModifierContainer() {
-        this.pane = new SVGIconTabbedPane();
+        this.tabbedPane = new SVGIconTabbedPane();
         this.textModifier = new TextModifier();
         this.iconModifier = new IconModifier();
         this.taskModifier = new TaskModifier();
         initComponents();
-        pane.setVisible( false );
     }
 
     private void initComponents() {
-        Dimension dimension = new Dimension( 250, 520 );
-        setMaximumSize( dimension );
-        setMinimumSize( dimension );
-        setPreferredSize( dimension );
+        setDimension( this, 250, 520 );
         setBackground( ColorUtils.DEFAULT_DARK );
         setLayout( new BorderLayout() );
 
-        pane.setUI( new TabUI() );
-        pane.addTab( Icons.INTERNAL.TAB_TEXT, textModifier );
-        pane.addTab( Icons.INTERNAL.TAB_ICON, iconModifier );
-        pane.addTab( Icons.INTERNAL.TAB_TASK, taskModifier );
+        tabbedPane.setUI( new TabUI() );
+        tabbedPane.addTab( Icons.INTERNAL.TAB_TEXT, textModifier );
+        tabbedPane.addTab( Icons.INTERNAL.TAB_ICON, iconModifier );
+        tabbedPane.addTab( Icons.INTERNAL.TAB_TASK, taskModifier );
 
-        add( pane, BorderLayout.PAGE_START );
+        add( tabbedPane, BorderLayout.PAGE_START );
     }
 
+    @Override
     public void updateSelectedButton( @NotNull IButton button ) {
         textModifier.updateSelectedButton( button );
         iconModifier.updateSelectedButton( button );
@@ -66,11 +65,11 @@ public class ButtonModifierContainer extends JPanel implements IButtonProperty {
     }
 
     @Override
-    public void setVisible( boolean aFlag ) {
-        pane.setVisible( aFlag );
+    public void setVisible( boolean b ) {
+        tabbedPane.setVisible( b );
     }
 
-    private class SVGIconTabbedPane extends JTabbedPane {
+    private static class SVGIconTabbedPane extends JTabbedPane {
         public void addTab( @NotNull SVGDocument svg, @NotNull Component component ) {
             svg.getRootElement().setAttribute( "width", "48px" );
             svg.getRootElement().setAttribute( "height", "28px" );

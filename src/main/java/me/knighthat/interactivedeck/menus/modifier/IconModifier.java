@@ -17,6 +17,8 @@ package me.knighthat.interactivedeck.menus.modifier;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.component.input.HexColorTextField;
+import me.knighthat.interactivedeck.component.ui.IconLabel;
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.menus.popup.ColorPallet;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import org.jetbrains.annotations.NotNull;
@@ -29,13 +31,66 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
-
 public class IconModifier extends ModifierPanel {
 
-    private HexColorTextField bdInput;
-    private HexColorTextField bgInput;
-    private HexColorTextField fgInput;
+    private final @NotNull BufferedImage bufferedIcon;
+    private final @NotNull HexColorTextField bdInput;
+    private final @NotNull HexColorTextField bgInput;
+    private final @NotNull HexColorTextField fgInput;
+    private final @NotNull Insets sectionSpacing;
+
+    public IconModifier() {
+        SVGDocument document = Icons.INTERNAL.COLOR_PALETTE;
+        Element root = document.getRootElement();
+        root.setAttribute( "width", "25px" );
+        root.setAttribute( "height", "25px" );
+        this.bufferedIcon = SVGParser.toBufferedImage( document );
+
+        this.bdInput = new HexColorTextField();
+        this.bgInput = new HexColorTextField();
+        this.fgInput = new HexColorTextField();
+
+        this.sectionSpacing = new Insets( 0, 0, 40, 0 );
+    }
+
+    private void addSection( @NotNull String name, @NotNull HexColorTextField input, int gridy ) {
+        addContent(
+                new UILabel( name ),
+                label -> ( (JLabel) label ).setLabelFor( input ),
+                constraints -> {
+                    constraints.gridy = gridy;
+                    constraints.anchor = GridBagConstraints.LINE_START;
+                }
+        );
+        addContent(
+                input,
+                c -> {
+                    setDimension( c, 150, 40 );
+                    input.addColorChangeEvent( event -> applyColor( input ) );
+                },
+                constraints -> {
+                    constraints.gridy = gridy + 1;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    constraints.insets = sectionSpacing;
+                }
+        );
+        addContent(
+                new IconLabel( bufferedIcon, SwingConstants.RIGHT, SwingConstants.CENTER ),
+                icon -> {
+                    setDimension( icon, 40, 40 );
+                    icon.addMouseListener( new MouseAdapter() {
+                        @Override
+                        public void mouseClicked( MouseEvent e ) {
+                            ColorPallet.INSTANCE.present( input );
+                        }
+                    } );
+                },
+                constraints -> {
+                    constraints.gridy = gridy + 1;
+                    constraints.insets = sectionSpacing;
+                }
+        );
+    }
 
     private void applyColor( @NotNull HexColorTextField input ) {
         Color color = input.getBackground();
@@ -47,73 +102,16 @@ public class IconModifier extends ModifierPanel {
             button.border( color );
     }
 
-    private void addContent( @NotNull String name, @NotNull HexColorTextField field, int gridy, @NotNull BufferedImage icon ) {
-        addContent(
-                new JLabel( name ),
-                label -> {
-                    label.setForeground( Color.WHITE );
-                    label.setFont( SETTINGS.UIFont() );
-                },
-                constraints -> {
-                    constraints.gridy = gridy;
-                    constraints.anchor = GridBagConstraints.LINE_START;
-                }
-        );
-        Insets insets = new Insets( 0, 0, 40, 0 );
-        addContent(
-                field,
-                comp -> {
-                    setDimension( comp, 150, 40 );
-                    field.addColorChangeEvent( event -> applyColor( field ) );
-                },
-                constraints -> {
-                    constraints.gridy = gridy + 1;
-                    constraints.fill = GridBagConstraints.HORIZONTAL;
-                    constraints.insets = insets;
-                }
-        );
-        addContent(
-                new JLabel( new ImageIcon( icon ) ),
-                comp -> {
-                    setDimension( comp, 40, 40 );
-
-                    ( (JLabel) comp ).setHorizontalAlignment( SwingConstants.RIGHT );
-                    ( (JLabel) comp ).setVerticalAlignment( SwingConstants.CENTER );
-
-                    comp.addMouseListener( new MouseAdapter() {
-                        @Override
-                        public void mouseClicked( MouseEvent e ) {
-                            ColorPallet.INSTANCE.present( field );
-                        }
-                    } );
-                },
-                constraints -> {
-                    constraints.gridy = gridy + 1;
-                    constraints.anchor = GridBagConstraints.BASELINE;
-                    constraints.insets = insets;
-                }
-        );
-    }
-
     @Override
-    protected void configureLayout( @NotNull GridBagLayout layout ) {
+    public void setupLayout( @NotNull GridBagLayout layout ) {
         layout.columnWidths = new int[]{ 150, 40 };
     }
 
     @Override
-    protected void loadContent() {
-        SVGDocument document = Icons.INTERNAL.COLOR_PALETTE;
-        Element root = document.getRootElement();
-        root.setAttribute( "width", "25px" );
-        root.setAttribute( "height", "25px" );
-        BufferedImage bufferedImage = SVGParser.toBufferedImage( document );
-
-        this.fgInput = new HexColorTextField();
-        addContent( "Foreground", fgInput, 0, bufferedImage );
-        this.bgInput = new HexColorTextField();
-        addContent( "Background", bgInput, 2, bufferedImage );
-        this.bdInput = new HexColorTextField();
-        addContent( "Border", bdInput, 4, bufferedImage );
+    public void initComponents() {
+        addSection( "Foreground", fgInput, 0 );
+        addSection( "Background", bgInput, 2 );
+        addSection( "Border", bdInput, 4 );
     }
 
     @Override

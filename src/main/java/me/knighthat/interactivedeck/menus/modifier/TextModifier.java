@@ -15,36 +15,49 @@
 package me.knighthat.interactivedeck.menus.modifier;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.component.input.FunctionalTextInput;
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.font.FontFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public class TextModifier extends ModifierPanel {
 
-    private JTextField labelInput;
-    private JComboBox<String> fontSelector;
-    private JSpinner sizeSpinner;
-    private JToggleButton boldButton;
-    private JToggleButton italicButton;
-    private JToggleButton underlineButton;
+    private final @NotNull FunctionalTextInput labelInput;
+    private final @NotNull JComboBox<String> fontSelector;
+    private final @NotNull JSpinner sizeSpinner;
+    private final @NotNull ToggleStyleButton boldButton;
+    private final @NotNull ToggleStyleButton italicButton;
+    private final @NotNull ToggleStyleButton underlineButton;
 
-    private void applyLabel( @NotNull JComponent source ) {
-        if (source instanceof JTextComponent textComponent)
-            button.text( textComponent.getText() );
+    public TextModifier() {
+        this.labelInput = new FunctionalTextInput( 140, 40 );
+        this.fontSelector = new JComboBox<>( FontFactory.availableFamilyNames() );
+        this.sizeSpinner = new JSpinner();
+        this.boldButton = new ToggleStyleButton( "B", true );
+        this.italicButton = new ToggleStyleButton( "I", true );
+        this.underlineButton = new ToggleStyleButton( "U", false );
     }
 
-    private void apply( @Nullable String family, @Nullable Integer style, @Nullable Integer size ) {
+    private void addStyleButton( @NotNull ToggleStyleButton button ) {
+        addContent(
+                button,
+                c -> ( (ToggleStyleButton) c ).addChangeListener( this::stylingButtonSelectedEvent ),
+                constraints -> constraints.gridy = 3
+        );
+    }
+
+    private void stylingButtonSelectedEvent( @NotNull ChangeEvent event ) {
+        int bold = boldButton.isSelected() ? Font.BOLD : Font.PLAIN;
+        int italic = italicButton.isSelected() ? Font.ITALIC : Font.PLAIN;
+        applyFont( null, bold | italic, null );
+    }
+
+    private void applyFont( @Nullable String family, @Nullable Integer style, @Nullable Integer size ) {
         Font curFont = button.font();
         button.font(
                 new Font(
@@ -55,47 +68,25 @@ public class TextModifier extends ModifierPanel {
         );
     }
 
-    private void stylingButtonSelectedEvent( @NotNull ChangeEvent event ) {
-        int bold = boldButton.isSelected() ? Font.BOLD : Font.PLAIN;
-        int italic = italicButton.isSelected() ? Font.ITALIC : Font.PLAIN;
-        apply( null, bold | italic, null );
+    @Override
+    public void setupLayout( @NotNull GridBagLayout layout ) {
+        layout.columnWidths = new int[]{ 70, 70, 70 };
+        layout.rowHeights = new int[]{ 5, 60, 50 };
     }
 
-    private @NotNull JToggleButton addToggleButton( @NotNull String name, boolean isEnabled, int gridx ) {
-        JToggleButton button = new JToggleButton( name );
+    @Override
+    public void initComponents() {
+        // Input Label
         addContent(
-                button,
-                comp -> {
-                    comp.setEnabled( isEnabled );
-                    ( (JToggleButton) comp ).addChangeListener( this::stylingButtonSelectedEvent );
-                },
-                constraints -> {
-                    constraints.gridx = gridx;
-                    constraints.gridy = 3;
-                }
+                new UILabel( "Label" ),
+                label -> {},
+                constraints -> constraints.anchor = GridBagConstraints.LINE_START
         );
-        return button;
-    }
 
-    private void addLabelInput() {
+        // Input Field
         addContent(
-                labelInput = new JTextField(),
-                input -> {
-                    setDimension( input, 140, 40 );
-                    input.addKeyListener( new KeyAdapter() {
-                        @Override
-                        public void keyPressed( KeyEvent e ) {
-                            if (e.getKeyCode() == 10)
-                                applyLabel( input );
-                        }
-                    } );
-                    input.addFocusListener( new FocusAdapter() {
-                        @Override
-                        public void focusLost( FocusEvent e ) {
-                            applyLabel( input );
-                        }
-                    } );
-                },
+                labelInput,
+                c -> labelInput.addChangeEvent( event -> button.text( labelInput.getText() ) ),
                 constraints -> {
                     constraints.gridy = 1;
                     constraints.gridwidth = 3;
@@ -103,17 +94,16 @@ public class TextModifier extends ModifierPanel {
                     constraints.anchor = GridBagConstraints.NORTH;
                 }
         );
-    }
 
-    private void addFontSelector() {
+        // Font Selector
         addContent(
-                fontSelector = new JComboBox<>( FontFactory.availableFamilyNames() ),
-                selector -> {
-                    setDimension( selector, 140, 30 );
-                    ( (JComboBox<?>) selector ).addActionListener( event -> {
+                fontSelector,
+                c -> {
+                    setDimension( c, 140, 30 );
+                    ( (JComboBox<?>) c ).addActionListener( event -> {
                         Object selected = fontSelector.getSelectedItem();
                         if (selected != null)
-                            apply( selected.toString(), null, null );
+                            applyFont( selected.toString(), null, null );
                     } );
                 },
                 constraints -> {
@@ -121,17 +111,16 @@ public class TextModifier extends ModifierPanel {
                     constraints.gridwidth = 2;
                 }
         );
-    }
 
-    private void addSizeSpinner() {
+        // Size Spinner
         addContent(
-                sizeSpinner = new JSpinner(),
-                spinner -> {
-                    setDimension( spinner, 55, 30 );
-                    ( (JSpinner) spinner ).addChangeListener( event -> {
+                sizeSpinner,
+                c -> {
+                    setDimension( c, 55, 30 );
+                    ( (JSpinner) c ).addChangeListener( event -> {
                         Object value = sizeSpinner.getValue();
                         if (value instanceof Integer integer)
-                            apply( null, null, integer );
+                            applyFont( null, null, integer );
                     } );
                 },
                 constraints -> {
@@ -140,35 +129,11 @@ public class TextModifier extends ModifierPanel {
                     constraints.anchor = GridBagConstraints.LINE_END;
                 }
         );
-    }
-
-    @Override
-    protected void configureLayout( @NotNull GridBagLayout layout ) {
-        layout.columnWidths = new int[]{ 70, 70, 70 };
-        layout.rowHeights = new int[]{ 5, 60, 50 };
-    }
-
-    @Override
-    protected void loadContent() {
-        // Button's label input
-        addContent(
-                new JLabel( "Label" ),
-                label -> {
-                    label.setForeground( Color.WHITE );
-                    label.setFont( SETTINGS.UIFont() );
-                },
-                constraints -> constraints.anchor = GridBagConstraints.LINE_START
-        );
-        addLabelInput();
-
-        // Button's Font & Size
-        addFontSelector();
-        addSizeSpinner();
 
         // Button's Font's Style
-        boldButton = addToggleButton( "B", true, 0 );
-        italicButton = addToggleButton( "I", true, 1 );
-        underlineButton = addToggleButton( "U", false, 2 );
+        addStyleButton( boldButton );
+        addStyleButton( italicButton );
+        addStyleButton( underlineButton );
     }
 
     @Override
@@ -181,5 +146,13 @@ public class TextModifier extends ModifierPanel {
         boldButton.setSelected( curFont.isBold() );
         italicButton.setSelected( curFont.isItalic() );
         underlineButton.setSelected( false );
+    }
+
+    private static class ToggleStyleButton extends JToggleButton {
+
+        public ToggleStyleButton( @NotNull String text, boolean isEnabled ) {
+            super( text );
+            setEnabled( isEnabled );
+        }
     }
 }

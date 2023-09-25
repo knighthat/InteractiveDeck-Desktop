@@ -14,50 +14,52 @@
 
 package me.knighthat.interactivedeck.menus.modifier;
 
+import me.knighthat.interactivedeck.component.ContentContainer;
+import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
 
-public abstract class ModifierPanel extends JPanel implements IButtonProperty {
+public abstract class ModifierPanel extends JPanel implements IButtonProperty, ContentContainer, Flexible {
 
     protected IButton button;
+    private boolean isInitialized = false;
 
-    public ModifierPanel() {
+    protected ModifierPanel() {
         setOpaque( false );
-
-        GridBagLayout layout = new GridBagLayout();
-        configureLayout( layout );
-        setLayout( layout );
-
-        loadContent();
+        setDimension( this, 250, 520 );
     }
 
-    protected abstract void configureLayout( @NotNull GridBagLayout layout );
+    protected abstract void setupLayout( @NotNull GridBagLayout layout );
 
-    protected abstract void loadContent();
+    protected abstract void initComponents();
 
     protected abstract void loadProperties( @NotNull IButton button );
-
-    protected void setDimension( @NotNull JComponent component, int width, int height ) {
-        Dimension dimension = new Dimension( width, height );
-        component.setMinimumSize( dimension );
-        component.setMaximumSize( dimension );
-        component.setPreferredSize( dimension );
-    }
-
-    protected void addContent( @NotNull JComponent component, @NotNull Consumer<JComponent> conComp, @NotNull Consumer<GridBagConstraints> conCons ) {
-        GridBagConstraints constraints = new GridBagConstraints();
-        conCons.accept( constraints );
-        conComp.accept( component );
-        add( component, constraints );
-    }
 
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
         this.button = button;
         loadProperties( button );
+    }
+
+    @Override
+    public @NotNull ModifierPanel container() {
+        return this;
+    }
+
+    @Override
+    public void setVisible( boolean b ) {
+        if (!isInitialized) {
+            GridBagLayout layout = new GridBagLayout();
+            setupLayout( layout );
+            setLayout( layout );
+
+            initComponents();
+
+            isInitialized = true;
+        }
+        super.setVisible( b );
     }
 }
