@@ -21,6 +21,8 @@ import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+
 /**
  * @author knighthat
  */
@@ -28,6 +30,23 @@ public class InteractiveDeck {
 
     static {
         Thread.currentThread().setName( "MAIN" );
+
+        /* Set the Nimbus look and feel */
+        //<editor-fold default-state="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals( info.getName() )) {
+                    UIManager.setLookAndFeel( info.getClassName() );
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.exc( "Error occurs while loading Look&Feel", e, true );
+        }
+        //</editor-fold>
     }
 
     public static void main( String[] args ) {
@@ -40,23 +59,6 @@ public class InteractiveDeck {
         printSysConfig();
 
         new WirelessController().start();
-
-        /* Set the Nimbus look and feel */
-        //<editor-fold default-state="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals( info.getName() )) {
-                    javax.swing.UIManager.setLookAndFeel( info.getClassName() );
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            Log.exc( "Error occurs while loading Look&Feel", e, true );
-        }
-        //</editor-fold>
 
         new MainMenu().setVisible( true );
     }
