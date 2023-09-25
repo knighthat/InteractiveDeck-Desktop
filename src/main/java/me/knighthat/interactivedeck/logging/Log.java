@@ -57,10 +57,10 @@ public class Log {
      * A shorthand to print error to console or file.<br>
      *
      * @param s Custom/Additional message
-     * @param e Exception
+     * @param e Throwable error
      * @param b Print stack trace
      */
-    public static void exc( @NotNull String s, @NotNull Exception e, boolean b ) {
+    public static void exc( @NotNull String s, @NotNull Throwable e, boolean b ) {
         if (!s.isBlank())
             err( s );
         err( "Reason: " + e.getMessage() );
@@ -72,10 +72,10 @@ public class Log {
      * Prints out exception but at warning levell
      *
      * @param s Custom/Additional message
-     * @param e Exception
+     * @param e Throwable error
      * @param b Print stack trace
      */
-    public static void wexc( @NotNull String s, @NotNull Exception e, boolean b ) {
+    public static void wexc( @NotNull String s, @NotNull Throwable e, boolean b ) {
         if (!s.isBlank())
             warn( s );
         err( "Reason: " + e.getMessage() );
