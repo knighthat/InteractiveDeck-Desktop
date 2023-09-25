@@ -44,8 +44,7 @@ public class WirelessSender extends Thread {
                 QUEUE.put( request );
             else {
                 Log.warn( "Failed to send request. Connection is not established!" );
-                Log.warn( "You were not supposed to see this message. Please report" );
-                Log.warn( "https://github.com/knighthat/InteractiveDeck-Desktop/issues" );
+                Log.reportBug();
                 Log.deb( "Request: " + request );
             }
         } catch (InterruptedException e) {
