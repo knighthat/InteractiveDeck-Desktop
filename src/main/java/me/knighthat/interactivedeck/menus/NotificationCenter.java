@@ -26,7 +26,7 @@ public class NotificationCenter extends JPanel implements Flexible {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    private static final @NotNull UILabel LABEL = new UILabel( "", SwingConstants.RIGHT );
+    private static UILabel LABEL;
 
     /**
      * Creates new form NotificationContainer
@@ -37,10 +37,12 @@ public class NotificationCenter extends JPanel implements Flexible {
         add( LABEL );
     }
 
+    public static void init() {
+        LABEL = new UILabel( "", SwingConstants.RIGHT );
+    }
+
     public static void setConstantMessage( @NotNull String message ) {
-        synchronized (LABEL) {
-            LABEL.setText( message );
-        }
+        LABEL.setText( message );
     }
 
     /**
