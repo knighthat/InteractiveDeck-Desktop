@@ -19,6 +19,7 @@ import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MainMenu;
+import me.knighthat.interactivedeck.menus.NotificationCenter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -57,6 +58,8 @@ public class InteractiveDeck {
         Settings.init();
 
         printSysConfig();
+
+        NotificationCenter.init();
 
         new WirelessController().start();
 
