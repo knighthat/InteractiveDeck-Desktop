@@ -35,6 +35,8 @@ public class HexColorTextField extends JFormattedTextField {
 
     private final @NotNull List<ColorChangedEvent> events = new ArrayList<>();
 
+    private @NotNull Color color = Color.WHITE;
+
     public HexColorTextField() {
         super();
         setupFormatter();
@@ -76,11 +78,10 @@ public class HexColorTextField extends JFormattedTextField {
      * @param color new color
      */
     public void setColor( @NotNull Color color ) {
-        Color contrast = ColorUtils.getContrast( color );
+        this.color = color;
         setBackground( color );
-        setForeground( contrast );
-        String hex = ColorUtils.toHex( color );
-        setText( hex );
+        setForeground( ColorUtils.getContrast( color ) );
+        setText( ColorUtils.toHex( color ) );
     }
 
     /**
@@ -93,8 +94,8 @@ public class HexColorTextField extends JFormattedTextField {
         String hex = getText().trim();
         if (hex.length() < 7) {
             String warning = "Hex string must have 7 digits of 0-9 a-f A-F";
-            Log.warn( warning );
             WarningPopup.showWarning( warning );
+            setColor( color );
             return;
         }
         Color color = ColorUtils.fromHex( hex );
@@ -119,8 +120,7 @@ public class HexColorTextField extends JFormattedTextField {
     }
 
     private void fireColorChangedEvent( @NotNull Color color ) {
-        for (ColorChangedEvent event : events)
-            event.onColorChanged( color );
+        events.forEach( e -> e.onColorChanged( color ) );
     }
 }
 
