@@ -29,6 +29,8 @@ import java.util.jar.JarFile;
 
 public class InternalIcons {
 
+    public static final @NotNull String DIR = "internal/icons/";
+
     public final @NotNull SVGDocument PROFILE_ADD;
     public final @NotNull SVGDocument PROFILE_ADD_HOVER;
     public final @NotNull SVGDocument PROFILE_REMOVE;
@@ -70,11 +72,10 @@ public class InternalIcons {
     }
 
     private @NotNull SVGDocument fromResource( @NotNull String name ) {
-        String dir = "internal/icons/";
         String fullName = name + ".svg";
         SVGDocument document = SVGNotFound.DOCUMENT;
 
-        Optional<JarEntry> jarEntryOptional = Resources.jarEntry( dir, fullName );
+        Optional<JarEntry> jarEntryOptional = Resources.jarEntry( DIR, fullName );
         if (jarEntryOptional.isEmpty()) {
             Log.warn( "File " + fullName + " does NOT exist. Switching to fallback!" );
             return document;
