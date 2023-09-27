@@ -20,14 +20,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public interface ContentContainer {
+public interface ContentContainer<T> {
 
-    @NotNull JComponent container();
+    @NotNull Container container();
+
+    @NotNull T constraints();
 
     default void addContent( @NotNull JComponent component,
                              @NotNull Consumer<JComponent> componentProps,
-                             @NotNull Consumer<GridBagConstraints> componentConstraints ) {
-        GridBagConstraints constraints = new GridBagConstraints();
+                             @NotNull Consumer<T> componentConstraints ) {
+        T constraints = constraints();
         componentConstraints.accept( constraints );
         componentProps.accept( component );
         container().add( component, constraints );
