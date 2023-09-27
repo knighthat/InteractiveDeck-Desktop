@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.MenuProperty;
@@ -28,18 +29,19 @@ public final class RemoveProfilePopup extends ProfilePopup {
 
     public static RemoveProfilePopup INSTANCE;
 
-    private JLabel message;
+    private final @NotNull UILabel message;
 
     public RemoveProfilePopup( @NotNull Window window ) {
         super( window, "Remove Profile", "Remove", "Cancel" );
+        this.message = new UILabel();
     }
 
     @Override
-    protected void loadContent() {
+    public void initComponents() {
         addContent(
-                new JLabel(),
+                message,
                 label -> {
-                    message = (JLabel) label;
+                    label.setForeground( Color.BLACK );
                     setDimension( label, 250, 50 );
                 },
                 constraints -> {}
@@ -58,5 +60,11 @@ public final class RemoveProfilePopup extends ProfilePopup {
         profile.remove();
         ( (MainMenu) getOwner() ).updateProfilesList();
         MenuProperty.active( MenuProperty.defaultProfile() );
+    }
+
+    @Override
+    protected void positiveButton( @NotNull JButton button ) {
+        super.positiveButton( button );
+        setDimension( button, 100, 25 );
     }
 }

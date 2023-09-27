@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Profiles;
 import me.knighthat.interactivedeck.menus.MainMenu;
@@ -30,10 +31,11 @@ public final class AddProfilePopup extends YesNoPopup {
 
     public static AddProfilePopup INSTANCE;
 
-    private JTextField displayNameInput;
+    private final @NotNull JTextField displayNameInput;
 
     public AddProfilePopup( @NotNull Window window ) {
         super( window, "Add Profile", "Create", "Cancel" );
+        this.displayNameInput = new JTextField();
     }
 
     private void createProfile() {
@@ -50,20 +52,21 @@ public final class AddProfilePopup extends YesNoPopup {
     }
 
     @Override
-    protected void loadContent() {
-        addContent( new JLabel( "Display Name:" ), label -> {}, constraints -> {
-            constraints.fill = GridBagConstraints.HORIZONTAL;
-            constraints.anchor = GridBagConstraints.WEST;
-            constraints.insets = new Insets( 0, 0, 0, 10 );
-        } );
+    public void initComponents() {
+        addContent(
+                new UILabel( "Display Name:" ),
+                label -> label.setForeground( Color.BLACK ),
+                constraints -> {
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    constraints.anchor = GridBagConstraints.WEST;
+                    constraints.insets = new Insets( 0, 0, 0, 10 );
+                }
+        );
 
         addContent(
-                new JTextField(),
+                displayNameInput,
                 comp -> {
                     setDimension( comp, 150, 30 );
-
-                    this.displayNameInput = (JTextField) comp;
-
                     comp.addKeyListener( new KeyAdapter() {
                         public void keyPressed( KeyEvent evt ) {
                             if (evt.getKeyCode() == 27)

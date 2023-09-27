@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.menus.popup;
 import me.knighthat.interactivedeck.component.IntegerFilter;
 import me.knighthat.interactivedeck.component.IpAddressFilter;
 import me.knighthat.interactivedeck.component.input.HexColorTextField;
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,12 +35,12 @@ public class AppSettingsPopup extends YesNoPopup {
 
     public static AppSettingsPopup INSTANCE;
 
-    private final JTextField[] addressInputs;
-    private final JTextField portInput;
-    private final JComboBox<Integer> bufferInput;
-    private final HexColorTextField selectedColorInput;
-    private final JComboBox<String> UIFontInput;
-    private final JComboBox<String> defaultButtonFontInput;
+    private final @NotNull JTextField[] addressInputs;
+    private final @NotNull JTextField portInput;
+    private final @NotNull JComboBox<Integer> bufferInput;
+    private final @NotNull HexColorTextField selectedColorInput;
+    private final @NotNull JComboBox<String> UIFontInput;
+    private final @NotNull JComboBox<String> defaultButtonFontInput;
 
     public AppSettingsPopup( @NotNull Window window ) {
         super( window, "Settings", "Apply", "Cancel" );
@@ -55,10 +56,11 @@ public class AppSettingsPopup extends YesNoPopup {
     }
 
     @Override
-    protected void loadContent() {
+    public void initComponents() {
+        // IP Address
         addContent(
-                new JLabel( "IP Address" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "IP Address" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.anchor = GridBagConstraints.LINE_START;
                     constraints.gridwidth = 8;
@@ -79,15 +81,16 @@ public class AppSettingsPopup extends YesNoPopup {
             );
             String labelString = i < addressInputs.length - 1 ? "." : ":";
             addContent(
-                    new JLabel( labelString ),
-                    label -> label.setFont( SETTINGS.UIFont() ),
+                    new UILabel( labelString ),
+                    label -> label.setForeground( Color.BLACK ),
                     constraints -> constraints.gridy = 1
             );
         }
 
+        // Port
         addContent(
-                new JLabel( "Port" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "Port" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.anchor = GridBagConstraints.LINE_START;
                     constraints.gridy = 0;
@@ -107,10 +110,11 @@ public class AppSettingsPopup extends YesNoPopup {
                 }
         );
 
+        // Stream Buffer
         Insets insets = new Insets( 20, 0, 0, 0 );
         addContent(
-                new JLabel( "Buffer (KB)" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "Buffer (KB)" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.gridx = 2;
                     constraints.gridy = 2;
@@ -135,9 +139,10 @@ public class AppSettingsPopup extends YesNoPopup {
                 }
         );
 
+        // Selected Button Color
         addContent(
-                new JLabel( "Selected Button Color" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "Selected Button Color" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.gridx = 2;
                     constraints.gridy = 4;
@@ -157,9 +162,10 @@ public class AppSettingsPopup extends YesNoPopup {
                 }
         );
 
+        // UI Font
         addContent(
-                new JLabel( "UI Font" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "UI Font" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.gridx = 2;
                     constraints.gridy = 6;
@@ -179,9 +185,10 @@ public class AppSettingsPopup extends YesNoPopup {
                 }
         );
 
+        // Default Font of Button
         addContent(
-                new JLabel( "Default Button Font" ),
-                label -> label.setFont( SETTINGS.UIFont() ),
+                new UILabel( "Default Button Font" ),
+                label -> label.setForeground( Color.BLACK ),
                 constraints -> {
                     constraints.gridx = 2;
                     constraints.gridy = 8;
@@ -201,13 +208,15 @@ public class AppSettingsPopup extends YesNoPopup {
                 }
         );
 
+        // Attention Notice
         addContent(
-                new JLabel( "Changing settings requires restart to take effect!" ),
+                new UILabel( "Changing settings requires restart to take effect!" ),
                 label -> {
                     setDimension( label, 250, 50 );
 
                     Font font = new Font( SETTINGS.UIFont().getFamily(), Font.ITALIC, 9 );
                     label.setFont( font );
+                    label.setForeground( Color.BLACK );
 
                     ( (JLabel) label ).setVerticalAlignment( SwingConstants.BOTTOM );
                     ( (JLabel) label ).setHorizontalAlignment( SwingConstants.CENTER );
