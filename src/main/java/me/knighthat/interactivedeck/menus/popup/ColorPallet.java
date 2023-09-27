@@ -44,12 +44,8 @@ public final class ColorPallet extends YesNoPopup {
     }
 
     @Override
-    protected void loadContent() {
-        addContent(
-                colorPallet,
-                comp -> {},
-                constraints -> {}
-        );
+    public void initComponents() {
+        contentContainer.add( colorPallet );
     }
 
     @Override

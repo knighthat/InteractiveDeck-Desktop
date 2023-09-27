@@ -14,16 +14,21 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
+import me.knighthat.interactivedeck.component.ContentContainer;
+import me.knighthat.interactivedeck.component.Flexible;
+import me.knighthat.interactivedeck.component.ui.UIButton;
+import me.knighthat.interactivedeck.component.ui.UILabel;
+import me.knighthat.interactivedeck.menus.Interactive;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.Consumer;
 
-public abstract class Popup extends JDialog {
+public abstract class Popup extends JDialog implements Flexible, ContentContainer<GridBagConstraints>, Interactive<GridBagLayout> {
 
-    protected JPanel contentContainer;
-    protected JPanel buttonContainer;
+    protected final @NotNull JPanel contentContainer;
+    protected final @NotNull JPanel buttonContainer;
 
     public Popup( @NotNull Window window, @NotNull String title ) {
         super( window );
@@ -35,29 +40,28 @@ public abstract class Popup extends JDialog {
         setUndecorated( true );
 
         setupTitle( title );
+        this.contentContainer = new JPanel();
         setupContentContainer();
+        this.buttonContainer = new JPanel();
         setupButtonContainer();
     }
-
-    protected abstract void loadContent();
 
     protected abstract void loadButtons();
 
     private void setupTitle( @NotNull String title ) {
-        JLabel label = new JLabel( title );
+        UILabel label = new UILabel( title );
+        label.setForeground( Color.BLACK );
         label.setHorizontalAlignment( SwingConstants.CENTER );
         setDimension( label, 300, 30 );
         getContentPane().add( label, BorderLayout.PAGE_START );
     }
 
     private void setupContentContainer() {
-        this.contentContainer = new JPanel();
         contentContainer.setOpaque( false );
         contentContainer.setLayout( new GridBagLayout() );
     }
 
     private void setupButtonContainer() {
-        this.buttonContainer = new JPanel();
         setDimension( buttonContainer, 300, 50 );
         buttonContainer.setOpaque( false );
 
@@ -71,33 +75,15 @@ public abstract class Popup extends JDialog {
         dispose();
     }
 
-    public @NotNull JButton addButton( @NotNull Consumer<JButton> consumer ) {
-        JButton button = new JButton();
-        setDimension( button, 80, 25 );
+    public void addButton( @NotNull Consumer<UIButton> consumer ) {
+        UIButton button = new UIButton();
+        setDimension( button, 80, 25, true, true, false );
         consumer.accept( button );
         buttonContainer.add( button );
-
-        return button;
-    }
-
-    public @NotNull JComponent addContent( @NotNull JComponent component, @NotNull Consumer<JComponent> conComp, @NotNull Consumer<GridBagConstraints> conCons ) {
-        GridBagConstraints constraints = new GridBagConstraints();
-        conCons.accept( constraints );
-        conComp.accept( component );
-        contentContainer.add( component, constraints );
-
-        return component;
-    }
-
-    public void setDimension( @NotNull JComponent component, int width, int height ) {
-        Dimension dimension = new Dimension( width, height );
-        component.setMaximumSize( dimension );
-        component.setMinimumSize( dimension );
-        component.setPreferredSize( dimension );
     }
 
     public void present() {
-        loadContent();
+        initComponents();
         getContentPane().add( contentContainer, BorderLayout.CENTER );
         loadButtons();
         getContentPane().add( buttonContainer, BorderLayout.SOUTH );
@@ -105,5 +91,19 @@ public abstract class Popup extends JDialog {
         pack();
 
         setLocationRelativeTo( getOwner() );
+    }
+
+    @Override
+    public void setupLayout( @NotNull GridBagLayout layout ) {
+    }
+
+    @Override
+    public @NotNull JPanel container() {
+        return contentContainer;
+    }
+
+    @Override
+    public @NotNull GridBagConstraints constraints() {
+        return new GridBagConstraints();
     }
 }

@@ -14,44 +14,50 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class WarningPopup extends PersistentDataPopup {
 
     public static WarningPopup INSTANCE;
 
-    private JLabel label;
+    private final @NotNull UILabel label;
 
     public WarningPopup( @NotNull Window window ) {
         super( window, "Warning!!!" );
+        this.label = new UILabel();
     }
 
     public static void showWarning( @NotNull String warning ) {
+        Log.warn( warning );
         INSTANCE.present();
-        String formatted = "<html>" + warning + "</html>";
-        INSTANCE.label.setText( formatted );
+        INSTANCE.text( "<html>" + warning + "</html>" );
+    }
+
+    private synchronized void text( @NotNull String warning ) {
+        label.setText( warning );
     }
 
     @Override
-    protected void loadContent() {
+    public void initComponents() {
         addContent(
-                label = new JLabel(),
-                comp -> setDimension( comp, 250, 100 ),
+                label,
+                comp -> {
+                    comp.setForeground( Color.BLACK );
+                    setDimension( comp, 250, 100 );
+                },
                 constraints -> {}
         );
     }
 
     @Override
     protected void loadButtons() {
-        addButton( button ->
-                button.addActionListener( event -> {
-                    Log.deb( event.getActionCommand() );
-                    finish();
-                } )
-        );
+        addButton( button -> {
+            button.setText( "Close" );
+            button.addActionListener( event -> finish() );
+        } );
     }
 }

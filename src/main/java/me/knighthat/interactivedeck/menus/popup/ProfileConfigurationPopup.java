@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
+import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import org.jetbrains.annotations.NotNull;
@@ -26,26 +27,32 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
 
     public static ProfileConfigurationPopup INSTANCE;
 
-    private JTextField displayNameInput;
-    private JSpinner columns;
-    private JSpinner rows;
-    private JSpinner gap;
+    private final @NotNull JTextField displayNameInput;
+    private final @NotNull JSpinner columns;
+    private final @NotNull JSpinner rows;
+    private final @NotNull JSpinner gap;
 
     public ProfileConfigurationPopup( @NotNull Window window ) {
         super( window, "Profile Configuration", "Apply", "Cancel" );
+        this.displayNameInput = new JTextField();
+        this.columns = new JSpinner();
+        this.rows = new JSpinner();
+        this.gap = new JSpinner();
     }
 
-    private @NotNull JSpinner spinner( @NotNull String name, int gridy, int min ) {
+    private void spinner( @NotNull JSpinner spinner, @NotNull String name, int gridy, int min ) {
         addContent(
-                new JLabel( name ),
-                label -> setDimension( label, 150, 20 ),
+                new UILabel( name ),
+                label -> {
+                    setDimension( label, 150, 20 );
+                    label.setForeground( Color.BLACK );
+                },
                 constraints -> {
                     constraints.gridy = gridy;
                     constraints.anchor = GridBagConstraints.WEST;
                     constraints.insets = new Insets( 10, 0, 0, 0 );
                 }
         );
-        JSpinner spinner = new JSpinner();
         addContent(
                 spinner,
                 comp -> {
@@ -55,20 +62,6 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
                 },
                 constraints -> constraints.gridy = gridy + 1
         );
-        return spinner;
-    }
-
-    private void apply() {
-        profile.displayName( displayNameInput.getText() );
-        profile.columns( validate( columns.getValue(), 1 ) );
-        profile.rows( validate( rows.getValue(), 1 ) );
-        profile.gap( validate( gap.getValue(), 0 ) );
-
-        MainMenu menu = (MainMenu) getOwner();
-        menu.updateProfilesList();
-        menu.updateButtons( profile );
-
-        finish();
     }
 
     private int validate( @NotNull Object obj, int min ) {
@@ -78,23 +71,23 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
     }
 
     @Override
-    protected void loadContent() {
+    public void initComponents() {
         addContent(
-                new JLabel( "Display Name" ),
-                label -> setDimension( label, 150, 20 ),
+                new UILabel( "Display Name" ),
+                label -> {
+                    setDimension( label, 150, 20 );
+                    label.setForeground( Color.BLACK );
+                },
                 constraints -> constraints.anchor = GridBagConstraints.WEST
         );
         addContent(
-                new JTextField(),
-                comp -> {
-                    setDimension( comp, 150, 30 );
-                    displayNameInput = (JTextField) comp;
-                },
+                displayNameInput,
+                comp -> setDimension( comp, 150, 30 ),
                 constraints -> constraints.gridy = 1
         );
-        columns = spinner( "Columns", 2, 1 );
-        rows = spinner( "Rows", 4, 1 );
-        gap = spinner( "Gap", 6, 0 );
+        spinner( columns, "Columns", 2, 1 );
+        spinner( rows, "Rows", 4, 1 );
+        spinner( gap, "Gap", 6, 0 );
     }
 
     @Override
@@ -108,6 +101,15 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
 
     @Override
     protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
-        apply();
+        profile.displayName( displayNameInput.getText() );
+        profile.columns( validate( columns.getValue(), 1 ) );
+        profile.rows( validate( rows.getValue(), 1 ) );
+        profile.gap( validate( gap.getValue(), 0 ) );
+
+        MainMenu menu = (MainMenu) getOwner();
+        menu.updateProfilesList();
+        menu.updateButtons( profile );
+
+        finish();
     }
 }
