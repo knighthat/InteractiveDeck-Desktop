@@ -16,15 +16,21 @@ package me.knighthat.interactivedeck.component;
 
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 
 public interface Flexible {
 
-    default void setDimension( @NotNull JComponent component, int width, int height ) {
+    default void setDimension( @NotNull Component component, int width, int height ) {
+        setDimension( component, width, height, true, true, true );
+    }
+
+    default void setDimension( @NotNull Component component, int width, int height, boolean minSize, boolean prefSize, boolean maxSize ) {
         Dimension dimension = new Dimension( width, height );
-        component.setMinimumSize( dimension );
-        component.setMaximumSize( dimension );
-        component.setPreferredSize( dimension );
+        if (minSize)
+            component.setMinimumSize( dimension );
+        if (maxSize)
+            component.setMaximumSize( dimension );
+        if (prefSize)
+            component.setPreferredSize( dimension );
     }
 }
