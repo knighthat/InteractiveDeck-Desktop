@@ -14,6 +14,7 @@
 
 package me.knighthat.interactivedeck.task;
 
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -42,5 +43,14 @@ public abstract class ExecutableTask implements Task {
 
     public @NotNull String filePath() {
         return this.file.getAbsolutePath();
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty( "action_type", taskAction().name() );
+        json.addProperty( "file_path", filePath() );
+
+        return json;
     }
 }

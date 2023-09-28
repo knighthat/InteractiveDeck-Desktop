@@ -14,7 +14,6 @@
 
 package me.knighthat.interactivedeck.task;
 
-import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -52,7 +51,7 @@ public final class BashExecutor extends ExecutableTask {
             Log.info( "============== Script's output ==============" );
             this.log( Log.LogLevel.INFO, process.getInputStream() );
             this.log( Log.LogLevel.WARNING, process.getErrorStream() );
-            Log.info( "----------- End of script output. -----------" );
+            Log.info( "----------- End of script output ------------" );
 
 
         } catch (IOException | InterruptedException e) {
@@ -67,11 +66,7 @@ public final class BashExecutor extends ExecutableTask {
     }
 
     @Override
-    public @NotNull JsonObject serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty( "action_type", "BASH_EXEC" );
-        json.addProperty( "file_path", filePath() );
-
-        return json;
+    public @NotNull TaskAction taskAction() {
+        return TaskAction.BASH_EXEC;
     }
 }

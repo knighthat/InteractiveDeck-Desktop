@@ -14,23 +14,24 @@
 
 package me.knighthat.interactivedeck.task;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
+public enum TaskAction {
+    BASH_EXEC( BashExecutor.class ), SWITCH_PROFILE( GotoPage.class );
 
-public record GotoPage( @NotNull UUID target ) implements Task {
+    final @NotNull Class<? extends Task> taskType;
 
-    @Override
-    public @NotNull JsonObject serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty( "action_type", taskAction().name() );
-        json.addProperty( "profile", this.target.toString() );
-        return json;
+    TaskAction( @NotNull Class<? extends Task> taskType ) {
+        this.taskType = taskType;
     }
 
-    @Override
-    public @NotNull TaskAction taskAction() {
-        return TaskAction.SWITCH_PROFILE;
+    public static @Nullable TaskAction fromJson( @NotNull JsonElement element ) {
+        if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString())
+            for (TaskAction action : values())
+                if (action.name().equalsIgnoreCase( element.getAsString() ))
+                    return action;
+        return null;
     }
 }

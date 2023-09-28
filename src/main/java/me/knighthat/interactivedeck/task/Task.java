@@ -30,25 +30,28 @@ public interface Task extends JsonSerializable {
             return null;
 
         Task task = null;
-        switch (json.get( "action_type" ).getAsString()) {
-            case "BASH_EXEC" -> {
-                String filePath = json.get( "file_path" ).getAsString();
-                try {
-                    task = new BashExecutor( filePath );
-                } catch (FileNotFoundException e) {
-                    Log.warn( filePath + " does not exist!" );
+        TaskAction action = TaskAction.fromJson( json.get( "action_type" ) );
+        if (action != null)
+            switch (action) {
+
+                case BASH_EXEC -> {
+                    String filePath = json.get( "file_path" ).getAsString();
+                    try {
+                        task = new BashExecutor( filePath );
+                    } catch (FileNotFoundException e) {
+                        Log.warn( filePath + " does not exist!" );
+                    }
+                }
+
+                case SWITCH_PROFILE -> {
+                    String uuidStr = json.get( "profile" ).getAsString();
+                    UUID uuid = UUID.fromString( uuidStr );
+                    task = new GotoPage( uuid );
                 }
             }
-            case "SWITCH_PROFILE" -> {
-                String uuidStr = json.get( "profile" ).getAsString();
-                UUID uuid = UUID.fromString( uuidStr );
-                return new GotoPage( uuid );
-            }
-            default -> {
-                return null;
-            }
-        }
 
         return task;
     }
+
+    @NotNull TaskAction taskAction();
 }
