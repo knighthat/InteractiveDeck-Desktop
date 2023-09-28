@@ -25,7 +25,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import java.awt.*;
 
-public class TextModifier extends ModifierPanel {
+public class TextModifier extends ModifierPanel<GridBagLayout, GridBagConstraints> {
 
     private final @NotNull FunctionalTextInput labelInput;
     private final @NotNull JComboBox<String> fontSelector;
@@ -69,9 +69,28 @@ public class TextModifier extends ModifierPanel {
     }
 
     @Override
-    public void setupLayout( @NotNull GridBagLayout layout ) {
+    protected void loadProperties( @NotNull IButton button ) {
+        labelInput.setText( button.text() );
+
+        Font curFont = button.font();
+        fontSelector.setSelectedItem( curFont.getFamily() );
+        sizeSpinner.setValue( curFont.getSize() );
+        boldButton.setSelected( curFont.isBold() );
+        italicButton.setSelected( curFont.isItalic() );
+        underlineButton.setSelected( false );
+    }
+
+    @Override
+    protected @NotNull GridBagLayout initLayout() {
+        GridBagLayout layout = new GridBagLayout();
         layout.columnWidths = new int[]{ 70, 70, 70 };
         layout.rowHeights = new int[]{ 5, 60, 50 };
+        return layout;
+    }
+
+    @Override
+    public @NotNull GridBagConstraints constraints() {
+        return new GridBagConstraints();
     }
 
     @Override
@@ -134,18 +153,6 @@ public class TextModifier extends ModifierPanel {
         addStyleButton( boldButton );
         addStyleButton( italicButton );
         addStyleButton( underlineButton );
-    }
-
-    @Override
-    protected void loadProperties( @NotNull IButton button ) {
-        labelInput.setText( button.text() );
-
-        Font curFont = button.font();
-        fontSelector.setSelectedItem( curFont.getFamily() );
-        sizeSpinner.setValue( curFont.getSize() );
-        boldButton.setSelected( curFont.isBold() );
-        italicButton.setSelected( curFont.isItalic() );
-        underlineButton.setSelected( false );
     }
 
     private static class ToggleStyleButton extends JToggleButton {

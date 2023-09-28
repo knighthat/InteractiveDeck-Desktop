@@ -17,26 +17,30 @@ package me.knighthat.interactivedeck.menus.modifier;
 import me.knighthat.interactivedeck.component.ContentContainer;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.menus.Interactive;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class ModifierPanel extends JPanel implements IButtonProperty, ContentContainer, Flexible {
+public abstract class ModifierPanel<L extends LayoutManager, C> extends JPanel
+        implements IButtonProperty, Flexible, ContentContainer<C>, Interactive<L> {
 
     protected IButton button;
     private boolean isInitialized = false;
 
-    protected ModifierPanel() {
-        setOpaque( false );
-        setDimension( this, 250, 520 );
-    }
-
-    protected abstract void setupLayout( @NotNull GridBagLayout layout );
-
-    protected abstract void initComponents();
-
     protected abstract void loadProperties( @NotNull IButton button );
+
+    protected abstract @NotNull L initLayout();
+
+    @Override
+    @Deprecated
+    public final void setupLayout( @NotNull L layout ) {}
+
+    @Override
+    public @NotNull Container container() {
+        return this;
+    }
 
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
@@ -45,17 +49,12 @@ public abstract class ModifierPanel extends JPanel implements IButtonProperty, C
     }
 
     @Override
-    public @NotNull ModifierPanel container() {
-        return this;
-    }
-
-    @Override
     public void setVisible( boolean b ) {
         if (!isInitialized) {
-            GridBagLayout layout = new GridBagLayout();
-            setupLayout( layout );
-            setLayout( layout );
+            setOpaque( false );
+            setDimension( this, 250, 455 );
 
+            setLayout( initLayout() );
             initComponents();
 
             isInitialized = true;

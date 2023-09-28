@@ -31,7 +31,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
-public class IconModifier extends ModifierPanel {
+public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraints> {
 
     private final @NotNull BufferedImage bufferedIcon;
     private final @NotNull HexColorTextField bdInput;
@@ -103,8 +103,22 @@ public class IconModifier extends ModifierPanel {
     }
 
     @Override
-    public void setupLayout( @NotNull GridBagLayout layout ) {
+    protected void loadProperties( @NotNull IButton button ) {
+        bgInput.setColor( button.background() );
+        fgInput.setColor( button.foreground() );
+        bdInput.setColor( button.border() );
+    }
+
+    @Override
+    protected @NotNull GridBagLayout initLayout() {
+        GridBagLayout layout = new GridBagLayout();
         layout.columnWidths = new int[]{ 150, 40 };
+        return layout;
+    }
+
+    @Override
+    public @NotNull GridBagConstraints constraints() {
+        return new GridBagConstraints();
     }
 
     @Override
@@ -112,12 +126,5 @@ public class IconModifier extends ModifierPanel {
         addSection( "Foreground", fgInput, 0 );
         addSection( "Background", bgInput, 2 );
         addSection( "Border", bdInput, 4 );
-    }
-
-    @Override
-    protected void loadProperties( @NotNull IButton button ) {
-        bgInput.setColor( button.background() );
-        fgInput.setColor( button.foreground() );
-        bdInput.setColor( button.border() );
     }
 }
