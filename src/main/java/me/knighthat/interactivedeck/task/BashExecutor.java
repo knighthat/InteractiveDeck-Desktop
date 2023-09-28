@@ -18,34 +18,17 @@ import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public final class BashExecutor extends ExecutableTask {
 
-    private final @NotNull String filePath;
     private final @NotNull ProcessBuilder process;
 
-    public BashExecutor( @NotNull File file ) {
-        this.filePath = file.getAbsolutePath();
-        this.process = new ProcessBuilder( "bash", filePath );
-    }
-
     public BashExecutor( @NotNull String filePath ) throws FileNotFoundException {
-        if (filePath.isBlank())
-            throw new FileNotFoundException( "Path cannot be empty!" );
-        this.filePath = filePath;
-
-        File file = new File( filePath );
-        if (!file.exists())
-            throw new FileNotFoundException( filePath + " does not exist!" );
+        super( filePath );
         this.process = new ProcessBuilder( "bash", filePath );
-    }
-
-    public @NotNull String path() {
-        return this.filePath;
     }
 
     private void log( @NotNull Log.LogLevel level, @NotNull InputStream stream ) throws IOException {
@@ -74,7 +57,7 @@ public final class BashExecutor extends ExecutableTask {
 
         } catch (IOException | InterruptedException e) {
             //TODO More error handler needed
-            Log.exc( "Error occurs while executing " + this.filePath, e, true );
+            Log.exc( "Error occurs while executing " + filePath(), e, true );
         }
 
         String s = exit == 0
@@ -87,7 +70,7 @@ public final class BashExecutor extends ExecutableTask {
     public @NotNull JsonObject serialize() {
         JsonObject json = new JsonObject();
         json.addProperty( "action_type", "BASH_EXEC" );
-        json.addProperty( "file_path", this.filePath );
+        json.addProperty( "file_path", filePath() );
 
         return json;
     }

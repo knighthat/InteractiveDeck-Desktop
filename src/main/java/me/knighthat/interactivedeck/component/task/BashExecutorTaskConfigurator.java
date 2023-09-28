@@ -63,6 +63,6 @@ public class BashExecutorTaskConfigurator extends TaskConfigurator {
         pathInput.setText( "" );
         if (!( button.task() instanceof BashExecutor bashExec ))
             return;
-        pathInput.setText( bashExec.path() );
+        pathInput.setText( bashExec.filePath() );
     }
 }
