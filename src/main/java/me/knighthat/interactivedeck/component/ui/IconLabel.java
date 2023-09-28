@@ -14,9 +14,12 @@
 
 package me.knighthat.interactivedeck.component.ui;
 
+import me.knighthat.interactivedeck.svg.SVGParser;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.svg.SVGDocument;
+import org.w3c.dom.svg.SVGSVGElement;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -28,6 +31,19 @@ public class IconLabel extends UILabel {
                       @MagicConstant( valuesFromClass = SwingConstants.class ) int verticalAlignment ) {
         super( new ImageIcon( bufferedImage ) );
         setForeground( ColorUtils.TRANSPARENT );
+        setHorizontalAlignment( horizontalAlignment );
+        setVerticalAlignment( verticalAlignment );
+    }
+
+    public IconLabel( @NotNull SVGDocument document,
+                      int width, int height,
+                      @MagicConstant( valuesFromClass = SwingConstants.class ) int horizontalAlignment,
+                      @MagicConstant( valuesFromClass = SwingConstants.class ) int verticalAlignment ) {
+        SVGSVGElement root = document.getRootElement();
+        root.setAttribute( "width", String.valueOf( width ) );
+        root.setAttribute( "height", String.valueOf( height ) );
+        BufferedImage image = SVGParser.toBufferedImage( document );
+        setIcon( new ImageIcon( image ) );
         setHorizontalAlignment( horizontalAlignment );
         setVerticalAlignment( verticalAlignment );
     }
