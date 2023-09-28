@@ -14,30 +14,26 @@
 
 package me.knighthat.interactivedeck.task;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ExecutableTask implements Task {
+import java.io.File;
+import java.io.FileNotFoundException;
 
-    protected final @NotNull JsonObject json;
+public abstract class ExecutableFile extends ExecutableTask {
 
-    public ExecutableTask() {
-        json = new JsonObject();
-        json.addProperty( "action_type", taskAction().name() );
+    protected final @NotNull File file;
+
+    public ExecutableFile( @NotNull String filePath ) throws FileNotFoundException {
+        super();
+        if (filePath.isBlank())
+            throw new IllegalArgumentException( "Path cannot be empty!" );
+        this.file = new File( filePath );
+        if (!file.exists())
+            throw new FileNotFoundException( filePath + " does not exist!" );
+        json.addProperty( "file_path", filePath() );
     }
 
-    protected abstract void executeInternal();
-
-    public void execute() {
-        new Thread( () -> {
-            Thread.currentThread().setName( "EXEC" );
-            this.executeInternal();
-        } ).start();
-    }
-
-    @Override
-    public @NotNull JsonElement serialize() {
-        return this.json;
+    public @NotNull String filePath() {
+        return this.file.getAbsolutePath();
     }
 }
