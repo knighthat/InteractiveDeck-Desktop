@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public final class BashExecutor extends ExecutableTask {
+public final class BashExecutor extends ExecutableFile {
 
     private final @NotNull ProcessBuilder process;
 
