@@ -11,7 +11,9 @@
 - [Text Tab](tab-text.svg)
 - [app-settings.svg](app-settings.svg)
 - [app-settings-hover.svg](app-settings-hover.svg)
-- [color-pallet.svg](color-pallet.svg)
+- [color-pallet.svg](color-palette.svg)
+- [goto-page-task-icon.svg](goto-page-task-icon.svg)
+- [bash-executable-task-icon.svg](bash-executable-task-icon.svg)
 
 # [Public Domain](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
 
