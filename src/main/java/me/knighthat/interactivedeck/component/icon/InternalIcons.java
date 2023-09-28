@@ -47,6 +47,8 @@ public class InternalIcons {
     public final @NotNull SVGDocument APP_SETTINGS;
     public final @NotNull SVGDocument APP_SETTINGS_HOVER;
     public final @NotNull SVGDocument COLOR_PALETTE;
+    public final @NotNull SVGDocument GOTO_PAGE_TASK_ICON;
+    public final @NotNull SVGDocument BASH_EXEC_TASK_ICON;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -67,6 +69,8 @@ public class InternalIcons {
         APP_SETTINGS = fromResource( "app-settings" );
         APP_SETTINGS_HOVER = fromResource( "app-settings-hover" );
         COLOR_PALETTE = fromResource( "color-palette" );
+        GOTO_PAGE_TASK_ICON = fromResource( "goto-page-task-icon" );
+        BASH_EXEC_TASK_ICON = fromResource( "bash-executable-task-icon" );
 
         Log.info( "Icons loaded!" );
     }
