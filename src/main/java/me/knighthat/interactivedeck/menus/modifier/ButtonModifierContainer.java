@@ -31,9 +31,9 @@ public class ButtonModifierContainer extends JPanel implements IButtonProperty, 
 
     private final @NotNull SVGIconTabbedPane tabbedPane;
 
-    private final @NotNull ModifierPanel textModifier;
-    private final @NotNull ModifierPanel iconModifier;
-    private final @NotNull ModifierPanel taskModifier;
+    private final @NotNull TextModifier textModifier;
+    private final @NotNull IconModifier iconModifier;
+    private final @NotNull TaskModifier taskModifier;
 
     public ButtonModifierContainer() {
         this.tabbedPane = new SVGIconTabbedPane();
