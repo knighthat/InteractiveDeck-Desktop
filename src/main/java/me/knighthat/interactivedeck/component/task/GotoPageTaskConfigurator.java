@@ -20,9 +20,9 @@ import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.GotoPage;
-import me.knighthat.interactivedeck.task.TaskManager;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Optional;
@@ -32,19 +32,14 @@ public class GotoPageTaskConfigurator extends TaskConfigurator {
     private ProfilesComboBox profilesList;
 
     public GotoPageTaskConfigurator() {
-        super();
+        super( GotoPage.class );
         setBackground( ColorUtils.DEFAULT_DARK );
     }
 
     @Override
-    public void applyTo( @NotNull IButton button ) {
+    public @Nullable Object[] taskParams() {
         Profile profile = (Profile) profilesList.getSelectedItem();
-        if (profile != null)
-            button.task( TaskManager.create( GotoPage.class, profile.uuid ) );
-    }
-
-    @Override
-    public void setupLayout( @NotNull GridBagLayout layout ) {
+        return profile == null ? null : new Object[]{ profile.uuid };
     }
 
     @Override
