@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class TaskConfiguratorPanel extends JScrollPane implements Flexible {
 
@@ -79,7 +80,7 @@ public class TaskConfiguratorPanel extends JScrollPane implements Flexible {
         return configurators.values().toArray( TaskConfigurator[]::new );
     }
 
-    public @Nullable TaskConfigurator active() {
-        return this.active;
+    public @NotNull Optional<TaskConfigurator> active() {
+        return Optional.ofNullable( this.active );
     }
 }

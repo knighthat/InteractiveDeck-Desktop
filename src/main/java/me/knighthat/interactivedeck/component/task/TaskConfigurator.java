@@ -16,10 +16,11 @@ package me.knighthat.interactivedeck.component.task;
 
 import me.knighthat.interactivedeck.component.ContentContainer;
 import me.knighthat.interactivedeck.component.Flexible;
-import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.menus.Interactive;
 import me.knighthat.interactivedeck.menus.modifier.IButtonProperty;
+import me.knighthat.interactivedeck.task.Task;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +28,11 @@ import java.awt.*;
 public abstract class TaskConfigurator extends JPanel implements
         IButtonProperty, Flexible, ContentContainer<GridBagConstraints>, Interactive<GridBagLayout> {
 
-    public TaskConfigurator() {
+    public final @NotNull Class<? extends Task> taskType;
+
+    public TaskConfigurator( @NotNull Class<? extends Task> taskType ) {
+        this.taskType = taskType;
+
         GridBagLayout layout = new GridBagLayout();
         setupLayout( layout );
         setLayout( layout );
@@ -35,7 +40,7 @@ public abstract class TaskConfigurator extends JPanel implements
         initComponents();
     }
 
-    public abstract void applyTo( @NotNull IButton button );
+    public abstract @Nullable Object[] taskParams();
 
     @Override
     public @NotNull TaskConfigurator container() {
@@ -46,4 +51,7 @@ public abstract class TaskConfigurator extends JPanel implements
     public @NotNull GridBagConstraints constraints() {
         return new GridBagConstraints();
     }
+
+    @Override
+    public void setupLayout( @NotNull GridBagLayout layout ) {}
 }
