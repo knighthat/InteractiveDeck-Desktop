@@ -19,6 +19,8 @@ import me.knighthat.interactivedeck.component.task.TaskConfigurator;
 import me.knighthat.interactivedeck.component.task.TaskConfiguratorPanel;
 import me.knighthat.interactivedeck.component.task.TaskSelector;
 import me.knighthat.interactivedeck.component.ui.UIButton;
+import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.interactivedeck.task.TaskManager;
 import org.intellij.lang.annotations.MagicConstant;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,9 +101,11 @@ public class TaskModifier extends ModifierPanel<BorderLayout, Void> {
                     button.addMouseListener( new MouseAdapter() {
                         @Override
                         public void mouseClicked( MouseEvent e ) {
-                            TaskConfigurator configurator = configuratorPanel.active();
-                            if (configurator != null)
-                                configurator.applyTo( TaskModifier.super.button );
+                            configuratorPanel.active().ifPresent( configurator -> {
+                                IButton button = TaskModifier.super.button;
+                                Task task = TaskManager.create( configurator.taskType, configurator.taskParams() );
+                                button.task( task );
+                            } );
                         }
                     } );
                     GridBagConstraints constraints = new GridBagConstraints();
@@ -112,81 +116,4 @@ public class TaskModifier extends ModifierPanel<BorderLayout, Void> {
                 BorderLayout.SOUTH
         );
     }
-
-    //    private void addSection( @NotNull Consumer<JPanel> component, @NotNull Consumer<GridBagConstraints> constraintsConsumer ) {
-    //        JPanel panel = new JPanel( new GridBagLayout() );
-    //        setDimension( panel, 250, 150 );
-    //        panel.setOpaque( false );
-    //        component.accept( panel );
-    //        addContent( panel, comp -> {}, constraintsConsumer );
-    //    }
-    //
-    //
-    //    private void addTaskSection( @NotNull JRadioButton button, @NotNull JComponent input, int gridy ) {
-    //        UIComponent.applyPresets( button );
-    //        button.setForeground( Color.WHITE );
-    //        button.addItemListener( this::buttonSelectedEvent );
-    //
-    //        GridBagConstraints btnConstraints = new GridBagConstraints();
-    //        btnConstraints.gridy = 0;
-    //        btnConstraints.anchor = GridBagConstraints.NORTHWEST;
-    //
-    //        setDimension( input, 200, 40 );
-    //
-    //        GridBagConstraints inputConstraints = new GridBagConstraints();
-    //        inputConstraints.gridy = 1;
-    //        inputConstraints.anchor = GridBagConstraints.NORTH;
-    //
-    //        addSection(
-    //                panel -> {
-    //                    panel.add( button, btnConstraints );
-    //                    panel.add( input, inputConstraints );
-    //                },
-    //                constraints -> constraints.gridy = gridy
-    //        );
-    //    }
-    //
-    //    private void buttonSelectedEvent( @NotNull ItemEvent event ) {
-    //        JRadioButton source = (JRadioButton) event.getSource();
-    //
-    //        if (source.isSelected()) {
-    //            if (source == runScriptButton) {
-    //                this.runScriptInput.setEnabled( true );
-    //                profilesList.setEnabled( false );
-    //                this.gotoButton.setSelected( false );
-    //            } else if (source == gotoButton) {
-    //                profilesList.setEnabled( true );
-    //                runScriptInput.setEnabled( false );
-    //                runScriptButton.setSelected( false );
-    //            }
-    //        } else {
-    //            if (source == runScriptButton) {
-    //                runScriptInput.setEditable( false );
-    //            } else if (source == gotoButton) {
-    //                profilesList.setEditable( false );
-    //            }
-    //        }
-    //    }
-    //
-    //    private void applyButtonClickedEvent( @NotNull MouseEvent event ) {
-    //        Class<? extends Task> clazz = null;
-    //        List<Object> params = new ArrayList<>();
-    //
-    //        if (this.gotoButton.isSelected()) {
-    //            clazz = GotoPage.class;
-    //            Profile profile = (Profile) profilesList.getSelectedItem();
-    //            if (profile == null)
-    //                return;
-    //            params.add( profile.uuid );
-    //        }
-    //        if (this.runScriptButton.isSelected()) {
-    //            clazz = BashExecutor.class;
-    //            params.add( runScriptInput.getText() );
-    //        }
-    //
-    //        if (clazz != null) {
-    //            Task task = TaskManager.create( clazz, params.toArray() );
-    //            button.task( task );
-    //        }
-    //    }
 }
