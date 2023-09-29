@@ -14,32 +14,31 @@
 
 package me.knighthat.interactivedeck.component.task;
 
-import me.knighthat.interactivedeck.component.ui.UILabel;
-import me.knighthat.interactivedeck.task.BashExecutor;
-import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.task.ExecutableFile;
+import me.knighthat.interactivedeck.task.Task;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class BashExecutorTaskConfigurator extends FileExecutableTaskConfigurator {
+public abstract class FileExecutableTaskConfigurator extends TaskConfigurator {
 
-    public BashExecutorTaskConfigurator() {
-        super( BashExecutor.class );
-        setBackground( ColorUtils.DEFAULT_DARK );
+    protected JTextField pathInput;
+
+    public FileExecutableTaskConfigurator( @NotNull Class<? extends Task> taskType ) {
+        super( taskType );
+    }
+
+    public @Nullable Object[] taskParams() {
+        return new Object[]{ pathInput.getText().trim() };
     }
 
     @Override
-    public void initComponents() {
-        this.pathInput = new JTextField();
-        addContent(
-                new UILabel( "Path to bash file" ),
-                comp -> {},
-                constraints -> constraints.anchor = GridBagConstraints.LINE_START
-        );
-        addContent(
-                pathInput,
-                comp -> setDimension( comp, 200, 40 ),
-                constraints -> constraints.gridy = 1
-        );
+    public void updateSelectedButton( @NotNull IButton button ) {
+        pathInput.setText( "" );
+        if (!( button.task() instanceof ExecutableFile file ))
+            return;
+        pathInput.setText( file.filePath() );
     }
 }
