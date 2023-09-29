@@ -26,16 +26,16 @@ import java.util.StringJoiner;
 public class TaskManager {
 
     @Contract( "_, null -> null" )
-    public static <T extends Task> @Nullable Task create( @NotNull Class<T> clazz, @NotNull Object... params ) {
-        if (params == null)
-            return null;
+    public static <T extends Task> @Nullable Task create( @NotNull Class<T> clazz, @Nullable Object... params ) {
+        StringJoiner builder = new StringJoiner( ",", "[", "]" );
 
-        StringJoiner builder = new StringJoiner( ",", "{", "}" );
         Class<?>[] paramTypes = new Class[params.length];
         for (int i = 0 ; i < paramTypes.length ; i++) {
-            Class<?> paramClass = params[i].getClass();
-            builder.add( paramClass.getName() );
-            paramTypes[i] = paramClass;
+            if (params[i] == null)
+                return null;
+
+            paramTypes[i] = params[i].getClass();
+            builder.add( paramTypes[i].getName() );
         }
 
         try {
