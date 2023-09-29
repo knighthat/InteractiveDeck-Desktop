@@ -16,9 +16,8 @@ package me.knighthat.interactivedeck.component.task;
 
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.logging.Log;
-import me.knighthat.interactivedeck.task.BashExecutor;
-import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.interactivedeck.task.TaskAction;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,8 +48,16 @@ public class TaskConfiguratorPanel extends JScrollPane implements Flexible {
     }
 
     private void initConfigurators() {
-        configurators.put( GotoPage.class, new GotoPageTaskConfigurator() );
-        configurators.put( BashExecutor.class, new BashExecutorTaskConfigurator() );
+        for (TaskAction task : TaskAction.values())
+            try {
+                var constructor = task.configurator.getConstructor();
+                TaskConfigurator configurator = constructor.newInstance();
+                configurators.put( task.type, configurator );
+            } catch (ReflectiveOperationException e) {
+                Throwable throwable = e.getCause() != null ? e.getCause() : e;
+                Log.exc( "Failed to setup configurator " + task.name(), throwable, true );
+                Log.reportBug();
+            }
     }
 
     public void present( @Nullable Class<? extends Task> taskType ) {
