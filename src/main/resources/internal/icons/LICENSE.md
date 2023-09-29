@@ -9,11 +9,11 @@
 - [Icon Tab](tab-icon.svg)
 - [Task Tab](tab-task.svg)
 - [Text Tab](tab-text.svg)
-- [app-settings.svg](app-settings.svg)
-- [app-settings-hover.svg](app-settings-hover.svg)
-- [color-pallet.svg](color-palette.svg)
-- [goto-page-task-icon.svg](goto-page-task-icon.svg)
-- [bash-executable-task-icon.svg](bash-executable-task-icon.svg)
+- [App Settings](app-settings.svg)
+- [App Settings - Hover](app-settings-hover.svg)
+- [Color Palette](color-palette.svg)
+- [Goto Page Task Icon](goto-page-task-icon.svg)
+- [Bash Executable Task Icon](bash-executable-task-icon.svg)
 
 # [Public Domain](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
 
@@ -24,3 +24,5 @@
 # [MIT](https://mit-license.org/)
 
 - [Connection Disconnected](connection-disconnected.svg)
+- [Open File Task Icon](open-file-task-icon.svg)
+- [Play Audio Task Icon](play-audio-task-icon.svg)
