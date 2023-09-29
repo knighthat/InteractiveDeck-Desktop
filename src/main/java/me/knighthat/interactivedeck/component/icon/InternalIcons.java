@@ -49,6 +49,10 @@ public class InternalIcons {
     public final @NotNull SVGDocument COLOR_PALETTE;
     public final @NotNull SVGDocument GOTO_PAGE_TASK_ICON;
     public final @NotNull SVGDocument BASH_EXEC_TASK_ICON;
+    public final @NotNull SVGDocument OPEN_FILE_TASK_ICON;
+    public final @NotNull SVGDocument PLAY_AUDIO_TASK_ICON;
+    public final @NotNull SVGDocument PASTE_CLIPBOARD_TASK_ICON;
+    public final @NotNull SVGDocument KEYBOARD_MACRO_TASK_ICON;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -71,6 +75,10 @@ public class InternalIcons {
         COLOR_PALETTE = fromResource( "color-palette" );
         GOTO_PAGE_TASK_ICON = fromResource( "goto-page-task-icon" );
         BASH_EXEC_TASK_ICON = fromResource( "bash-executable-task-icon" );
+        OPEN_FILE_TASK_ICON = fromResource( "open-file-task-icon" );
+        PLAY_AUDIO_TASK_ICON = fromResource( "play-audio-task-icon" );
+        PASTE_CLIPBOARD_TASK_ICON = fromResource( "paste-clipboard-task-icon" );
+        KEYBOARD_MACRO_TASK_ICON = fromResource( "keyboard-macro-task-icon" );
 
         Log.info( "Icons loaded!" );
     }
