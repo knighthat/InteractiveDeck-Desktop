@@ -16,11 +16,11 @@ package me.knighthat.interactivedeck.task;
 
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.json.JsonSerializable;
-import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public interface Task extends JsonSerializable {
@@ -29,28 +29,25 @@ public interface Task extends JsonSerializable {
         if (!json.has( "action_type" ))
             return null;
 
-        Task task = null;
         TaskAction action = TaskAction.fromJson( json.get( "action_type" ) );
-        if (action != null)
-            switch (action) {
+        if (action == null)
+            return null;
 
-                case BASH_EXEC -> {
-                    String filePath = json.get( "file_path" ).getAsString();
-                    try {
-                        task = new BashExecutor( filePath );
-                    } catch (FileNotFoundException e) {
-                        Log.warn( filePath + " does not exist!" );
-                    }
-                }
+        List<Object> params = new ArrayList<>();
+        switch (action) {
 
-                case SWITCH_PROFILE -> {
-                    String uuidStr = json.get( "profile" ).getAsString();
-                    UUID uuid = UUID.fromString( uuidStr );
-                    task = new GotoPage( uuid );
-                }
+            case BASH_EXEC, AUDIO_PLAYER, OPEN_FILE -> {
+                String filePath = json.get( "file_path" ).getAsString();
+                params.add( filePath );
             }
 
-        return task;
+            case SWITCH_PROFILE -> {
+                String uuidStr = json.get( "profile" ).getAsString();
+                UUID uuid = UUID.fromString( uuidStr );
+                params.add( uuid );
+            }
+        }
+        return TaskManager.create( action.type, params.toArray() );
     }
 
     @NotNull TaskAction taskAction();

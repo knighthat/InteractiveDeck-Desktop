@@ -17,12 +17,10 @@ package me.knighthat.interactivedeck.component.task;
 import me.knighthat.interactivedeck.component.ContentContainer;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.component.icon.TaskIcon;
 import me.knighthat.interactivedeck.menus.modifier.IButtonProperty;
-import me.knighthat.interactivedeck.task.BashExecutor;
-import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.interactivedeck.task.TaskAction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.w3c.dom.svg.SVGDocument;
@@ -96,8 +94,8 @@ public class TaskSelector extends JScrollPane implements IButtonProperty, Flexib
     }
 
     private void loadTaskIcons() {
-        addIcon( Icons.INTERNAL.GOTO_PAGE_TASK_ICON, GotoPage.class );
-        addIcon( Icons.INTERNAL.BASH_EXEC_TASK_ICON, BashExecutor.class );
+        for (TaskAction task : TaskAction.values())
+            addIcon( task.icon, task.type );
     }
 
     @Override
