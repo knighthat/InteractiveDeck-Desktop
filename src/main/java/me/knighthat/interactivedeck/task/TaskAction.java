@@ -25,7 +25,8 @@ public enum TaskAction {
     BASH_EXEC( BashExecutor.class, Icons.INTERNAL.BASH_EXEC_TASK_ICON, BashExecutorTaskConfigurator.class ),
     SWITCH_PROFILE( GotoPage.class, Icons.INTERNAL.GOTO_PAGE_TASK_ICON, GotoPageTaskConfigurator.class ),
     AUDIO_PLAYER( AudioPlayer.class, Icons.INTERNAL.PLAY_AUDIO_TASK_ICON, AudioPlayerTaskConfigurator.class ),
-    OPEN_FILE( OpenFile.class, Icons.INTERNAL.OPEN_FILE_TASK_ICON, OpenFileTaskConfigurator.class );
+    OPEN_FILE( OpenFile.class, Icons.INTERNAL.OPEN_FILE_TASK_ICON, OpenFileTaskConfigurator.class ),
+    OPEN_WEBSITE( OpenWebsite.class, Icons.INTERNAL.OPEN_WEBSITE_TASK_ICON, OpenWebsiteTaskConfigurator.class );
 
     public final @NotNull Class<? extends Task> type;
     public final @NotNull SVGDocument icon;

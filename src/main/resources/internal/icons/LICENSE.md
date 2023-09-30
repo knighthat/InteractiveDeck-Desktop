@@ -14,6 +14,7 @@
 - [Color Palette](color-palette.svg)
 - [Goto Page Task Icon](goto-page-task-icon.svg)
 - [Bash Executable Task Icon](bash-executable-task-icon.svg)
+- [Open Website Task Icon](open-website-task-icon.svg)
 
 # [Public Domain](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
 
