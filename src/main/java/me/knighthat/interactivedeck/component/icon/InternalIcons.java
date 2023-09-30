@@ -53,6 +53,7 @@ public class InternalIcons {
     public final @NotNull SVGDocument PLAY_AUDIO_TASK_ICON;
     public final @NotNull SVGDocument PASTE_CLIPBOARD_TASK_ICON;
     public final @NotNull SVGDocument KEYBOARD_MACRO_TASK_ICON;
+    public final @NotNull SVGDocument OPEN_WEBSITE_TASK_ICON;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -79,6 +80,7 @@ public class InternalIcons {
         PLAY_AUDIO_TASK_ICON = fromResource( "play-audio-task-icon" );
         PASTE_CLIPBOARD_TASK_ICON = fromResource( "paste-clipboard-task-icon" );
         KEYBOARD_MACRO_TASK_ICON = fromResource( "keyboard-macro-task-icon" );
+        OPEN_WEBSITE_TASK_ICON = fromResource( "open-website-task-icon" );
 
         Log.info( "Icons loaded!" );
     }

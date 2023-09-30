@@ -36,16 +36,14 @@ public interface Task extends JsonSerializable {
         List<Object> params = new ArrayList<>();
         switch (action) {
 
-            case BASH_EXEC, AUDIO_PLAYER, OPEN_FILE -> {
-                String filePath = json.get( "file_path" ).getAsString();
-                params.add( filePath );
-            }
+            case BASH_EXEC, AUDIO_PLAYER, OPEN_FILE -> params.add( json.get( "file_path" ).getAsString() );
 
             case SWITCH_PROFILE -> {
                 String uuidStr = json.get( "profile" ).getAsString();
-                UUID uuid = UUID.fromString( uuidStr );
-                params.add( uuid );
+                params.add( UUID.fromString( uuidStr ) );
             }
+
+            case OPEN_WEBSITE -> params.add( json.get( "uri" ).getAsString() );
         }
         return TaskManager.create( action.type, params.toArray() );
     }
