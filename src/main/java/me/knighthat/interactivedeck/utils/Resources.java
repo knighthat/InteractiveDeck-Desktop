@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -102,12 +104,17 @@ public class Resources {
 
     public static @NotNull String getJARLocation() {
         URL url = Resources.class.getResource( "" );
-        if (url == null)
-            return "";                                  // This one should never be triggered
-        String uri = url.toExternalForm();              // Raw path "jar:file:/path/to/InteractiveDeck.jar!/"
-        int start = uri.lastIndexOf( ":" ) + 1;
+        if (url == null) {
+            // This one should never be triggered
+            Log.err( "Cannot find Jar file" );
+            Log.reportBug();
+            return "";
+        }
+
+        String uri = URLDecoder.decode( url.getPath(), StandardCharsets.UTF_8 );       // Raw path "file:/path/to/InteractiveDeck.jar!/"
+        int start = 5;                                                                 // "file:" takes 5 characters
         int end = uri.indexOf( "!" );
 
-        return uri.substring( start, end );             // Turns raw path to "/path/to/InteractiveDeck.jar"
+        return uri.substring( start, end );                                            // Turns raw path to "/path/to/InteractiveDeck.jar"
     }
 }
