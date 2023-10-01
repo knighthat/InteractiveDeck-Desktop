@@ -19,10 +19,11 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
+import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
-public class Request {
+public class Request implements JsonSerializable {
 
     public final @NotNull RequestType type;
     protected final @NotNull JsonElement content;
@@ -44,18 +45,22 @@ public class Request {
         return new Request( type, content );
     }
 
-    @Override
-    public String toString() {
-        JsonObject json = new JsonObject();
-        json.addProperty( "type", type.toString() );
-        json.add( "content", content );
-
-        return json.toString();
-    }
-
     public void send() {
         if (Connection.isConnected())
             WirelessSender.send( this );
+    }
+
+    @Override
+    public String toString() {
+        return serialize().toString();
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        JsonObject json = new JsonObject();
+        json.addProperty( "type", type.toString() );
+        json.add( "content", content );
+        return json;
     }
 
     public enum RequestType {
