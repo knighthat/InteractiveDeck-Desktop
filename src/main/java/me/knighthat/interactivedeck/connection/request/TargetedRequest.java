@@ -45,17 +45,14 @@ public abstract class TargetedRequest extends Request {
     }
 
     @Override
-    public String toString() {
+    public @NotNull JsonObject serialize() {
         JsonElement uuidE = uuid == null ? JsonNull.INSTANCE : new JsonPrimitive( uuid.toString() );
 
-        JsonObject json = new JsonObject();
-
-        json.addProperty( "type", type.name() );
+        JsonObject json = super.serialize();
         json.addProperty( "target", target.name() );
         json.add( "uuid", uuidE );
-        json.add( "content", content );
 
-        return json.toString();
+        return json;
     }
 
     public enum Target {
