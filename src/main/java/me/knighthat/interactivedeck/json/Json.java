@@ -16,13 +16,16 @@ package me.knighthat.interactivedeck.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.zip.GZIPOutputStream;
 
 public class Json {
 
@@ -41,5 +44,20 @@ public class Json {
         } catch (IOException e) {
             Log.exc( "Failed to save " + instance.displayName(), e, false );
         }
+    }
+
+    public static byte @NotNull [] gzipCompress( @NotNull JsonElement json ) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        GZIPOutputStream gzip = new GZIPOutputStream( baos );
+        gzip.write( json.toString().getBytes() );
+        // GZip needs to be closed before reading its bytes.
+        // Because the content isn't written until it's closed
+        gzip.close();
+
+        byte[] compressedBytes = baos.toByteArray();
+        baos.close();
+
+        return compressedBytes;
     }
 }
