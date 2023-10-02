@@ -29,16 +29,18 @@ import java.util.zip.GZIPOutputStream;
 
 public class Json {
 
+    private static final @NotNull Gson GSON =
+            new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+
     public static void dump( @NotNull SaveAsJson instance ) {
         File file = new File( WorkingDirectory.FILE, instance.fullName() );
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try (FileWriter writer = new FileWriter( file )) {
             if (!file.exists() && !file.createNewFile()) {
                 Log.warn( "Failed to create " + instance.fullName() );
                 return;
             }
-            gson.toJson( instance.serialize(), writer );
+            GSON.toJson( instance.serialize(), writer );
 
             Log.info( "Saved " + instance.displayName() + " under name " + instance.fullName() );
         } catch (IOException e) {
@@ -47,10 +49,11 @@ public class Json {
     }
 
     public static byte @NotNull [] gzipCompress( @NotNull JsonElement json ) throws IOException {
+        String string = toString( json );
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         GZIPOutputStream gzip = new GZIPOutputStream( baos );
-        gzip.write( json.toString().getBytes() );
+        gzip.write( string.getBytes() );
         // GZip needs to be closed before reading its bytes.
         // Because the content isn't written until it's closed
         gzip.close();
@@ -59,5 +62,9 @@ public class Json {
         baos.close();
 
         return compressedBytes;
+    }
+
+    public static @NotNull String toString( @NotNull JsonElement json ) {
+        return GSON.toJson( json );
     }
 }
