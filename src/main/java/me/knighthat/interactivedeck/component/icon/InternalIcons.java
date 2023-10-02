@@ -51,8 +51,6 @@ public class InternalIcons {
     public final @NotNull SVGDocument BASH_EXEC_TASK_ICON;
     public final @NotNull SVGDocument OPEN_FILE_TASK_ICON;
     public final @NotNull SVGDocument PLAY_AUDIO_TASK_ICON;
-    public final @NotNull SVGDocument PASTE_CLIPBOARD_TASK_ICON;
-    public final @NotNull SVGDocument KEYBOARD_MACRO_TASK_ICON;
     public final @NotNull SVGDocument OPEN_WEBSITE_TASK_ICON;
 
     public InternalIcons() {
@@ -78,8 +76,6 @@ public class InternalIcons {
         BASH_EXEC_TASK_ICON = fromResource( "bash-executable-task-icon" );
         OPEN_FILE_TASK_ICON = fromResource( "open-file-task-icon" );
         PLAY_AUDIO_TASK_ICON = fromResource( "play-audio-task-icon" );
-        PASTE_CLIPBOARD_TASK_ICON = fromResource( "paste-clipboard-task-icon" );
-        KEYBOARD_MACRO_TASK_ICON = fromResource( "keyboard-macro-task-icon" );
         OPEN_WEBSITE_TASK_ICON = fromResource( "open-website-task-icon" );
 
         Log.info( "Icons loaded!" );
