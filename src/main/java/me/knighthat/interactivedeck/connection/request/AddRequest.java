@@ -15,8 +15,12 @@
 package me.knighthat.interactivedeck.connection.request;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.json.Json;
+import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -29,5 +33,22 @@ public final class AddRequest extends TargetedRequest {
     public AddRequest( @NotNull Consumer<JsonArray> consumer ) {
         super( RequestType.ADD, Target.PROFILE, null, new JsonArray() );
         consumer.accept( content.getAsJsonArray() );
+    }
+
+    @Override
+    public @NotNull JsonObject serialize() {
+        JsonObject json = super.serialize();
+
+        try {
+            JsonArray content = new JsonArray();
+            for (byte b : Json.gzipCompress( this.content ))
+                content.add( b );
+            json.add( "content", content );
+        } catch (IOException e) {
+            Log.exc( "Failed to compress content", e, false );
+            Log.reportBug();
+        }
+
+        return json;
     }
 }
