@@ -60,10 +60,8 @@ public class ProfileSection extends JPanel implements Flexible {
         // Profile list
         profiles.addActionListener( event -> {
             Profile profile = (Profile) profiles.getSelectedItem();
-            if (profile != null)
-                ( (MainMenu) getTopLevelAncestor() )
-                        .buttonsDisplaySection()
-                        .updateButtons( profile );
+            if (profile != null && event.getModifiers() > 0)
+                MenuProperty.active( profile );
         } );
 
         // Add profile button
