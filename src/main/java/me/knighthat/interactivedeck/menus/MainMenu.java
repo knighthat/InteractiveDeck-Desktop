@@ -32,9 +32,9 @@ import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 public class MainMenu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer buttonModifier;
-    private me.knighthat.interactivedeck.menus.ButtonsDisplaySection buttonsDisplaySection;
-    private me.knighthat.interactivedeck.menus.ProfileSection profileSection;
+    private ButtonModifierContainer buttonModifier;
+    private ButtonsDisplaySection buttonsDisplaySection;
+    private ProfileSection profileSection;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -105,9 +105,7 @@ public class MainMenu extends javax.swing.JFrame {
         return this.buttonModifier;
     }
 
-    public void updateButtons( @NotNull Profile profile ) {buttonsDisplaySection.updateButtons( profile );}
+    public @NotNull ProfileSection profileSection() {return this.profileSection;}
 
-    public void updateProfilesList() {
-        profileSection.updateProfileList();
-    }
+    public @NotNull ButtonsDisplaySection buttonsDisplaySection() {return this.buttonsDisplaySection;}
 }

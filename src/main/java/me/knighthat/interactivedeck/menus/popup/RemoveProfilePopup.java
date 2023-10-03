@@ -58,7 +58,7 @@ public final class RemoveProfilePopup extends ProfilePopup {
     @Override
     protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
         profile.remove();
-        ( (MainMenu) getOwner() ).updateProfilesList();
+        ( (MainMenu) getOwner() ).profileSection().updateProfileList();
         MenuProperty.active( MenuProperty.defaultProfile() );
     }
 
