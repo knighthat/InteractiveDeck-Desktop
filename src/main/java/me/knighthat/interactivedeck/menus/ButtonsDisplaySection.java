@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,6 +45,8 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
             } else
                 menu.buttonModifiers().setVisible( false );
         } );
+
+        MenuProperty.observeActive( this::updateButtons );
     }
 
     private @NotNull GridBagConstraints genConstraints( @NotNull Profile profile ) {
@@ -71,7 +74,6 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
     public void updateButtons( @NotNull Profile profile ) {
         removeAll();
-
         unselectAll();
 
         GridBagConstraints constraints = genConstraints( profile );
@@ -90,6 +92,8 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
         revalidate();
         repaint();
+
+        Log.deb( "Buttons updated" );
     }
 
     public void unselectAll() {
