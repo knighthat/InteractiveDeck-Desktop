@@ -107,8 +107,8 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
         profile.gap( validate( gap.getValue(), 0 ) );
 
         MainMenu menu = (MainMenu) getOwner();
-        menu.updateProfilesList();
-        menu.updateButtons( profile );
+        menu.profileSection().updateProfileList();
+        menu.buttonsDisplaySection().updateButtons( profile );
 
         finish();
     }
