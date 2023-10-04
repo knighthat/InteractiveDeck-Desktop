@@ -13,15 +13,20 @@
  */
 package me.knighthat.interactivedeck.menus;
 
-import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer;
 import me.knighthat.interactivedeck.menus.popup.*;
+import me.knighthat.interactivedeck.svg.SVGParser;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Element;
+import org.w3c.dom.svg.SVGDocument;
 
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.CompletableFuture;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
@@ -42,6 +47,7 @@ public class MainMenu extends javax.swing.JFrame {
      */
     public MainMenu() {
         super( GlobalVars.name() + " - " + GlobalVars.version() );
+        loadProgramIcon();
 
         AddProfilePopup.INSTANCE = new AddProfilePopup( this );
         RemoveProfilePopup.INSTANCE = new RemoveProfilePopup( this );
@@ -72,6 +78,15 @@ public class MainMenu extends javax.swing.JFrame {
         MenuProperty.active( MenuProperty.defaultProfile() );
 
         setLocationRelativeTo( null );
+    }
+
+    private void loadProgramIcon() {
+        SVGDocument svg = Icons.INTERNAL.PROGRAM_ICON;
+        Element root = svg.getRootElement();
+        root.setAttribute( "width", "64px" );
+        root.setAttribute( "height", "64px" );
+        BufferedImage bufferedImage = SVGParser.toBufferedImage( svg );
+        setIconImage( new ImageIcon( bufferedImage ).getImage() );
     }
 
     /**

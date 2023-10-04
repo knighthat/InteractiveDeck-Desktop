@@ -31,6 +31,7 @@ public class InternalIcons {
 
     public static final @NotNull String DIR = "internal/icons/";
 
+    public final @NotNull SVGDocument PROGRAM_ICON;
     public final @NotNull SVGDocument PROFILE_ADD;
     public final @NotNull SVGDocument PROFILE_ADD_HOVER;
     public final @NotNull SVGDocument PROFILE_REMOVE;
@@ -56,6 +57,7 @@ public class InternalIcons {
     public InternalIcons() {
         Log.info( "Loading icons..." );
 
+        PROGRAM_ICON = fromResource( "program-icon" );
         PROFILE_ADD = fromResource( "add" );
         PROFILE_ADD_HOVER = fromResource( "add-hover" );
         PROFILE_REMOVE = fromResource( "remove" );
