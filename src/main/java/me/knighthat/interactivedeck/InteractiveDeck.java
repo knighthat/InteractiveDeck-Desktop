@@ -58,6 +58,8 @@ public class InteractiveDeck {
         Settings.init();
 
         printSysConfig();
+        Log.warn( "This is a warning!" );
+        Log.err( "This is an error!" );
 
         NotificationCenter.init();
 

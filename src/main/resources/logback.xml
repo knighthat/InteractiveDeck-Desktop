@@ -3,7 +3,19 @@
     <!--  By default, every event from AWT is executed  under thread AWT-EventQueue -->
     <!--  To prevent this ugliness, a class is designated to convert thread's name of  -->
     <!--  every log that is executed under this thread to "GUI"  -->
-    <conversionRule conversionWord="tName" converterClass="me.knighthat.interactivedeck.logging.ThreadNameConverter"/>
+    <conversionRule conversionWord="t" converterClass="me.knighthat.interactivedeck.logging.ThreadNameConverter"/>
+
+    <!--  For some reasons, WARN and ERROR level are colored the same as red (31) with ERROR being bolded.  -->
+    <!--  This is extreme hard to distinct in some cases, especially when you have modified terminal's colors.  -->
+    <!--  To reduce confusion, WARN is now in yellow while ERROR is still in red, both are bolded.  -->
+    <conversionRule
+            conversionWord="highlight"
+            converterClass="me.knighthat.interactivedeck.logging.CustomHighLightConverter"/>
+
+    <!--  Debug message will be grayed out, makes it distinct from INFO  -->
+    <conversionRule
+            conversionWord="msg"
+            converterClass="me.knighthat.interactivedeck.logging.MessageConverter"/>
 
     <!-- Log to CONSOLE at INFO or at "-Dlog.level=" level -->
     <property name="LOG_LEVEL" value="${log.level:-INFO}"/>
@@ -11,7 +23,7 @@
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
                 <charset>UTF-8</charset>
-                %white(%d{HH:mm:ss}) %cyan(%-5tName) %highlight(%-5level) %msg%n%throwable
+                %gray(%d{HH:mm:ss}) %cyan(%-5t) %highlight(%-5level) %msg%n%throwable
             </Pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
