@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="src/main/resources/internal/icons/program-icon.svg" alt="interactive deck icon" width="256px" />
   <p>Turn your Android phone into a <b><i>Macro Keypad</i></b></p>
   <br><br>
   <div class="code-related-badges">
@@ -12,7 +13,7 @@
         <img src="https://custom-icon-badges.demolab.com/badge/-Download-28a745?style=for-the-badge&logo=download&logoColor=white" alt="download-button">
     </a>
     <a href="https://github.com/knighthat/InteractiveDeck-Desktop/issues">
-      <img src="https://custom-icon-badges.demolab.com/badge/-Open%20Issue-6f42c1?style=for-the-badge&logoColor=white&logo=issue-opened" alt="open-issue-button">
+      <img src="https://custom-icon-badges.demolab.com/badge/-Report%20Issue-6f42c1?style=for-the-badge&logoColor=white&logo=issue-opened" alt="open-issue-button">
     </a>
   </div>
 </div>
@@ -103,13 +104,16 @@ Real-time update, you'll see the result as soon as you press Enter (or Apply)
 
 > My recommendations:
 > - Allocate at least 512MB of RAM for best experience.
-> - Set both Xms and Xmx to the same version
+> - Set both Xms and Xmx to the same number
 
 - `-Dlog.level=INFO`: Set the log level (Default is INFO)
 
 > Available levels:
-> - INFO
+> - TRACE
 > - DEBUG
+> - INFO
+> - WARN
+> - ERROR
 
 <p align="center"><b>THIS SECTION IS SUBJECT TO CHANGE, PLEASE CHECK BACK FOR MORE INFORMATION</b></p>
 
