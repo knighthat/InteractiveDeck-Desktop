@@ -14,7 +14,9 @@
 
 package me.knighthat.interactivedeck.task;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.json.JsonArrayToArray;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,9 +36,16 @@ public interface Task extends JsonSerializable {
             return null;
 
         List<Object> params = new ArrayList<>();
-        switch (action) {
 
-            case BASH_EXEC, AUDIO_PLAYER, OPEN_FILE -> params.add( json.get( "file_path" ).getAsString() );
+        if (ExecutableFile.class.isAssignableFrom( action.type ))
+            params.add( json.get( "file_path" ).getAsString() );
+
+        if (CommandBasedTask.class.isAssignableFrom( action.type )) {
+            JsonArray args = json.getAsJsonArray( "args" );
+            params.add( JsonArrayToArray.toStringArray( args ) );
+        }
+
+        switch (action) {
 
             case SWITCH_PROFILE -> {
                 String uuidStr = json.get( "profile" ).getAsString();
@@ -44,6 +53,11 @@ public interface Task extends JsonSerializable {
             }
 
             case OPEN_WEBSITE -> params.add( json.get( "uri" ).getAsString() );
+
+            case RUN_JAR_FILE -> {
+                JsonArray vmArgs = json.getAsJsonArray( "vmArgs" );
+                params.add( JsonArrayToArray.toStringArray( vmArgs ) );
+            }
         }
         return TaskManager.create( action.type, params.toArray() );
     }

@@ -21,6 +21,7 @@
 - [Connection Connected](connection-connected.svg)
 - [Connection Error](connection-error.svg)
 - [Connection Unknown](connection-unknown.svg)
+- [Run Jar Task Icon](run-jar-task-icon.svg)
 
 # [MIT](https://mit-license.org/)
 
