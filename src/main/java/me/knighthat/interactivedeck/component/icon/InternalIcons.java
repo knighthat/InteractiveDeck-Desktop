@@ -53,6 +53,7 @@ public class InternalIcons {
     public final @NotNull SVGDocument OPEN_FILE_TASK_ICON;
     public final @NotNull SVGDocument PLAY_AUDIO_TASK_ICON;
     public final @NotNull SVGDocument OPEN_WEBSITE_TASK_ICON;
+    public final @NotNull SVGDocument RUN_JAR_FILE_TASK_ICON;
 
     public InternalIcons() {
         Log.info( "Loading icons..." );
@@ -79,6 +80,7 @@ public class InternalIcons {
         OPEN_FILE_TASK_ICON = fromResource( "open-file-task-icon" );
         PLAY_AUDIO_TASK_ICON = fromResource( "play-audio-task-icon" );
         OPEN_WEBSITE_TASK_ICON = fromResource( "open-website-task-icon" );
+        RUN_JAR_FILE_TASK_ICON = fromResource( "run-jar-task-icon" );
 
         Log.info( "Icons loaded!" );
     }
