@@ -14,9 +14,7 @@
 package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer;
-import me.knighthat.interactivedeck.menus.popup.*;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +25,6 @@ import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.CompletableFuture;
-
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 /**
  * @author knighthat
@@ -48,36 +43,24 @@ public class MainMenu extends javax.swing.JFrame {
     public MainMenu() {
         super( GlobalVars.name() + " - " + GlobalVars.version() );
         loadProgramIcon();
-
-        AddProfilePopup.INSTANCE = new AddProfilePopup( this );
-        RemoveProfilePopup.INSTANCE = new RemoveProfilePopup( this );
-        ProfileConfigurationPopup.INSTANCE = new ProfileConfigurationPopup( this );
-        WarningPopup.INSTANCE = new WarningPopup( this );
-        AppSettingsPopup.INSTANCE = new AppSettingsPopup( this );
-        ColorPallet.INSTANCE = new ColorPallet( this );
-
         initComponents();
+        addEventListeners();
+        setLocationRelativeTo( null );
+    }
 
+    private void addEventListeners() {
         addWindowListener( new WindowAdapter() {
             @Override
-            public void windowClosing( WindowEvent e ) {
+            public void windowOpened( WindowEvent e ) {
+                // Show default profile
+                MenuProperty.active( MenuProperty.defaultProfile() );
+            }
+
+            @Override
+            public void windowClosed( WindowEvent e ) {
                 buttonsDisplaySection.unselectAll();
-
-                CompletableFuture.runAsync( () -> {
-                    Thread.currentThread().setName( "FILE" );
-
-                    Json.dump( SETTINGS );
-                    MenuProperty.profiles().forEach( Json::dump );
-                } ).join();
-
-                super.windowClosing( e );
             }
         } );
-
-        // Show default profile
-        MenuProperty.active( MenuProperty.defaultProfile() );
-
-        setLocationRelativeTo( null );
     }
 
     private void loadProgramIcon() {
@@ -104,7 +87,7 @@ public class MainMenu extends javax.swing.JFrame {
         buttonModifier = new me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer();
         ConnectionStatusSection connectionStatusSection = new ConnectionStatusSection();
 
-        setDefaultCloseOperation( javax.swing.WindowConstants.EXIT_ON_CLOSE );
+        setDefaultCloseOperation( WindowConstants.DISPOSE_ON_CLOSE );
         setBackground( new java.awt.Color( 153, 153, 153 ) );
         setCursor( new java.awt.Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
         setMaximumSize( new java.awt.Dimension( 1000, 600 ) );
@@ -114,6 +97,7 @@ public class MainMenu extends javax.swing.JFrame {
         getContentPane().add( buttonsDisplaySection, java.awt.BorderLayout.WEST );
         getContentPane().add( buttonModifier, java.awt.BorderLayout.EAST );
         getContentPane().add( connectionStatusSection, java.awt.BorderLayout.PAGE_END );
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     public @NotNull ButtonModifierContainer buttonModifiers() {

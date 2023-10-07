@@ -17,20 +17,65 @@ import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
+import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MainMenu;
+import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
+import me.knighthat.interactivedeck.menus.popup.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.concurrent.Semaphore;
+
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 /**
  * @author knighthat
  */
 public class InteractiveDeck {
 
-    static {
+    private final @NotNull Semaphore semaphore;
+
+    private InteractiveDeck() {
+        this.semaphore = new Semaphore( 0 );
+    }
+
+    public static void main( String[] args ) {
         Thread.currentThread().setName( "MAIN" );
+
+        InteractiveDeck main = new InteractiveDeck();
+        main.init();
+        main.on();
+        try {
+            main.semaphore.acquire();
+        } catch (InterruptedException e) {
+            Log.exc( "Failed to keep the thread alive", e, true );
+            Log.reportBug();
+        }
+        main.off();
+    }
+
+    /**
+     * Setup stage
+     * Everything required by the core components
+     * (GUI, working dir, etc.) or before {@link #on()} stage
+     * must be loaded here first.
+     */
+    private void init() {
+        // System-wide Configurations
+        Platform.init();
+        WorkingDirectory.init();
+        Settings.init();
+
+        Log.start();
+
+        // Decorations
+        FontFactory.init();
+        Icons.loadIcons();
+        WorkingDirectory.loadProfiles();
 
         /* Set the Nimbus look and feel */
         //<editor-fold default-state="collapsed" desc=" Look and feel setting code (optional) ">
@@ -50,42 +95,46 @@ public class InteractiveDeck {
         //</editor-fold>
     }
 
-    public static void main( String[] args ) {
-        WorkingDirectory.init();
-        FontFactory.init();
-        Icons.loadIcons();
-        WorkingDirectory.loadProfiles();
-        Settings.init();
-
-        printSysConfig();
-        Log.warn( "This is a warning!" );
-        Log.err( "This is an error!" );
-
+    /**
+     * Run stage
+     * This is where program start functioning
+     */
+    private void on() {
         NotificationCenter.init();
 
         new WirelessController().start();
 
-        new MainMenu().setVisible( true );
+        MainMenu mainMenu = new MainMenu();
+
+        // Load Popups
+        AddProfilePopup.INSTANCE = new AddProfilePopup( mainMenu );
+        RemoveProfilePopup.INSTANCE = new RemoveProfilePopup( mainMenu );
+        ProfileConfigurationPopup.INSTANCE = new ProfileConfigurationPopup( mainMenu );
+        WarningPopup.INSTANCE = new WarningPopup( mainMenu );
+        AppSettingsPopup.INSTANCE = new AppSettingsPopup( mainMenu );
+        ColorPallet.INSTANCE = new ColorPallet( mainMenu );
+
+        mainMenu.setVisible( true );
+
+        mainMenu.addWindowListener( new WindowAdapter() {
+            @Override
+            public void windowClosed( WindowEvent e ) {
+                semaphore.release();
+            }
+        } );
     }
 
-    static void printSysConfig() {
-        Log.info( "Java runtime version: " + jre() );
-        Log.info( "Running on: " + platform() );
-        Log.info( "Working directory: " + WorkingDirectory.PATH );
-    }
+    /**
+     * Close stage
+     * Finalize the process right before program stop
+     */
+    private void off() {
+        // Save settings and profiles
+        Json.dump( SETTINGS );
+        MenuProperty.profiles().forEach( Json::dump );
 
-    static @NotNull String platform() {
-        String osName = System.getProperty( "os.name" );
-        String osVer = System.getProperty( "os.version" );
-        String osArch = System.getProperty( "os.arch" );
+        Log.stop();
 
-        return String.format( "%s %s %s", osArch, osName, osVer );
-    }
-
-    static @NotNull String jre() {
-        String vmName = System.getProperty( "java.vm.name" );
-        String vmVer = System.getProperty( "java.vm.version" );
-
-        return String.format( "%s %s", vmName, vmVer );
+        System.exit( 0 );
     }
 }
