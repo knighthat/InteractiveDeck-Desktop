@@ -49,7 +49,7 @@ final class LogImpl extends Thread {
     }
 
     public synchronized void log( @NotNull Log.LogLevel level, @NotNull String s, boolean skipQueue ) {
-        if (!Boolean.getBoolean( "log.enabled" )) {
+        if (System.getProperties().containsKey( "log.enabled" ) && !Boolean.getBoolean( "log.enabled" )) {
             sysout( level, s );
             return;
         }
