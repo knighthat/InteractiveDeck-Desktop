@@ -46,7 +46,7 @@ public class Settings implements SaveAsJson {
     private @NotNull Font defaultButtonFont = new Font( "StardosStencil", Font.PLAIN, 14 );
 
     public static void init() {
-        File settingsFile = new File( WorkingDirectory.FILE, SETTINGS.fullName() );
+        File settingsFile = new File( WorkingDirectory.path(), SETTINGS.fullName() );
         try (FileReader reader = new FileReader( settingsFile )) {
             JsonElement json = JsonParser.parseReader( reader );
             if (!json.isJsonNull() && json.isJsonObject())
