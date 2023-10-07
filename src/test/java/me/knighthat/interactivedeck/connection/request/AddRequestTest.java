@@ -18,7 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Profiles;
-import me.knighthat.interactivedeck.json.Json;
+import me.knighthat.interactivedeck.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,7 +28,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -40,50 +39,27 @@ class AddRequestTest {
 
     @BeforeAll
     static void setUp() {
-        for (int i = 0 ; i < 10 ; i++) {
-            Profile profile = Profiles.create( "Profile No." + i );
-            PROFILES.add( profile );
-            println( "Profile " + profile.displayName() + " is created!" );
-        }
+        for (int i = 0 ; i < 10 ; i++)
+            PROFILES.add( Profiles.create( "Profile No." + i ) );
 
         request = new AddRequest( pArray -> PROFILES.forEach( p -> pArray.add( p.serialize() ) ) );
-        println( request.toString() );
-    }
-
-    private static void println( @NotNull Object obj ) {
-        System.out.println( obj );
-    }
-
-    private static void printErr( @NotNull Exception e ) {
-        if (e.getCause() == null)
-            System.err.println( e.getMessage() );
-        else
-            System.err.println( e.getCause().getMessage() );
     }
 
     @Test
     void serialize() {
         JsonArray rawContent = request.content.getAsJsonArray();
-        println( Json.toString( rawContent ) );
         JsonArray compressedContent = request.serialize().get( "content" ).getAsJsonArray();
-        println( compressedContent.toString() );
 
         byte[] compressedBytes = new byte[compressedContent.size()];
         for (int i = 0 ; i < compressedBytes.length ; i++)
             compressedBytes[i] = compressedContent.get( i ).getAsByte();
-        println( "Raw bytes count: " + Json.toString( rawContent ).getBytes().length );
-        println( "Compressed bytes count: " + compressedBytes.length );
-        println( "Compressed bytes:" + Arrays.toString( compressedBytes ) );
 
         byte[] inflated = inflate( compressedBytes );
         if (inflated.length == 0)
             Assertions.fail();
-        println( "Inflated bytes: " + Arrays.toString( inflated ) );
 
         String inflatedData = new String( inflated );
-        println( "Inflated data: " + inflatedData );
         JsonArray inflatedArray = JsonParser.parseString( inflatedData ).getAsJsonArray();
-        println( "Inflated array: " + Json.toString( inflatedArray ) );
 
         Assertions.assertEquals( rawContent, inflatedArray );
     }
@@ -103,7 +79,7 @@ class AddRequestTest {
 
             inflated = baos.toByteArray();
         } catch (IOException e) {
-            printErr( e );
+            Log.exc( "", e, true );
         }
 
         return inflated;
