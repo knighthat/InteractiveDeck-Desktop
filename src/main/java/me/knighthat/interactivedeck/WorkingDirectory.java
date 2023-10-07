@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck;
 import me.knighthat.interactivedeck.file.Profiles;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -25,26 +26,31 @@ import java.util.List;
 
 public class WorkingDirectory {
 
-    public static @NotNull String PATH;
-    public static @NotNull File FILE;
+    private static File FILE;
 
     public static void init() {
-        String osName = System.getProperty( "os.name" );
-        String home = System.getProperty( "user.home" ).concat( "/" );
+        String workDir = Platform.homeDir();
+        workDir += switch (Platform.TYPE) {
+            case LINUX -> ".config/";
+            case MACOS -> ".";
+            default -> "";
+        };
 
-        String sub = "";
-        if (osName.startsWith( "Linux" )) {
-            sub = ".config/";
-        } else if (osName.startsWith( "Mac" )) {
-            sub = "./";
+        FILE = new File( workDir, GlobalVars.name() );
+        Log.info( "Working directory: " + path() );
+
+        String logPath = System.getProperty( "log.dir" );
+        if (logPath == null) {
+            logPath = path() + "/logs";
+            System.setProperty( "log.dir", logPath );
         }
-        FILE = new File( home + sub, "InteractiveDeck" );
-        PATH = FILE.getAbsolutePath();
-        System.setProperty( "log.dir", PATH.concat( "/logs" ) );
+        Log.info( "Logs location: " + logPath );
 
         if (!FILE.exists() && !FILE.mkdirs())
             Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
     }
+
+    public static @NotNull String path() {return FILE.exists() ? FILE.getAbsolutePath() : "";}
 
     public static void loadProfiles() {
         List<File> profileFiles = gatherProfiles();
@@ -80,7 +86,7 @@ public class WorkingDirectory {
                 if (f.getName().endsWith( ".profile" ))
                     profiles.add( f );
         } else
-            Log.err( "Failed to read directory " + FILE );
+            Log.err( "Failed to read directory " + path() );
 
         return profiles;
     }

@@ -196,7 +196,7 @@ public class Profile implements SaveAsJson {
         MenuProperty.remove( this );
 
         String fileName = uuid + ".profile";
-        File file = new File( WorkingDirectory.PATH, fileName );
+        File file = new File( WorkingDirectory.path(), fileName );
 
         if (file.exists() && !file.delete())
             Log.err( "Could not delete " + uuid + ".profile" );

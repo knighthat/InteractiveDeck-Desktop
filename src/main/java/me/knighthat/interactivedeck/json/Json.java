@@ -33,7 +33,7 @@ public class Json {
             new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
     public static void dump( @NotNull SaveAsJson instance ) {
-        File file = new File( WorkingDirectory.FILE, instance.fullName() );
+        File file = new File( WorkingDirectory.path(), instance.fullName() );
 
         try (FileWriter writer = new FileWriter( file )) {
             if (!file.exists() && !file.createNewFile()) {
