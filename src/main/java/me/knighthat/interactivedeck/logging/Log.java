@@ -15,77 +15,70 @@ package me.knighthat.interactivedeck.logging;
 
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-public class Log {
+public interface Log {
 
-    private static final Logger LOGGER;
+    @NotNull LogImpl LOG = new LogImpl();
 
-    static {
-        LOGGER = LoggerFactory.getLogger( "MAIN" );
-    }
+    static void start() {LOG.start();}
 
-    public static void log( @NotNull LogLevel level, @NotNull String s ) {
-        switch (level) {
-            case DEBUG -> LOGGER.debug( s );
-            case INFO -> LOGGER.info( s );
-            case WARNING -> LOGGER.warn( s );
-            case ERROR -> LOGGER.error( s );
-        }
-    }
+    static void stop() {LOG.stopRunning();}
 
-    public static void deb( @NotNull String s ) {
-        log( LogLevel.DEBUG, s );
-    }
+    static void log( @NotNull LogLevel level, @NotNull String s ) {LOG.log( level, s, false );}
 
-    public static void info( @NotNull String s ) {
-        log( LogLevel.INFO, s );
-    }
+    static void deb( @NotNull String s ) {log( LogLevel.DEBUG, s );}
 
-    public static void warn( @NotNull String s ) {
-        log( LogLevel.WARNING, s );
-    }
+    static void info( @NotNull String s ) {log( LogLevel.INFO, s );}
 
-    public static void err( @NotNull String s ) {
-        log( LogLevel.ERROR, s );
-    }
+    static void warn( @NotNull String s ) {warn( s, false );}
+
+    static void warn( @NotNull String s, boolean skipQueue ) {LOG.log( LogLevel.WARNING, s, skipQueue );}
+
+    static void err( @NotNull String s ) {err( s, false );}
+
+    static void err( @NotNull String s, boolean skipQueue ) {LOG.log( LogLevel.ERROR, s, skipQueue );}
 
     /**
      * A shorthand to print error to console or file.<br>
      *
-     * @param s Custom/Additional message
-     * @param e Throwable error
-     * @param b Print stack trace
+     * @param s               Custom/Additional message
+     * @param t               Throwable error
+     * @param printStackTrace Print stack trace
      */
-    public static void exc( @NotNull String s, @NotNull Throwable e, boolean b ) {
+    static void exc( @NotNull String s, @NotNull Throwable t, boolean printStackTrace ) {
         if (!s.isBlank())
             err( s );
-        err( "Reason: " + e.getMessage() );
-        if (b)
-            e.printStackTrace();
+        if (t.getMessage() != null)
+            err( "Reason: " + t.getMessage(), true );
+        if (t.getCause() != null)
+            err( "Cause: " + t.getCause().getMessage(), true );
+        if (printStackTrace)
+            t.printStackTrace();
     }
 
     /**
-     * Prints out exception but at warning levell
+     * Prints out exception but at warning level
      *
-     * @param s Custom/Additional message
-     * @param e Throwable error
-     * @param b Print stack trace
+     * @param s               Custom/Additional message
+     * @param t               Throwable error
+     * @param printStackTrace Print stack trace
      */
-    public static void wexc( @NotNull String s, @NotNull Throwable e, boolean b ) {
+    static void wexc( @NotNull String s, @NotNull Throwable t, boolean printStackTrace ) {
         if (!s.isBlank())
             warn( s );
-        err( "Reason: " + e.getMessage() );
-        if (b)
-            e.printStackTrace();
+        if (t.getMessage() != null)
+            warn( "Reason: " + t.getMessage(), true );
+        if (t.getCause() != null)
+            warn( "Cause: " + t.getCause().getMessage(), true );
+        if (printStackTrace)
+            t.printStackTrace();
     }
 
-    public static void reportBug() {
-        err( "Unexpected error occurs, please report this to:" );
-        err( "https://github.com/knighthat/InteractiveDeck-Desktop/issues" );
+    static void reportBug() {
+        err( "Unexpected error occurs, please report this to:", true );
+        err( "https://github.com/knighthat/InteractiveDeck-Desktop/issues", true );
     }
 
     private static void update( @NotNull String object, @NotNull String id, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
@@ -94,15 +87,15 @@ public class Log {
         info( info );
     }
 
-    public static void buttonUpdate( @NotNull UUID uuid, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
+    static void buttonUpdate( @NotNull UUID uuid, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
         update( "Button", UuidUtils.lastFiveChars( uuid ), property, from, to );
     }
 
-    public static void profileUpdate( @NotNull String displayName, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
+    static void profileUpdate( @NotNull String displayName, @NotNull String property, @NotNull Object from, @NotNull Object to ) {
         update( "Profile", displayName, property, from, to );
     }
 
-    public enum LogLevel {
+    enum LogLevel {
         DEBUG, INFO, WARNING, ERROR
     }
 }
