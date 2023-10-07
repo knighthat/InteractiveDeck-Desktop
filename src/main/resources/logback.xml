@@ -36,7 +36,7 @@
 
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <charset>UTF-8</charset>
-            <Pattern>%d{HH:mm:ss} %-5tName %-5level %msg%n%throwable</Pattern>
+            <Pattern>%d{HH:mm:ss} %-5t %-5level %m%n%throwable</Pattern>
         </encoder>
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
