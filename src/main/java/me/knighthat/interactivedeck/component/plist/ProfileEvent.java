@@ -14,43 +14,15 @@
 
 package me.knighthat.interactivedeck.component.plist;
 
-
-import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MenuProperty;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 
-public class ProfilesComboBox extends JComboBox<Profile> {
+public class ProfileEvent extends ItemEvent {
 
-    public ProfilesComboBox() {
-        super( MenuProperty.profileArray() );
-        this.setRenderer( new PBoxRenderer() );
-    }
+    public final boolean updateActive;
 
-    public void reload() {
-        removeAll();
-        Profile[] profiles = MenuProperty.profileArray();
-        setModel( new DefaultComboBoxModel<>( profiles ) );
-        revalidate();
-        repaint();
-    }
-
-    public void reloadExcept( @NotNull Profile profile ) {
-        reload();
-        removeItem( profile );
-    }
-
-    public void setSelectedProfile( @NotNull Profile profile, boolean updateActive ) {
-        super.setSelectedItem( profile );
-        ItemEvent iEvent = new ProfileEvent( this, 701, selectedItemReminder, 2, updateActive );
-        super.fireItemStateChanged( iEvent );
-    }
-
-    @Override
-    public void setSelectedItem( Object anObject ) {
-        if (anObject instanceof Profile profile)
-            setSelectedProfile( profile, true );
+    public ProfileEvent( ItemSelectable source, int id, Object item, int stateChange, boolean updateActive ) {
+        super( source, id, item, stateChange );
+        this.updateActive = updateActive;
     }
 }

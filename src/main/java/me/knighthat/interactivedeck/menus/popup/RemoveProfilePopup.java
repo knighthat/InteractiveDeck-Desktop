@@ -17,7 +17,6 @@ package me.knighthat.interactivedeck.menus.popup;
 import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,9 +56,7 @@ public final class RemoveProfilePopup extends ProfilePopup {
 
     @Override
     protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
-        profile.remove();
-        ( (MainMenu) getOwner() ).profileSection().updateProfileList();
-        MenuProperty.active( MenuProperty.defaultProfile() );
+        ( (MainMenu) getOwner() ).profileSection().removeProfile( profile );
     }
 
     @Override
