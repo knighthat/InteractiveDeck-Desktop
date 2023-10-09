@@ -1,10 +1,10 @@
+### Project Folders/Files ###
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 dependency-reduced-pom.xml
 logs/
-src/man/resources/fonts/
 
 ### IntelliJ IDEA ###
 .idea/
