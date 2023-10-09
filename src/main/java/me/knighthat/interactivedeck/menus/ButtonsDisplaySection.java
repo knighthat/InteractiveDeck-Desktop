@@ -19,6 +19,7 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
+import me.knighthat.interactivedeck.utils.UuidUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -70,6 +71,12 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
             this.selected.value( currentlySelected == selected ? null : selected );
 
         }, () -> this.selected.value( selected ) );
+
+        String pName = MenuProperty.profile( selected.profile )
+                                   .map( Profile::displayName )
+                                   .orElseGet( () -> UuidUtils.lastFiveChars( selected.profile ) );
+        String log = "Button at [x=%s, y=%s] of profile \"%s\" clicked.";
+        Log.deb( log.formatted( selected.x, selected.y, pName ) );
     }
 
     public void updateButtons( @NotNull Profile profile ) {
