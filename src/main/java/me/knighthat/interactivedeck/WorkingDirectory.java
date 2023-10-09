@@ -37,20 +37,20 @@ public class WorkingDirectory {
         };
 
         FILE = new File( workDir, GlobalVars.name() );
+        if (!FILE.exists() && !FILE.mkdirs())
+            Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
         Log.info( "Working directory: " + path() );
 
         String logPath = System.getProperty( "log.dir" );
+
         if (logPath == null) {
             logPath = path() + "/logs";
             System.setProperty( "log.dir", logPath );
         }
         Log.info( "Logs location: " + logPath );
-
-        if (!FILE.exists() && !FILE.mkdirs())
-            Log.err( "Couldn't create working directory at " + FILE.getAbsolutePath() );
     }
 
-    public static @NotNull String path() {return FILE.exists() ? FILE.getAbsolutePath() : "";}
+    public static @NotNull String path() {return FILE.exists() ? FILE.getAbsolutePath() : ".";}
 
     public static void loadProfiles() {
         List<File> profileFiles = gatherProfiles();
