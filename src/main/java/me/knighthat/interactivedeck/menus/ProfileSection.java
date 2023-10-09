@@ -16,9 +16,11 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.plist.ProfileButton;
+import me.knighthat.interactivedeck.component.plist.ProfileEvent;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
 import me.knighthat.interactivedeck.component.setting.SettingButton;
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.AppSettingsPopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
@@ -57,19 +59,17 @@ public class ProfileSection extends JPanel implements Flexible {
 
     // <editor-fold default-state="collapsed" desc="Init Components">
     private void initComponents() {
-        // Profile list
-        profiles.addActionListener( event -> {
-            Profile profile = (Profile) profiles.getSelectedItem();
-            if (profile != null && event.getModifiers() > 0)
-                MenuProperty.active( profile );
+        profiles.addItemListener( event -> {
+            if (!( event instanceof ProfileEvent pEvent ))
+                return;
+            if (pEvent.updateActive)
+                MenuProperty.active( (Profile) event.getItem() );
         } );
 
         // Add profile button
         addProfileButton.addMouseListener( new MouseAdapter() {
             @Override
-            public void mouseClicked( MouseEvent e ) {
-                AddProfilePopup.INSTANCE.present();
-            }
+            public void mouseClicked( MouseEvent e ) {AddProfilePopup.INSTANCE.present();}
         } );
 
         // Remove profile button
@@ -94,12 +94,10 @@ public class ProfileSection extends JPanel implements Flexible {
         // Settings button
         settingButton.addMouseListener( new MouseAdapter() {
             @Override
-            public void mouseClicked( MouseEvent e ) {
-                AppSettingsPopup.INSTANCE.present();
-            }
+            public void mouseClicked( MouseEvent e ) {AppSettingsPopup.INSTANCE.present();}
         } );
 
-        MenuProperty.observeActive( profiles::setSelectedItem );
+        MenuProperty.observeActive( profile -> profiles.setSelectedProfile( profile, false ) );
     }
     // </editor-fold>
 
@@ -139,9 +137,30 @@ public class ProfileSection extends JPanel implements Flexible {
     }
     // </editor-fold>
 
-    public void updateProfileList() {
-        Profile active = MenuProperty.active().orElse( MenuProperty.defaultProfile() );
-        profiles.reload();
-        profiles.setSelectedItem( active );
+    public void addProfile( @NotNull Profile profile ) {
+        if (MenuProperty.profiles().contains( profile ))
+            return;
+
+        MenuProperty.add( profile );
+        profiles.addItem( profile );
+        MenuProperty.active( profile );
+    }
+
+    public void removeProfile( @NotNull Profile profile ) {
+        if (!MenuProperty.profiles().contains( profile ))
+            return;
+
+        profiles.removeItem( profile );
+        MenuProperty.active().ifPresent( p -> {
+            if (p != profile)
+                return;
+            MenuProperty.active( MenuProperty.defaultProfile() );
+        } );
+        profile.remove();
+    }
+
+    public void updateList() {
+        profiles.repaint();
+        Log.deb( "Profiles list updated!" );
     }
 }

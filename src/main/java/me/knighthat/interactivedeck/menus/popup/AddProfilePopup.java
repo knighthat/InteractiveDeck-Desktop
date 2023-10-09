@@ -18,7 +18,6 @@ import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Profiles;
 import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.menus.MenuProperty;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -44,9 +43,7 @@ public final class AddProfilePopup extends YesNoPopup {
             return;  // TODO Notify user about empty input
 
         Profile profile = Profiles.create( fromUser );
-        MenuProperty.add( profile );
-        ( (MainMenu) getOwner() ).profileSection().updateProfileList();
-        MenuProperty.active( profile );
+        ( (MainMenu) getOwner() ).profileSection().addProfile( profile );
 
         finish();
     }
