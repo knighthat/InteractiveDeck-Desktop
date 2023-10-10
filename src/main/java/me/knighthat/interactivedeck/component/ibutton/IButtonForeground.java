@@ -15,54 +15,74 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
-final class BLabel extends BChild {
+public final class IButtonForeground extends BChild {
 
-    @NotNull
-    String text = "";
-
-    BLabel() {
-        super();
+    IButtonForeground( @NotNull IButton owner ) {
+        super( owner );
+        setHorizontalAlignment( JLabel.CENTER );
         setForeground( Color.WHITE );
-
         setFont( SETTINGS.defaultButtonFont() );
     }
 
+    public void update( @Nullable JsonObject json ) {
+        if (json == null)
+            return;
+
+        String text = json.get( "text" ).getAsString();
+        setText( text );
+
+        String fgProp = json.has( "color" ) ? "color" : "foreground";
+        setForeground( colorFromJson( json, fgProp ) );
+
+        JsonObject fontJson = json.getAsJsonObject( "font" );
+        Font font = FontUtils.fromJson( fontJson );
+        setFont( font );
+    }
+
     public void text( @NotNull String text ) {
-        this.text = text;
-        repaint();
+        final String newText = text.strip();
+        String oldText = getText().strip();
+        if (newText.equals( oldText ))
+            return;
+
+        setText( newText );
+        Log.buttonUpdate( owner.uuid, "text", oldText, newText );
+        sendUpdate( json -> json.addProperty( "text", newText ) );
     }
 
-    public @NotNull String text() {
-        return this.text;
+    public void fontColor( @NotNull Color color ) {
+        Color oldColor = getForeground();
+        if (color.equals( oldColor ))
+            return;
+
+        sendAndLog( "foreground", oldColor, color );
     }
 
-    @Override
-    protected void paintComponent( Graphics g ) {
-        Graphics2D g2d = (Graphics2D) g;
+    public void font( @NotNull Font font ) {
+        Font oldFont = getFont();
+        if (font.getFamily().equals( oldFont.getFamily() ) &&
+                font.getStyle() == oldFont.getStyle() &&
+                font.getSize() == oldFont.getSize())
+            return;
 
-        g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON );
-        g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
+        super.setFont( font );
 
-        g2d.setColor( getForeground() );
-        g2d.setFont( getFont() );
-
-        FontMetrics fontMetrics = g2d.getFontMetrics();
-        int width = fontMetrics.stringWidth( text );
-        int height = fontMetrics.getHeight();
-        int x = ( getWidth() - width ) / 2;
-        int y = ( getHeight() - height ) / 2 + fontMetrics.getAscent();
-
-        g2d.drawString( text, x, y );
-
-        super.paintComponent( g );
+        String fontFormat = "[f=%s,s=%s,w=%s]";
+        String oldFontStr = fontFormat.formatted( oldFont.getFamily(), oldFont.getSize(), oldFont.getStyle() );
+        String newFont = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
+        Log.buttonUpdate( owner.uuid, "font", oldFontStr, newFont );
+        sendUpdate( json -> json.add( "font", FontUtils.toJson( getFont() ) ) );
     }
 
     @Override
@@ -80,7 +100,7 @@ final class BLabel extends BChild {
          * }
          */
         JsonObject json = new JsonObject();
-        json.addProperty( "text", text );
+        json.addProperty( "text", getText() );
         json.add( "foreground", ColorUtils.toJson( getForeground() ) );
         json.add( "font", FontUtils.toJson( getFont() ) );
 

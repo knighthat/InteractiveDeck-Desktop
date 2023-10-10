@@ -18,13 +18,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
-final class BIcon extends BChild {
+public final class IButtonBackground extends BChild {
 
     static final @NotNull Dimension borderRadius;
 
@@ -34,16 +35,41 @@ final class BIcon extends BChild {
 
     boolean isSelected = false;
 
-    BIcon() {
-        super();
+    IButtonBackground( @NotNull IButton owner ) {
+        super( owner );
 
         setBackground( DEFAULT_DARK );
         setForeground( DEFAULT_DARK );
     }
 
-    void toggleSelect() {
+    public void toggleSelect() {
         this.isSelected = !this.isSelected;
         repaint();
+    }
+
+    public void update( @Nullable JsonObject json ) {
+        if (json == null)
+            return;
+        setForeground( colorFromJson( json, "border" ) );
+        setBackground( colorFromJson( json, "background" ) );
+    }
+
+    public void background( @NotNull Color color ) {
+        Color oldColor = getBackground();
+        if (oldColor.equals( color ))
+            return;
+
+        setBackground( color );
+        sendAndLog( "background", oldColor, color );
+    }
+
+    public void border( @NotNull Color color ) {
+        Color oldColor = getForeground();
+        if (oldColor.equals( color ))
+            return;
+
+        setForeground( color );
+        sendAndLog( "border", oldColor, color );
     }
 
     @Override

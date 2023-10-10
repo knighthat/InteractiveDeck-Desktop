@@ -14,165 +14,127 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.connection.request.TargetedRequest;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.task.Task;
-import me.knighthat.interactivedeck.utils.ColorUtils;
-import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
+import java.io.IOException;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
 public class IButton extends JComponent implements JsonSerializable {
 
-    public static final @NotNull Dimension DIMENSION = new Dimension( 120, 120 );
+    /**
+     * Turns {@link JsonObject} to {@link IButton} instance.<br>
+     *
+     * @param profile this button belongs to.
+     * @param json    the json text of this button.
+     *
+     * @return instance of {@link IButton}.
+     *
+     * @throws IOException if coordinate <b>x</b> or <b>y</b> is missing.
+     */
+    public static @NotNull IButton fromJson( @NotNull UUID profile, @NotNull JsonObject json ) throws IOException {
+        if (!json.has( "x" ))
+            throw new IOException( "Missing coordinate \"x\"" );
+        if (!json.has( "y" ))
+            throw new IOException( "Missing coordinate \"y\"" );
+
+        int x = json.get( "x" ).getAsInt();
+        int y = json.get( "y" ).getAsInt();
+        UUID uuid;
+        if (json.has( "uuid" )) {
+            String idString = json.get( "uuid" ).getAsString();
+            uuid = UUID.fromString( idString );
+        } else {
+            Log.warn( "Button from profile " + profile + " does not have an UUID, assigning new one." );
+            uuid = UUID.randomUUID();
+        }
+
+        IButton button = new IButton( uuid, profile, x, y, null );
+        button.update( json );
+
+        return button;
+    }
 
     public final @NotNull UUID uuid;
     public final @NotNull UUID profile;
     public final int x;
     public final int y;
-    private final @NotNull BIcon icon;
-    private final @NotNull BLabel label;
+    private final @NotNull IButtonBackground background;
+    private final @NotNull IButtonForeground foreground;
     private @Nullable Task task;
 
     IButton( @NotNull UUID uuid,
              @NotNull UUID profile,
-             @NotNull BIcon icon,
-             @NotNull BLabel label,
              int x, int y,
              @Nullable Task task ) {
         this.uuid = uuid;
         this.profile = profile;
-        this.icon = icon;
-        this.label = label;
+        this.background = new IButtonBackground( this );
+        this.foreground = new IButtonForeground( this );
         this.x = x;
         this.y = y;
         this.task = task;
 
-        setOpaque( false );
         setForeground( TRANSPARENT );
 
         setLayout( new OverlayLayout( this ) );
-        add( label, 0 );
-        add( icon, 1 );
+        add( foreground, 0 );
+        add( background, 1 );
     }
 
     public IButton( @NotNull UUID profile, int x, int y ) {
-        this( UUID.randomUUID(), profile, new BIcon(), new BLabel(), x, y, null );
+        this( UUID.randomUUID(), profile, x, y, null );
     }
 
-    public void toggleSelect() {
-        icon.toggleSelect();
-    }
-
-    public @NotNull Color background() {
-        return icon.getBackground();
-    }
-
-    public void background( @NotNull Color color ) {
-        if (color.equals( background() ))
+    public void update( @Nullable JsonObject json ) {
+        if (json == null)
             return;
 
-        Log.buttonUpdate( uuid, "background", ColorUtils.toHex( background() ), ColorUtils.toHex( color ) );
-
-        icon.setBackground( color );
-        sendUpdate( json -> json.add( "background", ColorUtils.toJson( color ) ) );
+        background.update( json.getAsJsonObject( "icon" ) );
+        foreground.update( json.getAsJsonObject( "label" ) );
+        this.task = Task.fromJson( json.getAsJsonObject( "task" ) );
     }
 
-    public @NotNull Color border() {return icon.getForeground();}
+    public @NotNull IButtonBackground background() {return this.background;}
 
-    public void border( @NotNull Color color ) {
-        if (color.equals( border() ))
-            return;
-
-        Log.buttonUpdate( uuid, "border", ColorUtils.toHex( border() ), ColorUtils.toHex( color ) );
-
-        icon.setForeground( color );
-        sendUpdate( json -> json.add( "border", ColorUtils.toJson( color ) ) );
-    }
-
-    public @NotNull Color foreground() {
-        return label.getForeground();
-    }
-
-    public void foreground( @NotNull Color color ) {
-        if (color.equals( foreground() ))
-            return;
-
-        Log.buttonUpdate( uuid, "foreground", ColorUtils.toHex( foreground() ), ColorUtils.toHex( color ) );
-
-        label.setForeground( color );
-        sendUpdate( json -> json.add( "foreground", ColorUtils.toJson( color ) ) );
-    }
-
-    public @NotNull String text() {
-        return label.text();
-    }
-
-    public void text( @NotNull String text ) {
-        if (text.equals( text() ))
-            return;
-
-        Log.buttonUpdate( uuid, "text", text(), text );
-
-        label.text( text );
-        sendUpdate( json -> json.addProperty( "text", text ) );
-    }
-
-    public @NotNull Font font() {
-        return label.getFont();
-    }
-
-    public void font( @NotNull Font font ) {
-        if (font.getFamily().equals( font().getFamily() ) &&
-                font.getStyle() == font().getStyle() &&
-                font.getSize() == font().getSize())
-            return;
-
-        String fontFormat = "[f=%s,s=%s,w=%s]";
-        String currentFont = fontFormat.formatted( font().getFamily(), font().getSize(), font().getStyle() );
-        String newFont = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
-        Log.buttonUpdate( uuid, "font", currentFont, newFont );
-
-        label.setFont( font );
-        sendUpdate( json -> json.add( "font", FontUtils.toJson( font() ) ) );
-    }
+    public @NotNull IButtonForeground foreground() {return this.foreground;}
 
     public void task( @Nullable Task task ) {
         if (task == this.task)
             return;
 
-        String currentTask = this.task != null ? this.task.getClass().getName() : "null";
-        String newTask = task != null ? task.getClass().getName() : "null";
-        Log.buttonUpdate( uuid, "task", currentTask, newTask );
-
         this.task = task;
 
-        JsonElement taskElement = task == null ? JsonNull.INSTANCE : task.serialize();
-        sendUpdate( json -> json.add( "task", taskElement ) );
-    }
+        if (task == null)
+            return;
 
-    public @Nullable Task task() {
-        return this.task;
-    }
+        Log.buttonUpdate(
+                uuid,
+                "task",
+                task.getClass().getName(),
+                task.getClass().getName()
+        );
 
-    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
         JsonObject json = new JsonObject();
-        consumer.accept( json );
+        json.add( "task", task.serialize() );
 
-        new UpdateRequest( TargetedRequest.Target.BUTTON, uuid, json ).send();
+        new UpdateRequest(
+                TargetedRequest.Target.BUTTON,
+                uuid,
+                json
+        ).send();
     }
+
+    public @Nullable Task task() {return this.task;}
 
     @Override
     public @NotNull JsonObject serialize() {
@@ -195,16 +157,16 @@ public class IButton extends JComponent implements JsonSerializable {
          *      }
          * }
          */
-        JsonElement task = this.task != null ? this.task.serialize() : JsonNull.INSTANCE;
 
         JsonObject json = new JsonObject();
 
         json.addProperty( "uuid", uuid.toString() );
         json.addProperty( "x", x );
         json.addProperty( "y", y );
-        json.add( "task", task );
-        json.add( "icon", icon.serialize() );
-        json.add( "label", label.serialize() );
+        if (task != null)
+            json.add( "task", task.serialize() );
+        json.add( "icon", background.serialize() );
+        json.add( "label", foreground.serialize() );
 
         return json;
     }

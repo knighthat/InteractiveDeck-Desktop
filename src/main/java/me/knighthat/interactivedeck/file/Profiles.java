@@ -75,8 +75,12 @@ public class Profiles {
 
         List<IButton> buttons = new ArrayList<>();
         json.getAsJsonArray( "buttons" ).forEach( button -> {
-            IButton btn = IButtons.fromJson( uuid, button.getAsJsonObject() );
-            buttons.add( btn );
+            try {
+                IButton btn = IButton.fromJson( uuid, button.getAsJsonObject() );
+                buttons.add( btn );
+            } catch (IOException e) {
+                Log.wexc( "Failed to load a button", e, false );
+            }
         } );
 
         return new Profile( uuid, displayName, isDefault, columns, rows, gap, buttons );
