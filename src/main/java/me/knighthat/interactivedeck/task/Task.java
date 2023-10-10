@@ -18,6 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.json.JsonArrayToArray;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,8 +28,9 @@ import java.util.UUID;
 
 public interface Task extends JsonSerializable {
 
-    static @Nullable Task fromJson( @NotNull JsonObject json ) {
-        if (!json.has( "action_type" ))
+    @Contract( "null -> null" )
+    static @Nullable Task fromJson( @Nullable JsonObject json ) {
+        if (json == null || !json.has( "action_type" ))
             return null;
 
         TaskAction action = TaskAction.fromJson( json.get( "action_type" ) );
