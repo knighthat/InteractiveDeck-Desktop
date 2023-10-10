@@ -14,12 +14,8 @@
 
 package me.knighthat.interactivedeck.file;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.component.ibutton.IButtons;
 import me.knighthat.interactivedeck.connection.request.AddRequest;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
 import me.knighthat.interactivedeck.logging.Log;
@@ -35,6 +31,82 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class Profiles {
+
+    private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
+        if (!json.has( "uuid" ))
+            throw new ProfileFormatException( "Missing uuid!" );
+        if (!json.has( "default" ))
+            throw new ProfileFormatException( "Cannot decide whether profile is default!" );
+
+        UUID uuid;
+        String displayName;
+        boolean isDefault;
+        int rows, columns, gap;
+        List<IButton> buttons;
+
+        // Load UUID
+        String uuidString = json.get( "uuid" ).getAsString();
+        uuid = UUID.fromString( uuidString );
+
+        // Load display name
+        if (!json.has( "displayName" )) {
+            Log.warn( "Profile " + uuidString + " does not have display name." );
+            displayName = "";
+        } else
+            displayName = json.get( "displayName" ).getAsString();
+
+        // Check if profile is default profile
+        isDefault = json.get( "default" ).getAsBoolean();
+
+        // Load rows
+        if (!json.has( "rows" )) {
+            Log.warn( "Profile " + uuidString + " does not specify rows" );
+            Log.warn( "Assigning default value (2)" );
+            rows = 2;
+        } else
+            rows = json.get( "rows" ).getAsInt();
+
+        // Load columns
+        if (!json.has( "columns" )) {
+            Log.warn( "Profile " + uuidString + " does not specify columns" );
+            Log.warn( "Assigning default value (4)" );
+            columns = 4;
+        } else
+            columns = json.get( "columns" ).getAsInt();
+
+        // Load gap
+        if (!json.has( "gap" )) {
+            Log.warn( "Profile " + uuidString + " does not specify gap" );
+            Log.warn( "Assigning default value (3)" );
+            gap = 3;
+        } else
+            gap = json.get( "gap" ).getAsInt();
+
+        // Load buttons
+        if (json.has( "buttons" )) {
+            JsonArray buttonArray = json.getAsJsonArray( "buttons" );
+            buttons = new ArrayList<>( buttonArray.size() );
+            buttonArray.forEach( button -> {
+                try {
+                    IButton btn = IButton.fromJson( uuid, button.getAsJsonObject() );
+                    buttons.add( btn );
+                } catch (IOException e) {
+                    Log.wexc( "Failed to load a button", e, false );
+                }
+            } );
+        } else {
+            Log.warn( "Profile " + uuidString + " does not have buttons." );
+            Log.warn( "Creating default buttons" );
+            buttons = new ArrayList<>( rows * columns );
+            for (int y = 0 ; y < rows ; y++)
+                for (int x = 0 ; x < columns ; x++) {
+                    IButton button = new IButton( uuid, x, y );
+                    buttons.add( button );
+                }
+        }
+
+        return new Profile( uuid, displayName, isDefault, columns, rows, gap, buttons );
+    }
 
     public static @NotNull Optional<Profile> fromFile( @NotNull File file ) {
         Profile profile = null;
@@ -53,37 +125,6 @@ public class Profiles {
             Log.exc( "Could not read " + file.getName(), e, true );
         }
         return Optional.ofNullable( profile );
-    }
-
-    private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
-        if (!json.has( "uuid" ) ||
-                !json.has( "displayName" ) ||
-                !json.has( "default" ) ||
-                !json.has( "rows" ) ||
-                !json.has( "columns" ) ||
-                !json.has( "gap" ) ||
-                !json.has( "buttons" ))
-            throw new ProfileFormatException( "Missing information" );
-
-        String idStr = json.get( "uuid" ).getAsString();
-        UUID uuid = UUID.fromString( idStr );
-        String displayName = json.get( "displayName" ).getAsString();
-        boolean isDefault = json.get( "default" ).getAsBoolean();
-        int rows = json.get( "rows" ).getAsInt();
-        int columns = json.get( "columns" ).getAsInt();
-        int gap = json.get( "gap" ).getAsInt();
-
-        List<IButton> buttons = new ArrayList<>();
-        json.getAsJsonArray( "buttons" ).forEach( button -> {
-            try {
-                IButton btn = IButton.fromJson( uuid, button.getAsJsonObject() );
-                buttons.add( btn );
-            } catch (IOException e) {
-                Log.wexc( "Failed to load a button", e, false );
-            }
-        } );
-
-        return new Profile( uuid, displayName, isDefault, columns, rows, gap, buttons );
     }
 
     public static @NotNull Profile createDefault() {
