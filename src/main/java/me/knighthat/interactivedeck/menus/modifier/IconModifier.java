@@ -95,18 +95,18 @@ public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
     private void applyColor( @NotNull HexColorTextField input ) {
         Color color = input.getBackground();
         if (input == fgInput)
-            button.foreground( color );
+            button.foreground().fontColor( color );
         else if (input == bgInput)
-            button.background( color );
+            button.background().background( color );
         else
-            button.border( color );
+            button.background().border( color );
     }
 
     @Override
     protected void loadProperties( @NotNull IButton button ) {
-        bgInput.setColor( button.background() );
-        fgInput.setColor( button.foreground() );
-        bdInput.setColor( button.border() );
+        bgInput.setColor( button.background().getBackground() );
+        fgInput.setColor( button.foreground().getForeground() );
+        bdInput.setColor( button.background().getForeground() );
     }
 
     @Override

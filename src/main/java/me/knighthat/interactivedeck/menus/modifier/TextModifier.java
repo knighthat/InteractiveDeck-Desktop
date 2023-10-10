@@ -58,21 +58,20 @@ public class TextModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
     }
 
     private void applyFont( @Nullable String family, @Nullable Integer style, @Nullable Integer size ) {
-        Font curFont = button.font();
-        button.font(
-                new Font(
-                        family == null ? curFont.getFamily() : family,
-                        style == null ? curFont.getStyle() : style,
-                        size == null ? curFont.getSize() : size
-                )
+        Font curFont = button.foreground().getFont();
+        Font newFont = new Font(
+                family == null ? curFont.getFamily() : family,
+                style == null ? curFont.getStyle() : style,
+                size == null ? curFont.getSize() : size
         );
+        button.foreground().font( newFont );
     }
 
     @Override
     protected void loadProperties( @NotNull IButton button ) {
-        labelInput.setText( button.text() );
+        labelInput.setText( button.foreground().getText() );
 
-        Font curFont = button.font();
+        Font curFont = button.foreground().getFont();
         fontSelector.setSelectedItem( curFont.getFamily() );
         sizeSpinner.setValue( curFont.getSize() );
         boldButton.setSelected( curFont.isBold() );
@@ -105,7 +104,8 @@ public class TextModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
         // Input Field
         addContent(
                 labelInput,
-                c -> labelInput.addChangeEvent( event -> button.text( labelInput.getText() ) ),
+                c -> labelInput.addChangeEvent(
+                        event -> button.foreground().text( labelInput.getText() ) ),
                 constraints -> {
                     constraints.gridy = 1;
                     constraints.gridwidth = 3;
