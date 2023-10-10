@@ -14,19 +14,58 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.connection.request.TargetedRequest;
+import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.function.Consumer;
 
-import static me.knighthat.interactivedeck.component.ibutton.IButton.DIMENSION;
+abstract class BChild extends JLabel implements JsonSerializable {
 
-abstract class BChild extends JComponent implements JsonSerializable {
+    private static final @NotNull Dimension DIMENSION = new Dimension( 120, 120 );
 
-    public BChild() {
+    @NotNull IButton owner;
+
+    public BChild( @NotNull IButton owner ) {
+        this.owner = owner;
+
         setPreferredSize( DIMENSION );
         setMinimumSize( DIMENSION );
         setMaximumSize( DIMENSION );
 
         setOpaque( false );
+    }
+
+    protected void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
+        JsonObject json = new JsonObject();
+        consumer.accept( json );
+
+        new UpdateRequest(
+                TargetedRequest.Target.BUTTON,
+                owner.uuid,
+                json
+        ).send();
+    }
+
+    protected @NotNull Color colorFromJson( @NotNull JsonObject json, String property ) {
+        JsonArray array = json.getAsJsonArray( property );
+        return ColorUtils.fromJson( array );
+    }
+
+    protected void sendAndLog( @NotNull String property, @NotNull Color oldColor, @NotNull Color newColor ) {
+        Log.buttonUpdate(
+                owner.uuid,
+                property,
+                ColorUtils.toHex( oldColor ),
+                ColorUtils.toHex( newColor )
+        );
+        sendUpdate( json -> json.add( property, ColorUtils.toJson( newColor ) ) );
     }
 }
