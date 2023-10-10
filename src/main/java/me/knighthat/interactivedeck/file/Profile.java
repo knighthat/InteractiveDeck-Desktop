@@ -58,94 +58,6 @@ public class Profile implements SaveAsJson {
         addButtons( 0, columns, 0, rows );
     }
 
-    public void displayName( @NotNull String displayName ) {
-        if (displayName.equals( displayName() ) || displayName.isBlank())
-            return;
-
-        Log.profileUpdate( displayName, "name", this.displayName, displayName );
-
-        this.displayName = displayName;
-        sendUpdate( json -> json.addProperty( "displayName", displayName ) );
-    }
-
-    public void columns( int columns ) {
-        // If new columns is equal to current rows, then do nothing
-        if (columns == columns())
-            return;
-
-        // If new rows is greater than current rows, then add more buttons
-        if (columns > columns()) {
-            JsonArray added = addButtons( this.columns, columns, 0, this.rows );
-            new AddRequest( uuid, added ).send();
-        }
-
-        // If new columns is less than current row,
-        // then remove excess buttons within profile and public list of buttons
-        if (columns < columns()) {
-            JsonArray deleted = removeButtons( button -> button.x >= columns );
-            new RemoveRequest( uuid, deleted ).send();
-        }
-
-        Log.profileUpdate( displayName, "columns", this.columns, columns );
-
-        this.columns = columns;
-        sendUpdate( json -> json.addProperty( "columns", columns ) );
-    }
-
-    public int columns() {
-        return this.columns;
-    }
-
-    public void rows( int rows ) {
-        // If new rows is equal to current rows, then do nothing
-        if (rows == rows())
-            return;
-
-        // If new rows is greater than current rows, then add more buttons
-        if (rows > rows()) {
-            JsonArray added = addButtons( 0, this.columns, this.rows, rows );
-            new AddRequest( uuid, added ).send();
-        }
-
-        // If new rows is less than current row,
-        // then remove excess buttons within profile and public list of buttons
-        if (rows < rows()) {
-            JsonArray deleted = removeButtons( btn -> btn.y >= rows );
-            new RemoveRequest( uuid, deleted ).send();
-        }
-
-        Log.profileUpdate( displayName, "rows", this.rows, rows );
-
-        this.rows = rows;
-        sendUpdate( json -> json.addProperty( "rows", rows ) );
-    }
-
-    public int rows() {
-        return this.rows;
-    }
-
-    public void gap( int gap ) {
-        if (gap == gap())
-            return;
-
-        Log.profileUpdate( displayName, "gap between buttons", this.gap, gap );
-
-        this.gap = gap;
-        sendUpdate( json -> json.addProperty( "gap", gap ) );
-    }
-
-    public int gap() {
-        return this.gap;
-    }
-
-    /*
-     * Buttons
-     */
-
-    public @NotNull @Unmodifiable List<IButton> buttons() {
-        return List.copyOf( buttons );
-    }
-
     private @NotNull JsonArray addButtons( int fromX, int toX, int fromY, int toY ) {
         JsonArray added = new JsonArray();
 
@@ -191,6 +103,101 @@ public class Profile implements SaveAsJson {
         buttons.sort( Comparator.comparingInt( button -> button.x * button.y ) );
     }
 
+    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
+        JsonObject json = new JsonObject();
+        consumer.accept( json );
+
+        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json ).send();
+    }
+
+    public void displayName( @NotNull String displayName ) {
+        if (displayName.equals( displayName() ) || displayName.isBlank())
+            return;
+
+        Log.profileUpdate( displayName, "name", this.displayName, displayName );
+
+        this.displayName = displayName;
+        sendUpdate( json -> json.addProperty( "displayName", displayName ) );
+    }
+
+    public void columns( int columns ) {
+        // If new columns is equal to current rows, then do nothing
+        if (columns == columns())
+            return;
+
+        // If new rows is greater than current rows, then add more buttons
+        if (columns > columns()) {
+            JsonArray added = addButtons( this.columns, columns, 0, this.rows );
+            new AddRequest( uuid, added ).send();
+        }
+
+        // If new columns is less than current row,
+        // then remove excess buttons within profile and public list of buttons
+        if (columns < columns()) {
+            JsonArray deleted = removeButtons( button -> button.x >= columns );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        Log.profileUpdate( displayName, "columns", this.columns, columns );
+
+        this.columns = columns;
+        sendUpdate( json -> json.addProperty( "columns", columns ) );
+    }
+
+    public int columns() {
+        return this.columns;
+    }
+
+    /*
+     * Buttons
+     */
+
+    public void rows( int rows ) {
+        // If new rows is equal to current rows, then do nothing
+        if (rows == rows())
+            return;
+
+        // If new rows is greater than current rows, then add more buttons
+        if (rows > rows()) {
+            JsonArray added = addButtons( 0, this.columns, this.rows, rows );
+            new AddRequest( uuid, added ).send();
+        }
+
+        // If new rows is less than current row,
+        // then remove excess buttons within profile and public list of buttons
+        if (rows < rows()) {
+            JsonArray deleted = removeButtons( btn -> btn.y >= rows );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        Log.profileUpdate( displayName, "rows", this.rows, rows );
+
+        this.rows = rows;
+        sendUpdate( json -> json.addProperty( "rows", rows ) );
+    }
+
+    public int rows() {
+        return this.rows;
+    }
+
+    public void gap( int gap ) {
+        if (gap == gap())
+            return;
+
+        Log.profileUpdate( displayName, "gap between buttons", this.gap, gap );
+
+        this.gap = gap;
+        sendUpdate( json -> json.addProperty( "gap", gap ) );
+    }
+
+    public int gap() {
+        return this.gap;
+    }
+
+    public @NotNull @Unmodifiable List<IButton> buttons() {
+        return List.copyOf( buttons );
+    }
+
     public void remove() {
         JsonArray deleted = removeButtons( button -> true );
         MenuProperty.remove( this );
@@ -205,13 +212,6 @@ public class Profile implements SaveAsJson {
 
         String deleteMsg = "Profile %s (%s) with %s button(s) is deleted!";
         Log.info( deleteMsg.formatted( displayName, uuid, deleted.size() ) );
-    }
-
-    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
-        JsonObject json = new JsonObject();
-        consumer.accept( json );
-
-        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json ).send();
     }
 
     @Override
