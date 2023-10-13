@@ -65,14 +65,10 @@ public class Settings implements SaveAsJson {
             bufferSize = json.get( "buffer" ).getAsInt();
         if (json.has( "selected_color" ))
             selectedColor = ColorUtils.fromJson( json.get( "selected_color" ) );
-        if (json.has( "ui_font" )) {
-            JsonObject font = json.getAsJsonObject( "ui_font" );
-            UIFont = FontUtils.fromJson( font );
-        }
-        if (json.has( "default_button_font" )) {
-            JsonObject font = json.getAsJsonObject( "default_button_font" );
-            defaultButtonFont = FontUtils.fromJson( font );
-        }
+        if (json.has( "ui_font" ))
+            UIFont = FontUtils.fromJson( json.get( "ui_font" ) );
+        if (json.has( "default_button_font" ))
+            defaultButtonFont = FontUtils.fromJson( json.get( "default_button_font" ) );
     }
 
     public @NotNull String address() {

@@ -14,32 +14,61 @@
 
 package me.knighthat.interactivedeck.utils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
+import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+
 public class FontUtils {
 
+    /**
+     * Converts {@link JsonElement} into {@link  JsonObject} then
+     * extracts <b>name</b>, <b>size</b>, <b>style</b> to convert
+     * them to new {@link Font}.<br>
+     *
+     * Invalid value will be replaced by default UI Font's value.<br>
+     *
+     * @param json an instance of {@link JsonObject} that holds {@link Font} values
+     */
     @Contract( pure = true )
-    public static @NotNull Font fromJson( @NotNull JsonObject json ) {
-        String name = "Arial";
-        int size = 14;
-        int weight = Font.PLAIN;
+    public static @NotNull Font fromJson( @NotNull JsonElement json ) {
+        if (!( json instanceof JsonObject jObj ))
+            return SETTINGS.UIFont();
 
-        if (json.has( "name" ))
-            name = json.get( "name" ).getAsString();
-        if (json.has( "size" ))
-            size = json.get( "size" ).getAsInt();
-        if (json.has( "weight" ))
-            weight = switch (json.get( "weight" ).getAsString()) {
+        // Font family
+        String family;
+        try {
+            family = jObj.get( "name" ).getAsString();
+        } catch (IllegalStateException | NullPointerException e) {
+            family = SETTINGS.UIFont().getFamily();
+        }
+
+        // Font size
+        int size;
+        try {
+            size = jObj.get( "size" ).getAsInt();
+        } catch (IllegalStateException | NullPointerException e) {
+            size = SETTINGS.UIFont().getSize();
+        }
+
+        // Font style
+        int style;
+        try {
+            style = switch (jObj.get( "weight" ).getAsString()) {
                 case "bold" -> Font.BOLD;
                 case "italic" -> Font.ITALIC;
+                case "bold|italic" -> Font.BOLD | Font.ITALIC;
                 default -> Font.PLAIN;
             };
+        } catch (IllegalStateException | NullPointerException e) {
+            style = SETTINGS.UIFont().getStyle();
+        }
 
-        return new Font( name, weight, size );
+        return new Font( family, style, size );
     }
 
     @Contract( pure = true )
