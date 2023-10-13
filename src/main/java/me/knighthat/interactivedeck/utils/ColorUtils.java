@@ -15,6 +15,7 @@
 package me.knighthat.interactivedeck.utils;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
@@ -28,9 +29,9 @@ public class ColorUtils {
     public static @NotNull Color TRANSPARENT = new Color( 0, 0, 0, 0 );
     public static @NotNull Color DEFAULT_DARK = new Color( 36, 36, 36 );
 
-    public static @NotNull String toHex( @NotNull Color color ) {
-        return toHex( color.getRed(), color.getGreen(), color.getBlue() );
-    }
+    private static @Range( from = 0x0, to = 0xff ) int assertColor( int value ) {return value < 0 ? 0 : Math.min( value, 255 );}
+
+    public static @NotNull String toHex( @NotNull Color color ) {return toHex( color.getRed(), color.getGreen(), color.getBlue() );}
 
     public static @NotNull String toHex( @Range( from = 0x0, to = 0xff ) int r,
                                          @Range( from = 0x0, to = 0xff ) int g,
@@ -38,22 +39,31 @@ public class ColorUtils {
         return String.format( "#%02x%02x%02x", assertColor( r ), assertColor( g ), assertColor( b ) );
     }
 
-    public static @NotNull Color fromHex( @NotNull String hex ) {
-        return Color.decode( hex );
+    public static @NotNull Color fromHex( @NotNull String hex ) {return Color.decode( hex );}
+
+    /**
+     * Return color stored inside a JsonArray.<br>
+     * Returns {@link #TRANSPARENT} color if:<br>
+     * - Provided {@link JsonElement} is not {@link JsonArray}.<br>
+     * - {@link JsonArray} has less than 3 color codes (R, G, B).<br>
+     * Additionally, color code exceeds default value (0-255)
+     * will be reset to the closest end.
+     *
+     * @param json is JsonArray that has at least 3 integer values.
+     */
+    public static @NotNull Color fromJson( @NotNull JsonElement json ) {
+        Color result = TRANSPARENT;
+        try {
+            JsonArray array = json.getAsJsonArray();
+            int r = assertColor( array.get( 0 ).getAsInt() );
+            int g = assertColor( array.get( 1 ).getAsInt() );
+            int b = assertColor( array.get( 2 ).getAsInt() );
+
+            result = new Color( r, g, b );
+        } catch (IllegalStateException | IndexOutOfBoundsException ignored) {
+        }
+        return result;
     }
-
-    public static @NotNull Color fromJson( @NotNull JsonArray array ) {
-        int r = assertColor( array.get( 0 ).getAsInt() );
-        int g = assertColor( array.get( 1 ).getAsInt() );
-        int b = assertColor( array.get( 2 ).getAsInt() );
-
-        return new Color( r, g, b );
-    }
-
-    private static @Range( from = 0x0, to = 0xff ) int assertColor( int value ) {
-        return value < 0 ? 0 : Math.min( value, 255 );
-    }
-
 
     public static @NotNull JsonArray toJson( @NotNull Color color ) {
         JsonArray array = new JsonArray( 3 );

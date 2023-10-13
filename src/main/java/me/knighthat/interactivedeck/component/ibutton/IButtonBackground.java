@@ -50,8 +50,8 @@ public final class IButtonBackground extends BChild {
     public void update( @Nullable JsonObject json ) {
         if (json == null)
             return;
-        setForeground( colorFromJson( json, "border" ) );
-        setBackground( colorFromJson( json, "background" ) );
+        setForeground( ColorUtils.fromJson( json.get( "border" ) ) );
+        setBackground( ColorUtils.fromJson( json.get( "background" ) ) );
     }
 
     public void background( @NotNull Color color ) {
