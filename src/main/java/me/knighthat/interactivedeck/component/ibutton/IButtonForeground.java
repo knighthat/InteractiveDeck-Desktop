@@ -45,8 +45,7 @@ public final class IButtonForeground extends BChild {
         Color foreground = ColorUtils.fromJson( json.get( "foreground" ) );
         setForeground( foreground );
 
-        JsonObject fontJson = json.getAsJsonObject( "font" );
-        Font font = FontUtils.fromJson( fontJson );
+        Font font = FontUtils.fromJson( json.get( "font" ) );
         setFont( font );
     }
 
