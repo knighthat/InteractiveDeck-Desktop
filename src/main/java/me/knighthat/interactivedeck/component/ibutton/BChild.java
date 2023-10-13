@@ -54,11 +54,6 @@ abstract class BChild extends JLabel implements JsonSerializable {
         ).send();
     }
 
-    protected @NotNull Color colorFromJson( @NotNull JsonObject json, String property ) {
-        JsonArray array = json.getAsJsonArray( property );
-        return ColorUtils.fromJson( array );
-    }
-
     protected void sendAndLog( @NotNull String property, @NotNull Color oldColor, @NotNull Color newColor ) {
         Log.buttonUpdate(
                 owner.uuid,

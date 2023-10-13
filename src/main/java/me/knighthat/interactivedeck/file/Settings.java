@@ -14,7 +14,6 @@
 
 package me.knighthat.interactivedeck.file;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -36,15 +35,6 @@ public class Settings implements SaveAsJson {
 
     public static final @NotNull Settings SETTINGS = new Settings();
 
-    // NET
-    private @NotNull String address = "0.0.0.0";
-    private @Range( from = 0x400, to = 0xFFFF ) int port = 9129;
-    private int bufferSize = 1024;
-    // UI
-    private @NotNull Color selectedColor = Color.YELLOW;
-    private @NotNull Font UIFont = new Font( "Comfortaa", Font.PLAIN, 14 );
-    private @NotNull Font defaultButtonFont = new Font( "StardosStencil", Font.PLAIN, 14 );
-
     public static void init() {
         File settingsFile = new File( WorkingDirectory.path(), SETTINGS.fullName() );
         try (FileReader reader = new FileReader( settingsFile )) {
@@ -57,6 +47,15 @@ public class Settings implements SaveAsJson {
         }
     }
 
+    // NET
+    private @NotNull String address = "0.0.0.0";
+    private @Range( from = 0x400, to = 0xFFFF ) int port = 9129;
+    private int bufferSize = 1024;
+    // UI
+    private @NotNull Color selectedColor = Color.YELLOW;
+    private @NotNull Font UIFont = new Font( "Comfortaa", Font.PLAIN, 14 );
+    private @NotNull Font defaultButtonFont = new Font( "StardosStencil", Font.PLAIN, 14 );
+
     public void load( @NotNull JsonObject json ) {
         if (json.has( "address" ))
             address = json.get( "address" ).getAsString();
@@ -64,10 +63,8 @@ public class Settings implements SaveAsJson {
             port = json.get( "port" ).getAsInt();
         if (json.has( "buffer" ))
             bufferSize = json.get( "buffer" ).getAsInt();
-        if (json.has( "selected_color" )) {
-            JsonArray color = json.getAsJsonArray( "selected_color" );
-            selectedColor = ColorUtils.fromJson( color );
-        }
+        if (json.has( "selected_color" ))
+            selectedColor = ColorUtils.fromJson( json.get( "selected_color" ) );
         if (json.has( "ui_font" )) {
             JsonObject font = json.getAsJsonObject( "ui_font" );
             UIFont = FontUtils.fromJson( font );
