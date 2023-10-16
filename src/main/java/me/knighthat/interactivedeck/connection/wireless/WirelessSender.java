@@ -17,7 +17,7 @@ package me.knighthat.interactivedeck.connection.wireless;
 import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -30,13 +30,6 @@ public class WirelessSender extends Thread {
     private static final @NotNull BlockingQueue<Request> QUEUE = new LinkedBlockingQueue<>( 20 );
 
     private static OutputStream stream;
-
-    public WirelessSender( @NotNull OutputStream stream ) {
-        WirelessSender.stream = stream;
-
-        setName( "NET/O" );
-        QUEUE.clear();
-    }
 
     public static void send( @NotNull Request request ) {
         try {
@@ -52,6 +45,16 @@ public class WirelessSender extends Thread {
         }
     }
 
+    public WirelessSender( @NotNull OutputStream stream ) {
+        WirelessSender.stream = stream;
+
+        setName( "NET/O" );
+        QUEUE.clear();
+    }
+
+    byte[] appendNullEnding( @NotNull String serialized ) {
+        return serialized.concat( "\0" ).getBytes();
+    }
 
     @Override
     public void run() {
@@ -76,9 +79,5 @@ public class WirelessSender extends Thread {
                 Log.exc( "Error occurs while sending out request", e, true );
                 break;
             }
-    }
-
-    byte[] appendNullEnding( @NotNull String serialized ) {
-        return serialized.concat( "\0" ).getBytes();
     }
 }

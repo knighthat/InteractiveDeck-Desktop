@@ -14,12 +14,20 @@
 
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 public class Platform {
 
     public static PlatformType TYPE;
+
+    private static void printSystemConfig() {
+        String jre = vmName() + " " + vmVersion();
+        String system = osArch() + " " + osName() + " " + osVersion();
+
+        Log.info( "Java runtime version: " + jre );
+        Log.info( "Running on: " + system );
+    }
 
     public static void init() {
         if (osName().startsWith( "Linux" ))
@@ -32,14 +40,6 @@ public class Platform {
             TYPE = PlatformType.OTHER;
 
         printSystemConfig();
-    }
-
-    private static void printSystemConfig() {
-        String jre = vmName() + " " + vmVersion();
-        String system = osArch() + " " + osName() + " " + osVersion();
-
-        Log.info( "Java runtime version: " + jre );
-        Log.info( "Running on: " + system );
     }
 
     public static @NotNull String homeDir() {return System.getProperty( "user.home" ) + "/";}

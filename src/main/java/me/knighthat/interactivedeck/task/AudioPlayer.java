@@ -16,7 +16,7 @@ package me.knighthat.interactivedeck.task;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;

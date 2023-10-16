@@ -15,7 +15,7 @@
 package me.knighthat.interactivedeck.menus.popup;
 
 import me.knighthat.interactivedeck.component.ui.UILabel;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -24,17 +24,17 @@ public class WarningPopup extends PersistentDataPopup {
 
     public static WarningPopup INSTANCE;
 
+    public static void showWarning( @NotNull String warning ) {
+        Log.warn( warning );
+        INSTANCE.present();
+        INSTANCE.text( "<html>" + warning + "</html>" );
+    }
+
     private final @NotNull UILabel label;
 
     public WarningPopup( @NotNull Window window ) {
         super( window, "Warning!!!" );
         this.label = new UILabel();
-    }
-
-    public static void showWarning( @NotNull String warning ) {
-        Log.warn( warning );
-        INSTANCE.present();
-        INSTANCE.text( "<html>" + warning + "</html>" );
     }
 
     private synchronized void text( @NotNull String warning ) {

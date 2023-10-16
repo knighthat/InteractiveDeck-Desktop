@@ -18,11 +18,12 @@ import me.knighthat.interactivedeck.connection.wireless.WirelessController;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.json.Json;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.interactivedeck.logging.Logger;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
 import me.knighthat.interactivedeck.menus.popup.*;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -36,12 +37,6 @@ import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
  * @author knighthat
  */
 public class InteractiveDeck {
-
-    private final @NotNull Semaphore semaphore;
-
-    private InteractiveDeck() {
-        this.semaphore = new Semaphore( 0 );
-    }
 
     public static void main( String[] args ) {
         Thread.currentThread().setName( "MAIN" );
@@ -58,6 +53,12 @@ public class InteractiveDeck {
         main.off();
     }
 
+    private final @NotNull Semaphore semaphore;
+
+    private InteractiveDeck() {
+        this.semaphore = new Semaphore( 0 );
+    }
+
     /**
      * Setup stage
      * Everything required by the core components
@@ -70,7 +71,7 @@ public class InteractiveDeck {
         WorkingDirectory.init();
         Settings.init();
 
-        Log.start();
+        Log.setLogger( new Logger() );
 
         // Decorations
         FontFactory.init();
@@ -133,7 +134,7 @@ public class InteractiveDeck {
         Json.dump( SETTINGS );
         MenuProperty.profiles().forEach( Json::dump );
 
-        Log.stop();
+        Log.destroy();
 
         System.exit( 0 );
     }

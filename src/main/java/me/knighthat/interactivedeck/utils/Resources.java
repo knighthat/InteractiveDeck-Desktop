@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.utils;
 
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -31,45 +31,6 @@ import java.util.jar.JarFile;
 public class Resources {
 
     /**
-     * Creates and reads {@link JarFile} instance represent this app then use
-     * {@link #queryEntries(JarFile, String, String, boolean)} to get first matching file.<br>
-     *
-     * @param dir      root folder after jar file
-     * @param fileName must include file's extension if applicable
-     * @return {@link Optional} represents {@link JarEntry} and could be null
-     */
-    public static @NotNull Optional<JarEntry> jarEntry( @NotNull String dir, @NotNull String fileName ) {
-        JarEntry result = null;
-
-        try (JarFile jar = new JarFile( getJARLocation() )) {
-            JarEntry[] queried = queryEntries( jar, dir, fileName, true );
-            if (queried.length > 0)
-                result = queried[0];
-        } catch (IOException e) {
-            Log.exc( "Error occurs while accessing jar file", e, true );
-        }
-
-        return Optional.ofNullable( result );
-    }
-
-    /**
-     * Creates and reads {@link JarFile} instance represent this app then use
-     * {@link #queryEntries(JarFile, String, String, boolean)} to get all matching files.<br>
-     *
-     * @param dir      root folder after jar file
-     * @param fileName must include file's extension if applicable
-     * @return array of matching entries, empty if none found
-     */
-    public static @NotNull JarEntry[] jarEntries( @NotNull String dir, @NotNull String fileName ) {
-        try (JarFile jar = new JarFile( getJARLocation() )) {
-            return queryEntries( jar, dir, fileName, false );
-        } catch (IOException e) {
-            Log.exc( "Error occurs while accessing jar file", e, true );
-            return new JarEntry[0];
-        }
-    }
-
-    /**
      * Then loops through each entry inside jar file and find get all
      * files that start with {@param dir} and end with {@param fileName}.
      * Break at first matched item if {@param returnFirstMatch}.
@@ -78,6 +39,7 @@ public class Resources {
      * @param dir              root folder after jar file
      * @param match            file's name, must include file's extension if applicable
      * @param returnFirstMatch cancels and returns at first match
+     *
      * @return array of matching inputs
      */
     private static @NotNull JarEntry[] queryEntries( @NotNull JarFile jar, @NotNull String dir, @NotNull String match, boolean returnFirstMatch ) {
@@ -100,6 +62,47 @@ public class Resources {
         Log.deb( "Found " + entryList.size() + " matched files." );
 
         return entryList.toArray( JarEntry[]::new );
+    }
+
+    /**
+     * Creates and reads {@link JarFile} instance represent this app then use
+     * {@link #queryEntries(JarFile, String, String, boolean)} to get first matching file.<br>
+     *
+     * @param dir      root folder after jar file
+     * @param fileName must include file's extension if applicable
+     *
+     * @return {@link Optional} represents {@link JarEntry} and could be null
+     */
+    public static @NotNull Optional<JarEntry> jarEntry( @NotNull String dir, @NotNull String fileName ) {
+        JarEntry result = null;
+
+        try (JarFile jar = new JarFile( getJARLocation() )) {
+            JarEntry[] queried = queryEntries( jar, dir, fileName, true );
+            if (queried.length > 0)
+                result = queried[0];
+        } catch (IOException e) {
+            Log.exc( "Error occurs while accessing jar file", e, true );
+        }
+
+        return Optional.ofNullable( result );
+    }
+
+    /**
+     * Creates and reads {@link JarFile} instance represent this app then use
+     * {@link #queryEntries(JarFile, String, String, boolean)} to get all matching files.<br>
+     *
+     * @param dir      root folder after jar file
+     * @param fileName must include file's extension if applicable
+     *
+     * @return array of matching entries, empty if none found
+     */
+    public static @NotNull JarEntry[] jarEntries( @NotNull String dir, @NotNull String fileName ) {
+        try (JarFile jar = new JarFile( getJARLocation() )) {
+            return queryEntries( jar, dir, fileName, false );
+        } catch (IOException e) {
+            Log.exc( "Error occurs while accessing jar file", e, true );
+            return new JarEntry[0];
+        }
     }
 
     public static @NotNull String getJARLocation() {

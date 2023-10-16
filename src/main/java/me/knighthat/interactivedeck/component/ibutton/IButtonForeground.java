@@ -15,9 +15,9 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

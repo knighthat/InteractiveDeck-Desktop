@@ -20,20 +20,10 @@ import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.json.JsonSerializable;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 public class Request implements JsonSerializable {
-
-    public final @NotNull RequestType type;
-    protected final @NotNull JsonElement content;
-
-    public Request( @NotNull RequestType type, @NotNull JsonElement content ) {
-        this.type = type;
-        this.content = content;
-
-        Log.deb( "Request to %s is created!".formatted( type.name() ) );
-    }
 
     public static @NotNull Request parse( @NotNull JsonObject json ) {
         String typeStr = json.get( "type" ).getAsString();
@@ -43,6 +33,16 @@ public class Request implements JsonSerializable {
         JsonElement content = !hasContent ? JsonNull.INSTANCE : json.get( "content" );
 
         return new Request( type, content );
+    }
+
+    public final @NotNull RequestType type;
+    protected final @NotNull JsonElement content;
+
+    public Request( @NotNull RequestType type, @NotNull JsonElement content ) {
+        this.type = type;
+        this.content = content;
+
+        Log.deb( "Request to %s is created!".formatted( type.name() ) );
     }
 
     public void send() {

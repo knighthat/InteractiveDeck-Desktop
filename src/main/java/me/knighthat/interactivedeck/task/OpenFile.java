@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.task;
 
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

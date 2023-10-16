@@ -15,10 +15,10 @@
 package me.knighthat.interactivedeck.component.task;
 
 import me.knighthat.interactivedeck.component.Flexible;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.task.Task;
 import me.knighthat.interactivedeck.task.TaskAction;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

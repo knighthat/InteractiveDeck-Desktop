@@ -23,8 +23,8 @@ import me.knighthat.interactivedeck.connection.request.RemoveRequest;
 import me.knighthat.interactivedeck.connection.request.TargetedRequest;
 import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.SaveAsJson;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 

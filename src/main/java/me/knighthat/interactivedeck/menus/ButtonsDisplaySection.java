@@ -17,9 +17,9 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.UuidUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
