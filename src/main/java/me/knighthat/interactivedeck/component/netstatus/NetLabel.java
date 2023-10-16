@@ -15,7 +15,8 @@
 package me.knighthat.interactivedeck.component.netstatus;
 
 import me.knighthat.interactivedeck.component.Flexible;
-import me.knighthat.interactivedeck.connection.Connection;
+import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -29,10 +30,11 @@ final class NetLabel extends JLabel implements Flexible {
         setOpaque( false );
 
         setFont( SETTINGS.UIFont() );
+        setText( Connection.getStatus() );
     }
 
     public void setText( @NotNull Connection.Status status ) {
-        setText( status.label() );
-        setForeground( status.color() );
+        setText( status.getLabel() );
+        setForeground( ColorUtils.fromHex( status.getHexColor() ) );
     }
 }

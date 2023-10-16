@@ -20,11 +20,11 @@ import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.component.action.ActionHandler;
 import me.knighthat.interactivedeck.component.action.ActionType;
 import me.knighthat.interactivedeck.connection.Client;
-import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
+import me.knighthat.lib.connection.Connection;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class RequestHandler {
         Log.info( "Pairing approved!" );
         logClientInfo();
 
-        Connection.status( Connection.Status.CONNECTED );
+        Connection.setStatus( Connection.Status.CONNECTED );
         new PairRequest().send();
     }
 

@@ -15,8 +15,8 @@
 package me.knighthat.interactivedeck.connection.wireless;
 
 import me.knighthat.interactivedeck.connection.Client;
-import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
+import me.knighthat.lib.connection.Connection;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
