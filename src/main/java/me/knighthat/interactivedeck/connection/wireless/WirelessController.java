@@ -17,10 +17,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.connection.Client;
-import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.request.Request;
 import me.knighthat.interactivedeck.connection.request.RequestHandler;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
+import me.knighthat.lib.connection.Connection;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +31,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+import static me.knighthat.lib.connection.Connection.Status;
 
 public class WirelessController extends Thread {
 
@@ -52,7 +53,7 @@ public class WirelessController extends Thread {
 
     void handleDisconnection( @NotNull WirelessSender sender, @NotNull Socket client ) throws IOException {
         Client.INSTANCE = null;
-        Connection.status( Connection.Status.DISCONNECTED );
+        Connection.setStatus( Status.DISCONNECTED );
 
         sender.interrupt();
         client.close();
@@ -88,11 +89,11 @@ public class WirelessController extends Thread {
     public void run() {
         InetAddress IP = WirelessAddress.get();
         if (IP == null) {
-            Connection.status( Connection.Status.ERROR );
+            Connection.setStatus( Status.ERROR );
             interrupt();
             return;
         } else
-            Connection.status( Connection.Status.DISCONNECTED );
+            Connection.setStatus( Status.DISCONNECTED );
 
         while (!Thread.interrupted())
             try (ServerSocket socket = new ServerSocket( SETTINGS.port(), 1, IP )) {
@@ -108,7 +109,7 @@ public class WirelessController extends Thread {
                 //TODO Implement proper handler
                 Log.exc( "Could not start listening on " + SETTINGS.fullAddress(), e, true );
 
-                Connection.status( Connection.Status.ERROR );
+                Connection.setStatus( Status.ERROR );
                 interrupt();
             }
     }

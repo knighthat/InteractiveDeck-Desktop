@@ -14,13 +14,17 @@
 
 package me.knighthat.interactivedeck.component.netstatus;
 
-import me.knighthat.interactivedeck.connection.Connection;
+import me.knighthat.lib.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 public class NetStatus {
 
     public static @NotNull NetIcon ICON = new NetIcon();
     public static @NotNull NetLabel LABEL = new NetLabel();
+
+    static {
+        Connection.whenConnectionStatusChanged( NetStatus::updateStatus );
+    }
 
     public static void updateStatus( @NotNull Connection.Status status ) {
         ICON.setDocument( status );

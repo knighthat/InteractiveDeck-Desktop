@@ -17,9 +17,9 @@ package me.knighthat.interactivedeck.connection.request;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.connection.wireless.WirelessSender;
 import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.lib.connection.Connection;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 

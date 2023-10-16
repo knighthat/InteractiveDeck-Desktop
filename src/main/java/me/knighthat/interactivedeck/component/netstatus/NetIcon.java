@@ -16,13 +16,14 @@ package me.knighthat.interactivedeck.component.netstatus;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.component.icon.SVGIcon;
-import me.knighthat.interactivedeck.connection.Connection;
+import me.knighthat.lib.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 final class NetIcon extends SVGIcon {
 
     public NetIcon() {
         super( 20, 20 );
+        setDocument( Connection.getStatus() );
     }
 
     public void setDocument( @NotNull Connection.Status status ) {
@@ -31,7 +32,6 @@ final class NetIcon extends SVGIcon {
                     case DISCONNECTED -> Icons.INTERNAL.CONNECTION_DISCONNECTED;
                     case CONNECTED -> Icons.INTERNAL.CONNECTION_CONNECTED;
                     case ERROR -> Icons.INTERNAL.CONNECTION_ERROR;
-                    case UNKNOWN -> Icons.INTERNAL.CONNECTION_UNKNOWN;
                 }
         );
     }
