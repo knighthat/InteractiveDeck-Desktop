@@ -12,43 +12,50 @@
  * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package me.knighthat.interactivedeck.connection.request;
+package me.knighthat.interactivedeck.logging;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.concurrent.TimeUnit;
 
-public final class AddRequest extends TargetedRequest {
+public class Logger implements me.knighthat.lib.logging.Logger {
 
-    public AddRequest( @NotNull UUID uuid, @NotNull JsonArray payload ) {
-        super( RequestType.ADD, Target.BUTTON, uuid, payload );
+    private final @NotNull org.slf4j.Logger logger;
+
+    public Logger() {
+        this.logger = LoggerFactory.getLogger( "LOGGER" );
     }
 
-    public AddRequest( @NotNull Consumer<JsonArray> consumer ) {
-        super( RequestType.ADD, Target.PROFILE, null, new JsonArray() );
-        consumer.accept( content.getAsJsonArray() );
+    @NotNull
+    @Override
+    public String issueWebsite() {
+        return System.getProperty( "APPLICATION_WEBSITE" ) + "/issues";
+    }
+
+    @NotNull
+    @Override
+    public Runnable log( @NotNull Log.LogLevel logLevel, @NotNull String s, boolean b ) {
+        return () -> {
+            switch (logLevel) {
+                case DEBUG -> logger.debug( s );
+                case INFO -> logger.info( s );
+                case WARNING -> logger.warn( s );
+                case ERROR -> logger.error( s );
+            }
+        };
     }
 
     @Override
-    public @NotNull JsonObject serialize() {
-        JsonObject json = super.serialize();
-
-        try {
-            JsonArray content = new JsonArray();
-            for (byte b : Json.gzipCompress( this.content ))
-                content.add( b );
-            json.add( "content", content );
-        } catch (IOException e) {
-            Log.exc( "Failed to compress content", e, false );
-            Log.reportBug();
-        }
-
-        return json;
+    public boolean sysSkipQueue() {
+        return System.getProperties().containsKey( "log.skipQueue" ) && Boolean.getBoolean( "log.skipQueue" );
     }
+
+    @NotNull
+    @Override
+    public TimeUnit timeUnit() {return TimeUnit.SECONDS;}
+
+    @Override
+    public long waitTime() {return 5;}
 }

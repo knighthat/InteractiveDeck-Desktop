@@ -18,7 +18,7 @@ import com.google.gson.*;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.connection.request.AddRequest;
 import me.knighthat.interactivedeck.exception.ProfileFormatException;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

@@ -14,10 +14,10 @@
 
 package me.knighthat.interactivedeck.component.icon;
 
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.svg.SVGNotFound;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import me.knighthat.interactivedeck.utils.Resources;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.svg.SVGDocument;
 

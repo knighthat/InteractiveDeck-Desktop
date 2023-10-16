@@ -15,9 +15,9 @@
 package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.file.Profiles;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.utils.GlobalVars;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -27,6 +27,25 @@ import java.util.List;
 public class WorkingDirectory {
 
     private static File FILE;
+
+    private static void createDefaultProfile() {
+        Log.info( "No profiles were found. Creating one..." );
+        MenuProperty.add( Profiles.createDefault() );
+    }
+
+    private static List<File> gatherProfiles() {
+        List<File> profiles = new ArrayList<>( 0 );
+        File[] files = FILE.listFiles();
+
+        if (files != null) {
+            for (File f : files)
+                if (f.getName().endsWith( ".profile" ))
+                    profiles.add( f );
+        } else
+            Log.err( "Failed to read directory " + path() );
+
+        return profiles;
+    }
 
     public static void init() {
         String workDir = Platform.homeDir();
@@ -70,24 +89,5 @@ public class WorkingDirectory {
             } );
         }
         Log.deb( "Found " + profileFiles.size() + " profile(s)" );
-    }
-
-    private static void createDefaultProfile() {
-        Log.info( "No profiles were found. Creating one..." );
-        MenuProperty.add( Profiles.createDefault() );
-    }
-
-    private static List<File> gatherProfiles() {
-        List<File> profiles = new ArrayList<>( 0 );
-        File[] files = FILE.listFiles();
-
-        if (files != null) {
-            for (File f : files)
-                if (f.getName().endsWith( ".profile" ))
-                    profiles.add( f );
-        } else
-            Log.err( "Failed to read directory " + path() );
-
-        return profiles;
     }
 }

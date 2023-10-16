@@ -14,9 +14,9 @@
 
 package me.knighthat.interactivedeck.component.input;
 
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.popup.WarningPopup;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -70,6 +70,10 @@ public class HexColorTextField extends JFormattedTextField {
         } );
     }
 
+    private void fireColorChangedEvent( @NotNull Color color ) {
+        events.forEach( e -> e.onColorChanged( color ) );
+    }
+
     /**
      * Sets background, foreground and border color based on input color.<br>
      * Unlike {@link #updateColor()} or {@link #updateColor(Color)}, this method does not trigger
@@ -117,10 +121,6 @@ public class HexColorTextField extends JFormattedTextField {
 
     public void addColorChangeEvent( @NotNull ColorChangedEvent event ) {
         this.events.add( event );
-    }
-
-    private void fireColorChangedEvent( @NotNull Color color ) {
-        events.forEach( e -> e.onColorChanged( color ) );
     }
 }
 

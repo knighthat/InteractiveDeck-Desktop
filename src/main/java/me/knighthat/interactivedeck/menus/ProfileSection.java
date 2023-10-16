@@ -20,12 +20,12 @@ import me.knighthat.interactivedeck.component.plist.ProfileEvent;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
 import me.knighthat.interactivedeck.component.setting.SettingButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.AppSettingsPopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
 import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

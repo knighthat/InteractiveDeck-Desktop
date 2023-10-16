@@ -18,7 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.json.JsonArrayToArray;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -34,6 +34,8 @@ public abstract class CommandBasedTask extends ExecutableFile {
         this.args = args;
     }
 
+    protected abstract @NotNull String[] command();
+
     void log( @NotNull Log.LogLevel level, @NotNull InputStream stream ) throws IOException {
         int eightKB = 8 * 1024;  // 8 KiB
         byte[] buffer = new byte[eightKB];
@@ -41,11 +43,9 @@ public abstract class CommandBasedTask extends ExecutableFile {
 
         while (( bytesRead = stream.read( buffer ) ) != -1) {
             String decoded = new String( buffer, 0, bytesRead );
-            Log.log( level, decoded );
+            Log.log( level, decoded, false );
         }
     }
-
-    protected abstract @NotNull String[] command();
 
     public @NotNull String[] args() {return this.args;}
 
@@ -79,7 +79,8 @@ public abstract class CommandBasedTask extends ExecutableFile {
             String s = exit == 0
                     ? "Script executed successfully!"
                     : "Script execution failed with exit code: " + exit;
-            Log.log( exit == 0 ? Log.LogLevel.INFO : Log.LogLevel.WARNING, s );
+            Log.LogLevel level = exit == 0 ? Log.LogLevel.INFO : Log.LogLevel.WARNING;
+            Log.log( level, s, false );
         }
     }
 

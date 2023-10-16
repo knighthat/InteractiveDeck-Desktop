@@ -14,8 +14,8 @@
 
 package me.knighthat.interactivedeck.font;
 
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.Resources;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,19 +29,10 @@ import java.util.jar.JarFile;
 
 public class FontFactory {
 
-    private static final @NotNull GraphicsEnvironment GRAPHICS_ENVIRONMENT = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    private static final @NotNull GraphicsEnvironment GRAPHICS_ENVIRONMENT;
 
-    public static @NotNull String[] availableFamilyNames() {
-        return GRAPHICS_ENVIRONMENT.getAvailableFontFamilyNames();
-    }
-
-    public static void init() {
-        Log.info( "Loading fonts..." );
-
-        for (Font font : getInternalFonts())
-            GRAPHICS_ENVIRONMENT.registerFont( font );
-
-        Log.info( "Fonts loaded!" );
+    static {
+        GRAPHICS_ENVIRONMENT = GraphicsEnvironment.getLocalGraphicsEnvironment();
     }
 
     private static @NotNull Font[] getInternalFonts() {
@@ -74,5 +65,16 @@ public class FontFactory {
             Log.exc( "Error occurs while loading font " + name, e, true );
             return null;
         }
+    }
+
+    public static @NotNull String[] availableFamilyNames() {return GRAPHICS_ENVIRONMENT.getAvailableFontFamilyNames();}
+
+    public static void init() {
+        Log.info( "Loading fonts..." );
+
+        for (Font font : getInternalFonts())
+            GRAPHICS_ENVIRONMENT.registerFont( font );
+
+        Log.info( "Fonts loaded!" );
     }
 }

@@ -19,9 +19,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.json.SaveAsJson;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 

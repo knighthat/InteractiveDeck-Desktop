@@ -23,9 +23,9 @@ import me.knighthat.interactivedeck.connection.Client;
 import me.knighthat.interactivedeck.connection.Connection;
 import me.knighthat.interactivedeck.exception.RequestFormatException;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.logging.Log;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
@@ -33,27 +33,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class RequestHandler {
-
-    public static void process( @NotNull Request request ) {
-        JsonElement content = request.content;
-
-        switch (request.type) {
-            case PAIR -> {
-                if (!Connection.isConnected())
-                    handlePairing( content );
-            }
-            case ACTION -> {
-                if (Connection.isConnected())
-                    handleAction( content );
-            }
-            case ADD -> {
-                if (Connection.isConnected())
-                    handleAdd( content );
-            }
-            default -> {
-            }
-        }
-    }
 
     static void handlePairing( @NotNull JsonElement content ) {
         if (Client.init( content ) == null)
@@ -111,5 +90,26 @@ public class RequestHandler {
                 if (uuids.contains( p.uuid ))
                     profiles.add( p.serialize() );
         } ).send();
+    }
+
+    public static void process( @NotNull Request request ) {
+        JsonElement content = request.content;
+
+        switch (request.type) {
+            case PAIR -> {
+                if (!Connection.isConnected())
+                    handlePairing( content );
+            }
+            case ACTION -> {
+                if (Connection.isConnected())
+                    handleAction( content );
+            }
+            case ADD -> {
+                if (Connection.isConnected())
+                    handleAdd( content );
+            }
+            default -> {
+            }
+        }
     }
 }

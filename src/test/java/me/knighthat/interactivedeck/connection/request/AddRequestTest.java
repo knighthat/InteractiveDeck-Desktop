@@ -18,7 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Profiles;
-import me.knighthat.interactivedeck.logging.Log;
+import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
