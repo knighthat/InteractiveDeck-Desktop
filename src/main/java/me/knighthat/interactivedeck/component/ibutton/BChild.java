@@ -15,10 +15,10 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.connection.request.TargetedRequest;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.connection.request.TargetedRequest;
+import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,9 +47,9 @@ abstract class BChild extends JLabel implements JsonSerializable {
         consumer.accept( json );
 
         new UpdateRequest(
-                TargetedRequest.Target.BUTTON,
+                json,
                 owner.uuid,
-                json
+                TargetedRequest.Target.BUTTON
         ).send();
     }
 
