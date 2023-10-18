@@ -13,14 +13,12 @@
  */
 package me.knighthat.interactivedeck.connection.wireless;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.connection.Client;
-import me.knighthat.interactivedeck.connection.request.Request;
-import me.knighthat.interactivedeck.connection.request.RequestHandler;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
 import me.knighthat.lib.connection.Connection;
+import me.knighthat.lib.connection.wireless.WirelessReceiver;
+import me.knighthat.lib.connection.wireless.WirelessSender;
+import me.knighthat.lib.exception.RequestException;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +44,8 @@ public class WirelessController extends Thread {
         // Init Sender & Receiver
         WirelessSender sender = new WirelessSender( client.getOutputStream() );
         sender.start();
-        setupReceiver( client.getInputStream() );
+
+        initReceiver( client.getInputStream() );
 
         handleDisconnection( sender, client );
     }
@@ -58,30 +57,20 @@ public class WirelessController extends Thread {
         sender.interrupt();
         client.close();
         setName( "NET" );
+
+        Log.info( "Client disconnected!" );
     }
 
-    void setupReceiver( @NotNull InputStream inStream ) throws IOException {
-        setName( "NET/I" );
-
-        byte[] buffer = SETTINGS.buffer();
-        int bytesRead;
-        String finalStr = "";
-        while (( bytesRead = inStream.read( buffer ) ) != -1) {
-            String decoded = new String( buffer, 0, bytesRead );
-
-            Log.deb( "Received: " );
-            Log.deb( decoded );
-
-            finalStr = finalStr.concat( decoded );
-
-            try {
-                JsonObject json = JsonParser.parseString( finalStr ).getAsJsonObject();
-                Request request = Request.parse( json );
-                RequestHandler.process( request );
-                finalStr = "";
-
-            } catch (JsonParseException ignored) {
-            }
+    private void initReceiver( @NotNull InputStream inStream ) {
+        try {
+            new WirelessReceiver(
+                    inStream,
+                    SETTINGS.buffer(),
+                    new RequestHandler()
+            ).run();
+        } catch (RequestException e) {
+            Log.exc( "Error occurs while processing request!", e, false );
+            Log.reportBug();
         }
     }
 
@@ -103,7 +92,6 @@ public class WirelessController extends Thread {
 
                 handleConnection( socket.accept() );
 
-                Log.info( "Client disconnected!" );
             } catch (IOException e) {
                 setName( "NET" );
                 //TODO Implement proper handler
