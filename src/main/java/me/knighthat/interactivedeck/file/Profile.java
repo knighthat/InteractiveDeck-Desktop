@@ -18,12 +18,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.connection.request.AddRequest;
-import me.knighthat.interactivedeck.connection.request.RemoveRequest;
-import me.knighthat.interactivedeck.connection.request.TargetedRequest;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.SaveAsJson;
 import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.lib.connection.request.AddRequest;
+import me.knighthat.lib.connection.request.RemoveRequest;
+import me.knighthat.lib.connection.request.TargetedRequest;
+import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -107,7 +107,7 @@ public class Profile implements SaveAsJson {
         JsonObject json = new JsonObject();
         consumer.accept( json );
 
-        new UpdateRequest( TargetedRequest.Target.PROFILE, uuid, json ).send();
+        new UpdateRequest( json, uuid, TargetedRequest.Target.PROFILE ).send();
     }
 
     public void displayName( @NotNull String displayName ) {

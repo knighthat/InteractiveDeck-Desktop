@@ -15,10 +15,10 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.connection.request.TargetedRequest;
-import me.knighthat.interactivedeck.connection.request.UpdateRequest;
 import me.knighthat.interactivedeck.json.JsonSerializable;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.lib.connection.request.TargetedRequest;
+import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -128,9 +128,9 @@ public class IButton extends JComponent implements JsonSerializable {
         json.add( "task", task.serialize() );
 
         new UpdateRequest(
-                TargetedRequest.Target.BUTTON,
+                json,
                 uuid,
-                json
+                TargetedRequest.Target.BUTTON
         ).send();
     }
 
