@@ -18,7 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.exception.InvalidFileTypeException;
-import me.knighthat.interactivedeck.json.JsonArrayToArray;
+import me.knighthat.lib.json.JsonArrayConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -56,7 +56,7 @@ public class RunJarFile extends CommandBasedTask {
     public @NotNull JsonElement serialize() {
         JsonObject json = super.serialize().getAsJsonObject();
 
-        JsonArray vmArgs = JsonArrayToArray.fromStringArray( this.vmArgs );
+        JsonArray vmArgs = JsonArrayConverter.fromStringArray( this.vmArgs );
         if (!vmArgs.isEmpty())
             json.add( "vmArgs", vmArgs );
 

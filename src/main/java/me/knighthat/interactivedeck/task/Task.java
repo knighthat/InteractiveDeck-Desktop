@@ -16,8 +16,8 @@ package me.knighthat.interactivedeck.task;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.json.JsonArrayToArray;
-import me.knighthat.interactivedeck.json.JsonSerializable;
+import me.knighthat.lib.json.JsonArrayConverter;
+import me.knighthat.lib.json.JsonSerializable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ public interface Task extends JsonSerializable {
 
         if (CommandBasedTask.class.isAssignableFrom( action.type )) {
             JsonArray args = json.getAsJsonArray( "args" );
-            params.add( JsonArrayToArray.toStringArray( args ) );
+            params.add( JsonArrayConverter.toStringArray( args ) );
         }
 
         switch (action) {
@@ -58,7 +58,7 @@ public interface Task extends JsonSerializable {
 
             case RUN_JAR_FILE -> {
                 JsonArray vmArgs = json.getAsJsonArray( "vmArgs" );
-                params.add( JsonArrayToArray.toStringArray( vmArgs ) );
+                params.add( JsonArrayConverter.toStringArray( vmArgs ) );
             }
         }
         return TaskManager.create( action.type, params.toArray() );

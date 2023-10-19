@@ -17,7 +17,7 @@ package me.knighthat.interactivedeck.task;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import me.knighthat.interactivedeck.json.JsonArrayToArray;
+import me.knighthat.lib.json.JsonArrayConverter;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,7 +88,7 @@ public abstract class CommandBasedTask extends ExecutableFile {
     public @NotNull JsonElement serialize() {
         JsonObject json = super.serialize().getAsJsonObject();
 
-        JsonArray args = JsonArrayToArray.fromStringArray( this.args );
+        JsonArray args = JsonArrayConverter.fromStringArray( this.args );
         if (!args.isEmpty())
             json.add( "args", args );
 
