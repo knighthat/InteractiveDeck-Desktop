@@ -15,20 +15,22 @@ package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
+import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
-import me.knighthat.interactivedeck.json.Json;
 import me.knighthat.interactivedeck.logging.Logger;
 import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
 import me.knighthat.interactivedeck.menus.popup.*;
+import me.knighthat.lib.json.Json;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
@@ -131,8 +133,15 @@ public class InteractiveDeck {
      */
     private void off() {
         // Save settings and profiles
-        Json.dump( SETTINGS );
-        MenuProperty.profiles().forEach( Json::dump );
+        try {
+            Json.dump( SETTINGS, WorkingDirectory.path() );
+
+            for (Profile profile : MenuProperty.profiles())
+                Json.dump( profile, WorkingDirectory.path() );
+        } catch (IOException e) {
+            Log.exc( "failed to save file", e, false );
+            Log.reportBug();
+        }
 
         Log.destroy();
 
