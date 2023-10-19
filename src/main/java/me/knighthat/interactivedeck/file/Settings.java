@@ -18,9 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.knighthat.interactivedeck.WorkingDirectory;
-import me.knighthat.interactivedeck.json.SaveAsJson;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
+import me.knighthat.lib.json.SaveAsJson;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
@@ -36,14 +36,14 @@ public class Settings implements SaveAsJson {
     public static final @NotNull Settings SETTINGS = new Settings();
 
     public static void init() {
-        File settingsFile = new File( WorkingDirectory.path(), SETTINGS.fullName() );
+        File settingsFile = new File( WorkingDirectory.path(), SETTINGS.getFullName() );
         try (FileReader reader = new FileReader( settingsFile )) {
             JsonElement json = JsonParser.parseReader( reader );
             if (!json.isJsonNull() && json.isJsonObject())
                 SETTINGS.load( json.getAsJsonObject() );
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
-            Log.exc( "Could not read " + SETTINGS.fullName(), e, false );
+            Log.exc( "Could not read " + SETTINGS.getFullName(), e, false );
         }
     }
 
@@ -136,15 +136,17 @@ public class Settings implements SaveAsJson {
         this.defaultButtonFont = font;
     }
 
+    @NotNull
     @Override
-    public @NotNull String displayName() {
-        return "settings file";
-    }
+    public String getDisplayName() {return "settings";}
 
+    @NotNull
     @Override
-    public @NotNull String fileName() {
-        return "settings";
-    }
+    public String getFileName() {return getDisplayName();}
+
+    @NotNull
+    @Override
+    public String getFileExtension() {return "json";}
 
     @Override
     public @NotNull JsonObject serialize() {

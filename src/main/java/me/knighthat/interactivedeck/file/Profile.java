@@ -18,12 +18,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.json.SaveAsJson;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.lib.connection.request.AddRequest;
 import me.knighthat.lib.connection.request.RemoveRequest;
 import me.knighthat.lib.connection.request.TargetedRequest;
 import me.knighthat.lib.connection.request.UpdateRequest;
+import me.knighthat.lib.json.SaveAsJson;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
@@ -214,20 +214,19 @@ public class Profile implements SaveAsJson {
         Log.info( deleteMsg.formatted( displayName, uuid, deleted.size() ) );
     }
 
-    @Override
-    public @NotNull String displayName() {
-        return this.displayName;
-    }
+    public @NotNull String displayName() {return this.displayName;}
 
+    @NotNull
     @Override
-    public @NotNull String fileName() {
-        return uuid.toString();
-    }
+    public String getDisplayName() {return this.displayName;}
 
+    @NotNull
     @Override
-    public @NotNull String extension() {
-        return "profile";
-    }
+    public String getFileName() {return uuid.toString();}
+
+    @NotNull
+    @Override
+    public String getFileExtension() {return "profile";}
 
     @Override
     public @NotNull JsonObject serialize() {
