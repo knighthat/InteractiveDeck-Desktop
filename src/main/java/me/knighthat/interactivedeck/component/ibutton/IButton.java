@@ -19,6 +19,7 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.lib.connection.request.RequestJson;
 import me.knighthat.lib.connection.request.TargetedRequest;
 import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.json.JsonSerializable;
@@ -34,7 +35,7 @@ import java.util.UUID;
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
 @Getter
-public class IButton extends JComponent implements JsonSerializable {
+public class IButton extends JComponent implements JsonSerializable, RequestJson {
 
     /**
      * Turns {@link JsonObject} to {@link IButton} instance.<br>
@@ -134,6 +135,14 @@ public class IButton extends JComponent implements JsonSerializable {
         ).send();
 
         this.task = task;
+    }
+
+    @NotNull
+    @Override
+    public JsonElement toRequest() {
+        JsonObject json = serialize();
+        json.add( "icon", back.toRequest() );
+        return json;
     }
 
     @Override

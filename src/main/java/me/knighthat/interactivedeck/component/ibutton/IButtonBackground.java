@@ -15,8 +15,10 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.connection.request.RequestJson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +27,7 @@ import java.awt.*;
 import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
-public final class IButtonBackground extends BChild {
+public final class IButtonBackground extends BChild implements RequestJson {
 
     static final @NotNull Dimension borderRadius;
 
@@ -70,6 +72,12 @@ public final class IButtonBackground extends BChild {
 
         setForeground( color );
         sendAndLog( "border", oldColor, color );
+    }
+
+    @NotNull
+    @Override
+    public JsonElement toRequest() {
+        return serialize();
     }
 
     @Override
