@@ -16,10 +16,10 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.utils.UuidUtils;
 import me.knighthat.lib.logging.Log;
 import me.knighthat.lib.observable.Observable;
 import me.knighthat.lib.observable.Observer;
+import me.knighthat.lib.util.ShortUUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -85,7 +85,7 @@ public class MenuProperty {
     }
 
     public static void active( @NotNull Profile profile ) {
-        String shortUuid = UuidUtils.lastFiveChars( profile.uuid );
+        String shortUuid = ShortUUID.from( profile.uuid );
         String info = "Now showing %s (%s) with %s button(s)";
         Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
 

@@ -17,7 +17,7 @@ package me.knighthat.interactivedeck.menus.popup;
 import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
-import me.knighthat.interactivedeck.utils.UuidUtils;
+import me.knighthat.lib.util.ShortUUID;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -50,7 +50,7 @@ public final class RemoveProfilePopup extends ProfilePopup {
     @Override
     protected void loadProfile( @NotNull Profile profile ) {
         String msg = "<html>You are about to remove profile %s (%s). Do you want to continue?</html>";
-        String uuid = UuidUtils.lastFiveChars( profile.uuid );
+        String uuid = ShortUUID.from( profile.uuid );
         message.setText( msg.formatted( profile.displayName(), uuid ) );
     }
 
