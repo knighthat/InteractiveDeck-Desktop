@@ -14,19 +14,20 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
-import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.lib.component.LiveComponent;
 import me.knighthat.lib.connection.request.TargetedRequest;
-import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.json.JsonSerializable;
+import me.knighthat.lib.logging.EventLogging;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.Consumer;
+import java.util.UUID;
 
-abstract class BChild extends JLabel implements JsonSerializable {
+abstract class BChild extends JLabel implements JsonSerializable, LiveComponent {
 
     private static final @NotNull Dimension DIMENSION = new Dimension( 120, 120 );
 
@@ -42,24 +43,27 @@ abstract class BChild extends JLabel implements JsonSerializable {
         setOpaque( false );
     }
 
-    protected void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
-        JsonObject json = new JsonObject();
-        consumer.accept( json );
+    @NotNull
+    @Override
+    public UUID getUuid() {return owner.getUuid();}
 
-        new UpdateRequest(
-                json,
-                owner.getUuid(),
-                TargetedRequest.Target.BUTTON
-        ).send();
+    @NotNull
+    @Override
+    public TargetedRequest.Target getTarget() {return TargetedRequest.Target.BUTTON;}
+
+    @Override
+    public void sendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {LiveComponent.DefaultImpls.sendUpdate( this, property, oldValue, newValue );}
+
+    @Override
+    public void logAndSendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {
+        if (oldValue instanceof Color)
+            oldValue = ColorUtils.toJson( (Color) oldValue );
+        if (newValue instanceof Color)
+            newValue = ColorUtils.toJson( (Color) newValue );
+
+        EventLogging.DefaultImpls.logAndSendUpdate( this, property, oldValue, newValue );
     }
 
-    protected void sendAndLog( @NotNull String property, @NotNull Color oldColor, @NotNull Color newColor ) {
-        Log.buttonUpdate(
-                owner.getUuid(),
-                property,
-                ColorUtils.toHex( oldColor ),
-                ColorUtils.toHex( newColor )
-        );
-        sendUpdate( json -> json.add( property, ColorUtils.toJson( newColor ) ) );
-    }
+    @Override
+    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {Log.buttonUpdate( getUuid(), property, oldValue, newValue );}
 }

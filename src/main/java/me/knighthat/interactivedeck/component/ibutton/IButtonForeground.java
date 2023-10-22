@@ -17,9 +17,7 @@ package me.knighthat.interactivedeck.component.ibutton;
 import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
-import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,20 +33,6 @@ public final class IButtonForeground extends BChild {
         setFont( SETTINGS.defaultButtonFont() );
     }
 
-    public void update( @Nullable JsonObject json ) {
-        if (json == null)
-            return;
-
-        String text = json.get( "text" ).getAsString();
-        setText( text );
-
-        Color foreground = ColorUtils.fromJson( json.get( "foreground" ) );
-        setForeground( foreground );
-
-        Font font = FontUtils.fromJson( json.get( "font" ) );
-        setFont( font );
-    }
-
     public void text( @NotNull String text ) {
         final String newText = text.strip();
         String oldText = getText().strip();
@@ -56,16 +40,16 @@ public final class IButtonForeground extends BChild {
             return;
 
         setText( newText );
-        Log.buttonUpdate( owner.getUuid(), "text", oldText, newText );
-        sendUpdate( json -> json.addProperty( "text", newText ) );
+        logAndSendUpdate( "text", oldText, newText );
     }
 
-    public void fontColor( @NotNull Color color ) {
+    public void fontColor( @NotNull Color newColor ) {
         Color oldColor = getForeground();
-        if (color.equals( oldColor ))
+        if (newColor.equals( oldColor ))
             return;
 
-        sendAndLog( "foreground", oldColor, color );
+        setForeground( newColor );
+        logAndSendUpdate( "foreground", oldColor, newColor );
     }
 
     public void font( @NotNull Font font ) {
@@ -75,13 +59,30 @@ public final class IButtonForeground extends BChild {
                 font.getSize() == oldFont.getSize())
             return;
 
-        super.setFont( font );
-
         String fontFormat = "[f=%s,s=%s,w=%s]";
         String oldFontStr = fontFormat.formatted( oldFont.getFamily(), oldFont.getSize(), oldFont.getStyle() );
-        String newFont = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
-        Log.buttonUpdate( owner.getUuid(), "font", oldFontStr, newFont );
-        sendUpdate( json -> json.add( "font", FontUtils.toJson( getFont() ) ) );
+        String newFontStr = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
+        logAndSendUpdate( "font", oldFontStr, newFontStr );
+
+        setFont( font );
+    }
+
+    @Override
+    public void update( @NotNull JsonObject json ) {
+        if (json.has( "text" )) {
+            String text = json.get( "text" ).getAsString();
+            setText( text );
+        }
+
+        if (json.has( "foreground" )) {
+            Color foreground = ColorUtils.fromJson( json.get( "foreground" ) );
+            setForeground( foreground );
+        }
+
+        if (json.has( "font" )) {
+            Font font = FontUtils.fromJson( json.get( "font" ) );
+            setFont( font );
+        }
     }
 
     @Override
