@@ -142,15 +142,11 @@ public class Settings implements SaveAsJson {
 
     @NotNull
     @Override
-    public String getFileExtension() {return "json";}
-
-    @NotNull
-    @Override
     public String getFileName() {return getDisplayName();}
 
     @NotNull
     @Override
-    public String getFullName() {return SaveAsJson.DefaultImpls.getFullName( this );}
+    public String getFileExtension() {return "json";}
 
     @Override
     public @NotNull JsonObject serialize() {
