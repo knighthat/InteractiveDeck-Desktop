@@ -15,14 +15,16 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.task.Task;
+import me.knighthat.lib.component.LiveComponent;
+import me.knighthat.lib.component.ibutton.InteractiveButton;
 import me.knighthat.lib.connection.request.RequestJson;
 import me.knighthat.lib.connection.request.TargetedRequest;
-import me.knighthat.lib.connection.request.UpdateRequest;
 import me.knighthat.lib.json.JsonSerializable;
+import me.knighthat.lib.logging.EventLogging;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +37,7 @@ import java.util.UUID;
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
 @Getter
-public class IButton extends JComponent implements JsonSerializable, RequestJson {
+public class IButton extends JComponent implements InteractiveButton, JsonSerializable, RequestJson {
 
     /**
      * Turns {@link JsonObject} to {@link IButton} instance.<br>
@@ -101,40 +103,37 @@ public class IButton extends JComponent implements JsonSerializable, RequestJson
         this( UUID.randomUUID(), profile, posX, posY, null );
     }
 
-    public void update( @Nullable JsonObject json ) {
-        if (json == null)
-            return;
-
-        back.update( json.getAsJsonObject( "icon" ) );
-        front.update( json.getAsJsonObject( "label" ) );
-        this.task = Task.fromJson( json.getAsJsonObject( "task" ) );
-    }
-
     public void setTask( @Nullable Task task ) {
         if (Objects.equals( this.task, task ))
             return;
-
-        // Log update
-        String oldTaskClass = this.task == null ? "null" : this.task.getClass().getName();
-        String newTaskClass = task == null ? "null" : task.getClass().getName();
-        Log.buttonUpdate(
-                uuid,
-                "task",
-                oldTaskClass,
-                newTaskClass
-        );
-
-        // Send update
-        JsonElement taskJson = task == null ? JsonNull.INSTANCE : task.serialize();
-        JsonObject json = new JsonObject();
-        json.add( "task", taskJson );
-        new UpdateRequest(
-                json,
-                uuid,
-                TargetedRequest.Target.BUTTON
-        ).send();
-
+        logAndSendUpdate( "task", this.task, task );
         this.task = task;
+    }
+
+    @Override
+    public void logAndSendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {EventLogging.DefaultImpls.logAndSendUpdate( this, property, oldValue, newValue );}
+
+    @Override
+    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {Log.buttonUpdate( uuid, property, oldValue, newValue );}
+
+    @Override
+    public void remove() {MenuProperty.remove( this );}
+
+    @NotNull
+    @Override
+    public TargetedRequest.Target getTarget() {return TargetedRequest.Target.BUTTON;}
+
+    @Override
+    public void sendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {LiveComponent.DefaultImpls.sendUpdate( this, property, oldValue, newValue );}
+
+    @Override
+    public void update( JsonObject json ) {
+        if (json.has( "icon" ))
+            back.update( json.getAsJsonObject( "icon" ) );
+        if (json.has( "label" ))
+            front.update( json.getAsJsonObject( "label" ) );
+        if (json.has( "task" ))
+            task = Task.fromJson( json.getAsJsonObject( "task" ) );
     }
 
     @NotNull
