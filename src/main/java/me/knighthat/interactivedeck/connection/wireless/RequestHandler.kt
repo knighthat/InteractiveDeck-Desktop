@@ -65,7 +65,7 @@ class RequestHandler : AbstractRequestHandler() {
 
         Connection.setStatus(Connection.Status.CONNECTED)
 
-        val uuids = MenuProperty.profiles().map(Profile::getFileName).toTypedArray()
+        val uuids = MenuProperty.profiles().map(Profile::fileName).toTypedArray()
         PairRequest(
                 JsonArrayConverter.fromStringArray(uuids)
         ).send()

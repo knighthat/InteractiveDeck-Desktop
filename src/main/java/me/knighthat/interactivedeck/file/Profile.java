@@ -222,11 +222,15 @@ public class Profile implements SaveAsJson {
 
     @NotNull
     @Override
+    public String getFileExtension() {return "profile";}
+
+    @NotNull
+    @Override
     public String getFileName() {return uuid.toString();}
 
     @NotNull
     @Override
-    public String getFileExtension() {return "profile";}
+    public String getFullName() {return SaveAsJson.DefaultImpls.getFullName( this );}
 
     @Override
     public @NotNull JsonObject serialize() {

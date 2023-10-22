@@ -31,7 +31,7 @@ public class ActionHandler extends AbstractActionHandler {
                       if (!( interactiveButton instanceof IButton button ))
                           return;
 
-                      if (button.getTask() instanceof ExecutableTask executable)
+                      if (button.task() instanceof ExecutableTask executable)
                           executable.execute();
                   } );
     }
