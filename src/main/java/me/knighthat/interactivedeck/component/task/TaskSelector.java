@@ -110,7 +110,7 @@ public class TaskSelector extends JScrollPane implements IButtonProperty, Flexib
 
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
-        Task task = button.task();
+        Task task = button.getTask();
         selectIcon( task != null ? task.getClass() : null );
     }
 }

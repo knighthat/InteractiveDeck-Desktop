@@ -88,7 +88,7 @@ public class Profile implements SaveAsJson {
 
             buttons.remove();
             MenuProperty.remove( button );
-            deleted.add( button.uuid.toString() );
+            deleted.add( button.getUuid().toString() );
         }
 
         sortButtons();
@@ -100,7 +100,7 @@ public class Profile implements SaveAsJson {
     }
 
     private void sortButtons() {
-        buttons.sort( Comparator.comparingInt( button -> button.x * button.y ) );
+        buttons.sort( Comparator.comparingInt( button -> button.getPosX() * button.getPosY() ) );
     }
 
     private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
@@ -134,7 +134,7 @@ public class Profile implements SaveAsJson {
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
         if (columns < columns()) {
-            JsonArray deleted = removeButtons( button -> button.x >= columns );
+            JsonArray deleted = removeButtons( button -> button.getPosX() >= columns );
             new RemoveRequest( uuid, deleted ).send();
         }
 
@@ -166,7 +166,7 @@ public class Profile implements SaveAsJson {
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
         if (rows < rows()) {
-            JsonArray deleted = removeButtons( btn -> btn.y >= rows );
+            JsonArray deleted = removeButtons( btn -> btn.getPosY() >= rows );
             new RemoveRequest( uuid, deleted ).send();
         }
 
@@ -222,15 +222,11 @@ public class Profile implements SaveAsJson {
 
     @NotNull
     @Override
-    public String getFileExtension() {return "profile";}
-
-    @NotNull
-    @Override
     public String getFileName() {return uuid.toString();}
 
     @NotNull
     @Override
-    public String getFullName() {return SaveAsJson.DefaultImpls.getFullName( this );}
+    public String getFileExtension() {return "profile";}
 
     @Override
     public @NotNull JsonObject serialize() {

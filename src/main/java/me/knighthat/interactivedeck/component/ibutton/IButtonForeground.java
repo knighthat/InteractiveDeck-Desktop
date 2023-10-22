@@ -56,7 +56,7 @@ public final class IButtonForeground extends BChild {
             return;
 
         setText( newText );
-        Log.buttonUpdate( owner.uuid, "text", oldText, newText );
+        Log.buttonUpdate( owner.getUuid(), "text", oldText, newText );
         sendUpdate( json -> json.addProperty( "text", newText ) );
     }
 
@@ -80,7 +80,7 @@ public final class IButtonForeground extends BChild {
         String fontFormat = "[f=%s,s=%s,w=%s]";
         String oldFontStr = fontFormat.formatted( oldFont.getFamily(), oldFont.getSize(), oldFont.getStyle() );
         String newFont = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
-        Log.buttonUpdate( owner.uuid, "font", oldFontStr, newFont );
+        Log.buttonUpdate( owner.getUuid(), "font", oldFontStr, newFont );
         sendUpdate( json -> json.add( "font", FontUtils.toJson( getFont() ) ) );
     }
 

@@ -85,7 +85,7 @@ public class RunJarFileTaskConfigurator extends FileExecutableTaskConfigurator {
     public void updateSelectedButton( @NotNull IButton button ) {
         super.updateSelectedButton( button );
 
-        if (button.task() instanceof RunJarFile task) {
+        if (button.getTask() instanceof RunJarFile task) {
             String vmArgs = mergeArgs( task.vmArgs() );
             vmArgsInput.setText( vmArgs );
 

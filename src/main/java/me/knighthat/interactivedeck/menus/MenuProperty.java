@@ -65,7 +65,7 @@ public class MenuProperty {
     public static @NotNull Optional<IButton> button( @NotNull UUID uuid ) {
         IButton result = null;
         for (IButton btn : INTERNAL.buttons)
-            if (btn.uuid.equals( uuid )) {
+            if (btn.getUuid().equals( uuid )) {
                 result = btn;
                 break;
             }

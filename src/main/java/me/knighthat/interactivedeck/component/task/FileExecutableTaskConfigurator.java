@@ -37,7 +37,7 @@ public abstract class FileExecutableTaskConfigurator extends TaskConfigurator {
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
         pathInput.setText( "" );
-        if (!( button.task() instanceof ExecutableFile file ))
+        if (!( button.getTask() instanceof ExecutableFile file ))
             return;
         pathInput.setText( file.filePath() );
     }
