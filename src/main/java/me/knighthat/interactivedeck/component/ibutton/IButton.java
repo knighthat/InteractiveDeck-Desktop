@@ -14,7 +14,10 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import me.knighthat.interactivedeck.task.Task;
 import me.knighthat.lib.connection.request.TargetedRequest;
 import me.knighthat.lib.connection.request.UpdateRequest;
@@ -25,10 +28,12 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
 
 import static me.knighthat.interactivedeck.utils.ColorUtils.TRANSPARENT;
 
+@Getter
 public class IButton extends JComponent implements JsonSerializable {
 
     /**
@@ -64,77 +69,72 @@ public class IButton extends JComponent implements JsonSerializable {
         return button;
     }
 
-    public final @NotNull UUID uuid;
-    public final @NotNull UUID profile;
-    public final int x;
-    public final int y;
-    private final @NotNull IButtonBackground background;
-    private final @NotNull IButtonForeground foreground;
+    private final @NotNull UUID uuid;
+    private final @NotNull UUID profile;
+    private final int posX;
+    private final int posY;
+    private final @NotNull IButtonBackground back;
+    private final @NotNull IButtonForeground front;
     private @Nullable Task task;
 
     IButton( @NotNull UUID uuid,
              @NotNull UUID profile,
-             int x, int y,
+             int posX, int posY,
              @Nullable Task task ) {
         this.uuid = uuid;
         this.profile = profile;
-        this.background = new IButtonBackground( this );
-        this.foreground = new IButtonForeground( this );
-        this.x = x;
-        this.y = y;
+        this.back = new IButtonBackground( this );
+        this.front = new IButtonForeground( this );
+        this.posX = posX;
+        this.posY = posY;
         this.task = task;
 
         setForeground( TRANSPARENT );
 
         setLayout( new OverlayLayout( this ) );
-        add( foreground, 0 );
-        add( background, 1 );
+        add( front, 0 );
+        add( back, 1 );
     }
 
-    public IButton( @NotNull UUID profile, int x, int y ) {
-        this( UUID.randomUUID(), profile, x, y, null );
+    public IButton( @NotNull UUID profile, int posX, int posY ) {
+        this( UUID.randomUUID(), profile, posX, posY, null );
     }
 
     public void update( @Nullable JsonObject json ) {
         if (json == null)
             return;
 
-        background.update( json.getAsJsonObject( "icon" ) );
-        foreground.update( json.getAsJsonObject( "label" ) );
+        back.update( json.getAsJsonObject( "icon" ) );
+        front.update( json.getAsJsonObject( "label" ) );
         this.task = Task.fromJson( json.getAsJsonObject( "task" ) );
     }
 
-    public @NotNull IButtonBackground background() {return this.background;}
-
-    public @NotNull IButtonForeground foreground() {return this.foreground;}
-
-    public void task( @Nullable Task task ) {
-        if (task == this.task)
+    public void setTask( @Nullable Task task ) {
+        if (Objects.equals( this.task, task ))
             return;
 
-        this.task = task;
-
-        if (task == null)
-            return;
-
+        // Log update
+        String oldTaskClass = this.task == null ? "null" : this.task.getClass().getName();
+        String newTaskClass = task == null ? "null" : task.getClass().getName();
         Log.buttonUpdate(
                 uuid,
                 "task",
-                task.getClass().getName(),
-                task.getClass().getName()
+                oldTaskClass,
+                newTaskClass
         );
 
+        // Send update
+        JsonElement taskJson = task == null ? JsonNull.INSTANCE : task.serialize();
         JsonObject json = new JsonObject();
-        json.add( "task", task.serialize() );
-
+        json.add( "task", taskJson );
         new UpdateRequest(
                 json,
                 uuid,
                 TargetedRequest.Target.BUTTON
         ).send();
-    }
 
-    public @Nullable Task task() {return this.task;}
+        this.task = task;
+    }
 
     @Override
     public @NotNull JsonObject serialize() {
@@ -161,12 +161,12 @@ public class IButton extends JComponent implements JsonSerializable {
         JsonObject json = new JsonObject();
 
         json.addProperty( "uuid", uuid.toString() );
-        json.addProperty( "x", x );
-        json.addProperty( "y", y );
+        json.addProperty( "x", posX );
+        json.addProperty( "y", posY );
         if (task != null)
             json.add( "task", task.serialize() );
-        json.add( "icon", background.serialize() );
-        json.add( "label", foreground.serialize() );
+        json.add( "icon", back.serialize() );
+        json.add( "label", front.serialize() );
 
         return json;
     }

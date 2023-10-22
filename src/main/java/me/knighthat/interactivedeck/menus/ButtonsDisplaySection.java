@@ -42,7 +42,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
             MainMenu menu = (MainMenu) getTopLevelAncestor();
             if (button != null) {
                 menu.buttonModifiers().updateSelectedButton( button );
-                button.background().toggleSelect();
+                button.getBack().toggleSelect();
             } else
                 menu.buttonModifiers().setVisible( false );
         } );
@@ -70,16 +70,16 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
         this.selected.getValue().ifPresentOrElse( currentlySelected -> {
 
-            currentlySelected.background().toggleSelect();
+            currentlySelected.getBack().toggleSelect();
             this.selected.setValue( currentlySelected == selected ? null : selected );
 
         }, () -> this.selected.setValue( selected ) );
 
-        String pName = MenuProperty.profile( selected.profile )
+        String pName = MenuProperty.profile( selected.getProfile() )
                                    .map( Profile::displayName )
-                                   .orElse( ShortUUID.from( selected.uuid ) );
+                                   .orElse( ShortUUID.from( selected.getUuid() ) );
         String log = "Button at [x=%s, y=%s] of profile \"%s\" clicked.";
-        Log.deb( log.formatted( selected.x, selected.y, pName ) );
+        Log.deb( log.formatted( selected.getPosX(), selected.getPosY(), pName ) );
     }
 
     public void updateButtons( @NotNull Profile profile ) {
@@ -95,8 +95,8 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
                     }
                 } );
 
-            constraints.gridx = button.x;
-            constraints.gridy = button.y;
+            constraints.gridx = button.getPosX();
+            constraints.gridy = button.getPosY();
             add( button, constraints );
         } );
 
@@ -107,7 +107,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
     }
 
     public void unselectAll() {
-        selected.getValue().ifPresent( button -> button.background().toggleSelect() );
+        selected.getValue().ifPresent( button -> button.getBack().toggleSelect() );
         selected.setValue( null );
     }
 }

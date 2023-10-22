@@ -48,14 +48,14 @@ abstract class BChild extends JLabel implements JsonSerializable {
 
         new UpdateRequest(
                 json,
-                owner.uuid,
+                owner.getUuid(),
                 TargetedRequest.Target.BUTTON
         ).send();
     }
 
     protected void sendAndLog( @NotNull String property, @NotNull Color oldColor, @NotNull Color newColor ) {
         Log.buttonUpdate(
-                owner.uuid,
+                owner.getUuid(),
                 property,
                 ColorUtils.toHex( oldColor ),
                 ColorUtils.toHex( newColor )

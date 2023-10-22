@@ -104,7 +104,7 @@ public class TaskModifier extends ModifierPanel<BorderLayout, Void> {
                             configuratorPanel.active().ifPresent( configurator -> {
                                 IButton button = TaskModifier.super.button;
                                 Task task = TaskManager.create( configurator.taskType, configurator.taskParams() );
-                                button.task( task );
+                                button.setTask( task );
                             } );
                         }
                     } );

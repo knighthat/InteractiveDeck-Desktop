@@ -62,7 +62,7 @@ public class GotoPageTaskConfigurator extends TaskConfigurator {
         MenuProperty.active().ifPresent( profilesList::reloadExcept );
 
         if (profilesList.getModel().getSize() > 0) {
-            if (!( button.task() instanceof GotoPage gotoPage ))
+            if (!( button.getTask() instanceof GotoPage gotoPage ))
                 return;
             Optional<Profile> optionalProfile = MenuProperty.profile( gotoPage.target() );
             if (optionalProfile.isPresent())

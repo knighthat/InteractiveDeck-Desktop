@@ -54,7 +54,7 @@ public class OpenWebsiteTaskConfigurator extends TaskConfigurator {
 
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
-        if (button.task() instanceof OpenWebsite openWebsite)
+        if (button.getTask() instanceof OpenWebsite openWebsite)
             addressInput.setText( openWebsite.uri.toString() );
     }
 }
