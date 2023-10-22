@@ -20,7 +20,6 @@ import com.google.gson.JsonObject;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.lib.connection.request.RequestJson;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -49,36 +48,35 @@ public final class IButtonBackground extends BChild implements RequestJson {
         repaint();
     }
 
-    public void update( @Nullable JsonObject json ) {
-        if (json == null)
-            return;
-        setForeground( ColorUtils.fromJson( json.get( "border" ) ) );
-        setBackground( ColorUtils.fromJson( json.get( "background" ) ) );
-    }
-
-    public void background( @NotNull Color color ) {
+    public void background( @NotNull Color newColor ) {
         Color oldColor = getBackground();
-        if (oldColor.equals( color ))
+        if (oldColor.equals( newColor ))
             return;
 
-        setBackground( color );
-        sendAndLog( "background", oldColor, color );
+        setBackground( newColor );
+        logAndSendUpdate( "background", oldColor, newColor );
     }
 
-    public void border( @NotNull Color color ) {
+    public void border( @NotNull Color newColor ) {
         Color oldColor = getForeground();
-        if (oldColor.equals( color ))
+        if (oldColor.equals( newColor ))
             return;
 
-        setForeground( color );
-        sendAndLog( "border", oldColor, color );
+        setForeground( newColor );
+        logAndSendUpdate( "border", oldColor, newColor );
+    }
+
+    @Override
+    public void update( @NotNull JsonObject json ) {
+        if (json.has( "border" ))
+            setForeground( ColorUtils.fromJson( json.get( "border" ) ) );
+        if (json.has( "background" ))
+            setBackground( ColorUtils.fromJson( json.get( "background" ) ) );
     }
 
     @NotNull
     @Override
-    public JsonElement toRequest() {
-        return serialize();
-    }
+    public JsonElement toRequest() {return serialize();}
 
     @Override
     protected void paintComponent( Graphics g ) {
