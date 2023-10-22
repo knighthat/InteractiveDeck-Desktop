@@ -17,9 +17,9 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.utils.UuidUtils;
 import me.knighthat.lib.logging.Log;
 import me.knighthat.lib.observable.Observable;
+import me.knighthat.lib.util.ShortUUID;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -77,7 +77,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
         String pName = MenuProperty.profile( selected.profile )
                                    .map( Profile::displayName )
-                                   .orElseGet( () -> UuidUtils.lastFiveChars( selected.profile ) );
+                                   .orElse( ShortUUID.from( selected.uuid ) );
         String log = "Button at [x=%s, y=%s] of profile \"%s\" clicked.";
         Log.deb( log.formatted( selected.x, selected.y, pName ) );
     }

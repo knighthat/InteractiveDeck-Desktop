@@ -16,7 +16,7 @@ package me.knighthat.interactivedeck.component.plist;
 
 
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.utils.UuidUtils;
+import me.knighthat.lib.util.ShortUUID;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +26,7 @@ public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
     public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
         String display = "No available profile";
         if (profile != null)
-            display = "%s (%s)".formatted( profile.displayName(), UuidUtils.lastFiveChars( profile.uuid ) );
+            display = "%s (%s)".formatted( profile.displayName(), ShortUUID.from( profile.uuid ) );
 
         super.setText( display );
         super.setBackground( isSelected ? list.getSelectionBackground() : list.getBackground() );
