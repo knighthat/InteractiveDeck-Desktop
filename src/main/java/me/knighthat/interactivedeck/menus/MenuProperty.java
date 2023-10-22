@@ -16,10 +16,10 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.observable.Observable;
-import me.knighthat.interactivedeck.observable.Observer;
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import me.knighthat.lib.logging.Log;
+import me.knighthat.lib.observable.Observable;
+import me.knighthat.lib.observable.Observer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -62,10 +62,6 @@ public class MenuProperty {
         INTERNAL.profiles.remove( profile );
     }
 
-    public static @NotNull @Unmodifiable Set<IButton> buttons() {
-        return Set.copyOf( INTERNAL.buttons );
-    }
-
     public static @NotNull Optional<IButton> button( @NotNull UUID uuid ) {
         IButton result = null;
         for (IButton btn : INTERNAL.buttons)
@@ -85,7 +81,7 @@ public class MenuProperty {
     }
 
     public static @NotNull Optional<Profile> active() {
-        return INTERNAL.active.value();
+        return INTERNAL.active.getValue();
     }
 
     public static void active( @NotNull Profile profile ) {
@@ -93,7 +89,7 @@ public class MenuProperty {
         String info = "Now showing %s (%s) with %s button(s)";
         Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
 
-        INTERNAL.active.value( profile );
+        INTERNAL.active.setValue( profile );
     }
 
     public static void observeActive( @NotNull Observer<Profile> observer ) {

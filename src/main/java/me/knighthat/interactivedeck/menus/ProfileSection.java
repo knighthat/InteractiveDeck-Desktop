@@ -97,7 +97,10 @@ public class ProfileSection extends JPanel implements Flexible {
             public void mouseClicked( MouseEvent e ) {AppSettingsPopup.INSTANCE.present();}
         } );
 
-        MenuProperty.observeActive( profile -> profiles.setSelectedProfile( profile, false ) );
+        MenuProperty.observeActive( ( oldP, newP ) -> {
+            if (newP != null)
+                profiles.setSelectedProfile( newP, false );
+        } );
     }
     // </editor-fold>
 

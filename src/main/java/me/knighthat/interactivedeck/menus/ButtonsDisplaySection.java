@@ -17,9 +17,9 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.observable.Observable;
 import me.knighthat.interactivedeck.utils.UuidUtils;
 import me.knighthat.lib.logging.Log;
+import me.knighthat.lib.observable.Observable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -38,7 +38,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
         setDimension( this, 750, 520 );
         setLayout( new GridBagLayout() );
 
-        selected.observe( button -> {
+        selected.observe( ( old, button ) -> {
             MainMenu menu = (MainMenu) getTopLevelAncestor();
             if (button != null) {
                 menu.buttonModifiers().updateSelectedButton( button );
@@ -47,7 +47,10 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
                 menu.buttonModifiers().setVisible( false );
         } );
 
-        MenuProperty.observeActive( this::updateButtons );
+        MenuProperty.observeActive( ( oldP, newP ) -> {
+            if (newP != null)
+                updateButtons( newP );
+        } );
     }
 
     private @NotNull GridBagConstraints genConstraints( @NotNull Profile profile ) {
@@ -65,12 +68,12 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
     private void iBtnClickEvent( java.awt.event.MouseEvent evt ) {
         IButton selected = (IButton) evt.getComponent();
 
-        this.selected.value().ifPresentOrElse( currentlySelected -> {
+        this.selected.getValue().ifPresentOrElse( currentlySelected -> {
 
             currentlySelected.background().toggleSelect();
-            this.selected.value( currentlySelected == selected ? null : selected );
+            this.selected.setValue( currentlySelected == selected ? null : selected );
 
-        }, () -> this.selected.value( selected ) );
+        }, () -> this.selected.setValue( selected ) );
 
         String pName = MenuProperty.profile( selected.profile )
                                    .map( Profile::displayName )
@@ -104,7 +107,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
     }
 
     public void unselectAll() {
-        selected.value().ifPresent( button -> button.background().toggleSelect() );
-        selected.value( null );
+        selected.getValue().ifPresent( button -> button.background().toggleSelect() );
+        selected.setValue( null );
     }
 }
