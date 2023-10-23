@@ -15,77 +15,113 @@
 package me.knighthat.interactivedeck.file;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.Getter;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.lib.connection.request.AddRequest;
 import me.knighthat.lib.connection.request.RemoveRequest;
-import me.knighthat.lib.connection.request.TargetedRequest;
-import me.knighthat.lib.connection.request.UpdateRequest;
+import me.knighthat.lib.connection.request.RequestJson;
+import me.knighthat.lib.exception.ProfileFormatException;
 import me.knighthat.lib.json.SaveAsJson;
 import me.knighthat.lib.logging.Log;
+import me.knighthat.lib.profile.AbstractProfile;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Getter
-public class Profile implements SaveAsJson {
+public class Profile extends AbstractProfile<IButton> implements SaveAsJson, RequestJson {
 
-    private final @NotNull UUID uuid;
-    private final boolean isDefault;
-    private final @NotNull List<IButton> buttons;
-    private @NotNull String displayName;
-    private int columns;
-    private int rows;
-    private int gap;
+    private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
+        if (!json.has( "uuid" ))
+            throw new ProfileFormatException( "Missing UUID!" );
+        if (!json.has( "default" ))
+            throw new ProfileFormatException( "Cannot decide whether profile is default!" );
 
-    Profile( @NotNull UUID uuid, @NotNull String displayName, boolean isDefault, int columns, int rows, int gap, @NotNull List<IButton> buttons ) {
-        this.uuid = uuid;
-        this.displayName = displayName;
-        this.isDefault = isDefault;
-        this.columns = columns;
-        this.rows = rows;
-        this.gap = gap;
-        this.buttons = buttons;
+        String uuidString = json.get( "uuid" ).getAsString();
+        boolean isDefault = json.get( "default" ).getAsBoolean();
+
+        Profile profile = new Profile( UUID.fromString( uuidString ), isDefault );
+        profile.update( json );
+
+        return profile;
     }
+
+    public static @NotNull Profile fromFile( @NotNull File file ) throws IOException {
+        FileReader reader = new FileReader( file );
+        JsonElement json = JsonParser.parseReader( reader );
+        reader.close();
+        return fromJson( json.getAsJsonObject() );
+    }
+
+    public static @NotNull Profile createDefault() {
+        Profile profile = new Profile( "Main", true );
+
+        String msg = "Default profile %s (%s) is created!";
+        Log.info( msg.formatted( profile.getDisplayName(), profile.uuid ) );
+
+        return profile;
+    }
+
+    public static @NotNull Profile create( @NotNull String displayName ) {
+        Profile profile = new Profile( displayName, false );
+
+        String msg = "Profile %s (%s) is created!";
+        Log.info( msg.formatted( displayName, profile.uuid ) );
+
+        new AddRequest( array -> array.add( profile.serialize() ) ).send();
+
+        return profile;
+    }
+
+    @Getter
+    private final @NotNull UUID uuid;
+
+    Profile( @NotNull UUID uuid, boolean isDefault ) {this( uuid, isDefault, new ArrayList<>(), "", 4, 2, 3 );}
 
     Profile( @NotNull String displayName, boolean isDefault ) {
-        this( UUID.randomUUID(), displayName, isDefault, 4, 2, 3, new ArrayList<>( 8 ) );
-        addButtons( 0, columns, 0, rows );
+        this( UUID.randomUUID(), isDefault, new ArrayList<>( 8 ), displayName, 4, 2, 3 );
+        addButtons( 0, getColumns(), 0, getRows() );
     }
 
-    private @NotNull JsonArray addButtons( int fromX, int toX, int fromY, int toY ) {
+    public Profile( @NotNull UUID uuid, boolean isDefault, @NotNull List<IButton> buttons, @NotNull String displayName, int columns, int rows, int gap ) {
+        super( isDefault, buttons, displayName, columns, rows, gap );
+        this.uuid = uuid;
+    }
+
+    private @NotNull JsonArray addButtons( int fromX, int fromY, int toX, int toY ) {
         JsonArray added = new JsonArray();
 
         for (int y = fromY ; y < toY ; y++)
             for (int x = fromX ; x < toX ; x++) {
                 IButton button = new IButton( uuid, x, y );
-                this.buttons.add( button );
+                getButtons().add( button );
                 MenuProperty.add( button );
                 added.add( button.serialize() );
             }
 
-        sortButtons();
-
         String info = "Added %s button(s) to profile %s (%s)";
-        Log.info( info.formatted( added.size(), displayName, uuid.toString() ) );
+        Log.info( info.formatted( added.size(), getDisplayName(), uuid.toString() ) );
 
         return added;
     }
 
-    private @NotNull JsonArray removeButtons( @NotNull Predicate<IButton> condition ) {
+    private @NotNull JsonArray removeButtons( @NotNull Predicate<IButton> conditions ) {
         JsonArray deleted = new JsonArray();
 
-        Iterator<IButton> buttons = this.buttons.iterator();
+        Iterator<IButton> buttons = getButtons().iterator();
         while (buttons.hasNext()) {
             IButton button = buttons.next();
-            if (!condition.test( button ))
+            if (!conditions.test( button ))
                 continue;
 
             buttons.remove();
@@ -93,129 +129,13 @@ public class Profile implements SaveAsJson {
             deleted.add( button.getUuid().toString() );
         }
 
-        sortButtons();
-
         String info = "Deleted %s button(s) from profile %s (%s)";
-        Log.info( info.formatted( deleted.size(), displayName, uuid.toString() ) );
+        Log.info( info.formatted( deleted.size(), getDisplayName(), uuid.toString() ) );
 
         return deleted;
     }
 
-    private void sortButtons() {
-        buttons.sort( Comparator.comparingInt( button -> button.getPosX() * button.getPosY() ) );
-    }
-
-    private void sendUpdate( @NotNull Consumer<JsonObject> consumer ) {
-        JsonObject json = new JsonObject();
-        consumer.accept( json );
-
-        new UpdateRequest( json, uuid, TargetedRequest.Target.PROFILE ).send();
-    }
-
-    public void displayName( @NotNull String displayName ) {
-        if (displayName.equals( displayName() ) || displayName.isBlank())
-            return;
-
-        Log.profileUpdate( displayName, "name", this.displayName, displayName );
-
-        this.displayName = displayName;
-        sendUpdate( json -> json.addProperty( "displayName", displayName ) );
-    }
-
-    public void setColumns( int columns ) {
-        // If new columns is equal to current rows, then do nothing
-        if (columns == getColumns())
-            return;
-
-        // If new rows is greater than current rows, then add more buttons
-        if (columns > getColumns()) {
-            JsonArray added = addButtons( this.columns, columns, 0, this.rows );
-            new AddRequest( uuid, added ).send();
-        }
-
-        // If new columns is less than current row,
-        // then remove excess buttons within profile and public list of buttons
-        if (columns < getColumns()) {
-            JsonArray deleted = removeButtons( button -> button.getPosX() >= columns );
-            new RemoveRequest( uuid, deleted ).send();
-        }
-
-        Log.profileUpdate( displayName, "columns", this.columns, columns );
-
-        this.columns = columns;
-        sendUpdate( json -> json.addProperty( "columns", columns ) );
-    }
-
-    public void setRows( int rows ) {
-        // If new rows is equal to current rows, then do nothing
-        if (rows == getRows())
-            return;
-
-        // If new rows is greater than current rows, then add more buttons
-        if (rows > getRows()) {
-            JsonArray added = addButtons( 0, this.columns, this.rows, rows );
-            new AddRequest( uuid, added ).send();
-        }
-
-        // If new rows is less than current row,
-        // then remove excess buttons within profile and public list of buttons
-        if (rows < getRows()) {
-            JsonArray deleted = removeButtons( btn -> btn.getPosY() >= rows );
-            new RemoveRequest( uuid, deleted ).send();
-        }
-
-        Log.profileUpdate( displayName, "rows", this.rows, rows );
-
-        this.rows = rows;
-        sendUpdate( json -> json.addProperty( "rows", rows ) );
-    }
-
-    public void setGap( int gap ) {
-        if (gap == getGap())
-            return;
-
-        Log.profileUpdate( displayName, "gap between buttons", this.gap, gap );
-
-        this.gap = gap;
-        sendUpdate( json -> json.addProperty( "gap", gap ) );
-    }
-
-    public @NotNull @Unmodifiable List<IButton> buttons() {
-        return List.copyOf( buttons );
-    }
-
-    public void remove() {
-        JsonArray deleted = removeButtons( button -> true );
-        MenuProperty.remove( this );
-
-        String fileName = uuid + ".profile";
-        File file = new File( WorkingDirectory.path(), fileName );
-
-        if (file.exists() && !file.delete())
-            Log.err( "Could not delete " + uuid + ".profile" );
-
-        new RemoveRequest( array -> array.add( uuid.toString() ) ).send();
-
-        String deleteMsg = "Profile %s (%s) with %s button(s) is deleted!";
-        Log.info( deleteMsg.formatted( displayName, uuid, deleted.size() ) );
-    }
-
-    public @NotNull String displayName() {return this.displayName;}
-
-    @NotNull
-    @Override
-    public String getDisplayName() {return this.displayName;}
-
-    @NotNull
-    @Override
-    public String getFileName() {return uuid.toString();}
-
-    @NotNull
-    @Override
-    public String getFileExtension() {return "profile";}
-
-    @Override
-    public @NotNull JsonObject serialize() {
+    private @NotNull JsonObject getProfileFormat( @NotNull Function<IButton, JsonObject> function ) {
         /* Template
          * {
          *      "uuid": $uuid,
@@ -226,23 +146,147 @@ public class Profile implements SaveAsJson {
          *      "gap": $gap,
          *      "buttons":
          *      {
-         *          IButton.json()
+         *          $function
          *      }
          * }
          */
-        JsonArray buttons = new JsonArray();
-        buttons().forEach( btn -> buttons.add( btn.serialize() ) );
-
         JsonObject json = new JsonObject();
 
         json.addProperty( "uuid", uuid.toString() );
-        json.addProperty( "displayName", displayName );
-        json.addProperty( "default", isDefault );
-        json.addProperty( "rows", rows );
-        json.addProperty( "columns", columns );
-        json.addProperty( "gap", gap );
+        json.addProperty( "displayName", getDisplayName() );
+        json.addProperty( "default", isDefault() );
+        json.addProperty( "rows", getRows() );
+        json.addProperty( "columns", getColumns() );
+        json.addProperty( "gap", getGap() );
+
+        /*
+         * Get the current button list > cast it to IButton list
+         * > Use provided function to convert IButton to JsonObject form
+         * > add converted JsonObject to array
+         */
+        JsonArray buttons = new JsonArray( getButtons().size() );
+        getButtons().stream()
+                    .map( function )
+                    .forEach( buttons::add );
         json.add( "buttons", buttons );
 
         return json;
     }
+
+    @Override
+    public void setColumns( int columns ) {
+        // If new columns are equal to current rows, then do nothing
+        if (getColumns() == columns)
+            return;
+
+        // If new columns are greater than current rows, then add more buttons
+        if (getColumns() < columns) {
+            JsonArray added = addButtons( getColumns(), 0, columns, getRows() );
+            new AddRequest( uuid, added ).send();
+        }
+
+        // If new columns are less than current rows,
+        // then remove all buttons outside of this range.
+        if (getColumns() > columns) {
+            JsonArray deleted = removeButtons( button -> button.getPosX() >= columns );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        logAndSendUpdate( "columns", getColumns(), columns );
+        super.setColumns( columns );
+    }
+
+    @Override
+    public void setDisplayName( @NotNull String displayName ) {
+        if (displayName.equals( getDisplayName() ))
+            return;
+
+        logAndSendUpdate( "displayName", getDisplayName(), displayName );
+
+        super.setDisplayName( displayName );
+    }
+
+    @Override
+    public void setGap( int gap ) {
+        // If a new gap is equal to the current gap, then do nothing
+        if (getGap() == gap)
+            return;
+
+        logAndSendUpdate( "gap", getGap(), gap );
+        super.setGap( gap );
+    }
+
+    @Override
+    public void setRows( int rows ) {
+        // If new rows are equal to current rows, then do nothing
+        if (getRows() == rows)
+            return;
+
+        // If new rows are greater than current rows, then add more buttons
+        if (getRows() < rows) {
+            JsonArray added = addButtons( 0, getRows(), getColumns(), rows );
+            new AddRequest( uuid, added ).send();
+        }
+
+        // If new rows are less than current rows,
+        // then remove all buttons outside of this range.
+        if (getRows() > rows) {
+            JsonArray deleted = removeButtons( btn -> btn.getPosY() >= rows );
+            new RemoveRequest( uuid, deleted ).send();
+        }
+
+        logAndSendUpdate( "rows", getRows(), rows );
+        super.setRows( rows );
+    }
+
+    @Override
+    protected void updateButtons( @NotNull JsonElement element ) {
+        if (!( element instanceof JsonArray array ))
+            return;
+
+        for (JsonElement btnJson : array)
+            try {
+                IButton button = IButton.fromJson( uuid, btnJson.getAsJsonObject() );
+                getButtons().add( button );
+            } catch (IOException e) {
+                Log.wexc( "Failed to load a button", e, false );
+            }
+
+        // Sort button list
+        getButtons().sort(
+                Comparator.comparing( btn -> btn.getPosX() * btn.getPosY() )
+        );
+    }
+
+    @Override
+    public @NotNull String getFileName() {return uuid.toString();}
+
+    @Override
+    public @NotNull String getFileExtension() {return "profile";}
+
+    @Override
+    public void remove() {
+        int deletedSize = removeButtons( btn -> true ).size();
+
+        File file = new File( WorkingDirectory.path(), getFileName() );
+        if (file.exists() && !file.delete())
+            Log.err( "Could not delete " + getFullName() );
+
+        MenuProperty.remove( this );
+
+        String log = "Deleted profile %s (%s) with %s buttons!";
+        Log.info( log.formatted( getDisplayName(), uuid, deletedSize ) );
+
+        new RemoveRequest(
+                array -> array.add( uuid.toString() )
+        ).send();
+    }
+
+    @NotNull
+    @Override
+    public JsonObject serialize() {return getProfileFormat( IButton::serialize );}
+
+    @NotNull
+    @Override
+    public JsonObject toRequest() {return getProfileFormat( IButton::toRequest );}
 }
