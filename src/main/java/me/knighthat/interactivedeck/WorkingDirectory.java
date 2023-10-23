@@ -14,24 +14,20 @@
 
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.file.Profiles;
+import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MenuProperty;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkingDirectory {
 
     private static File FILE;
-
-    private static void createDefaultProfile() {
-        Log.info( "No profiles were found. Creating one..." );
-        MenuProperty.add( Profiles.createDefault() );
-    }
 
     private static List<File> gatherProfiles() {
         List<File> profiles = new ArrayList<>( 0 );
@@ -72,22 +68,30 @@ public class WorkingDirectory {
     public static @NotNull String path() {return FILE.exists() ? FILE.getAbsolutePath() : ".";}
 
     public static void loadProfiles() {
-        List<File> profileFiles = gatherProfiles();
+        int loadedProfile = 0;
+        for (File file : gatherProfiles())
+            try {
 
-        if (profileFiles.isEmpty())
-            createDefaultProfile();
-
-        for (File file : profileFiles) {
-            if (!file.getName().endsWith( ".profile" ))
-                continue;
-            Profiles.fromFile( file ).ifPresent( profile -> {
+                Profile profile = Profile.fromFile( file );
                 MenuProperty.add( profile );
 
-                String msg = "Loaded: %s (%s)";
-                msg = String.format( msg, profile.displayName(), profile.getUuid() );
-                Log.info( msg );
-            } );
+                String log = "Loaded profile: %s (%s)";
+                Log.info( log.formatted( profile.getDisplayName(), profile.getUuid() ) );
+
+                loadedProfile++;
+
+            } catch (IOException e) {
+
+                Log.exc( "Failed to load profile " + file.getName(), e, false );
+                Log.reportBug();
+
+            }
+
+        if (loadedProfile == 0) {
+            Log.warn( "No profile found. Creating new one..." );
+            MenuProperty.add( Profile.createDefault() );
         }
-        Log.deb( "Found " + profileFiles.size() + " profile(s)" );
+
+        Log.deb( "Found " + loadedProfile + " profile(s)" );
     }
 }

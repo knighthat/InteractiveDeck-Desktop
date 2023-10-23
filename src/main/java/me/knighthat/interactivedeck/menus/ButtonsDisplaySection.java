@@ -76,7 +76,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
         }, () -> this.selected.setValue( selected ) );
 
         String pName = MenuProperty.profile( selected.getProfile() )
-                                   .map( Profile::displayName )
+                                   .map( Profile::getDisplayName )
                                    .orElse( ShortUUID.from( selected.getUuid() ) );
         String log = "Button at [x=%s, y=%s] of profile \"%s\" clicked.";
         Log.deb( log.formatted( selected.getPosX(), selected.getPosY(), pName ) );
@@ -87,7 +87,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
         unselectAll();
 
         GridBagConstraints constraints = genConstraints( profile );
-        profile.buttons().forEach( ( button ) -> {
+        profile.getButtons().forEach( ( button ) -> {
             if (button.getMouseListeners().length == 0)
                 button.addMouseListener( new MouseAdapter() {
                     public void mouseClicked( MouseEvent e ) {

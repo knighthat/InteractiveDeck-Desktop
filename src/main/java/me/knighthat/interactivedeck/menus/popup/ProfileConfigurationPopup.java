@@ -92,7 +92,7 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
 
     @Override
     protected void loadProfile( @NotNull Profile profile ) {
-        displayNameInput.setText( profile.displayName() );
+        displayNameInput.setText( profile.getDisplayName() );
         columns.setValue( profile.getColumns() );
         rows.setValue( profile.getRows() );
         gap.setValue( profile.getGap() );
@@ -101,7 +101,7 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
 
     @Override
     protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
-        profile.displayName( displayNameInput.getText() );
+        profile.setDisplayName( displayNameInput.getText() );
         profile.setColumns( validate( columns.getValue(), 1 ) );
         profile.setRows( validate( rows.getValue(), 1 ) );
         profile.setGap( validate( gap.getValue(), 0 ) );

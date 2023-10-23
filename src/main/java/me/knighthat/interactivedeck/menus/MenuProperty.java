@@ -51,14 +51,14 @@ public class MenuProperty {
 
     public static void add( @NotNull Profile profile ) {
         INTERNAL.profiles.add( profile );
-        INTERNAL.buttons.addAll( profile.buttons() );
+        INTERNAL.buttons.addAll( profile.getButtons() );
 
         if (profile.isDefault())
             DEFAULT = profile;
     }
 
     public static void remove( @NotNull Profile profile ) {
-        profile.buttons().forEach( INTERNAL.buttons::remove );
+        profile.getButtons().forEach( INTERNAL.buttons::remove );
         INTERNAL.profiles.remove( profile );
     }
 
@@ -87,7 +87,7 @@ public class MenuProperty {
     public static void active( @NotNull Profile profile ) {
         String shortUuid = ShortUUID.from( profile.getUuid() );
         String info = "Now showing %s (%s) with %s button(s)";
-        Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
+        Log.info( info.formatted( profile.getDisplayName(), shortUuid, profile.getButtons().size() ) );
 
         INTERNAL.active.setValue( profile );
     }

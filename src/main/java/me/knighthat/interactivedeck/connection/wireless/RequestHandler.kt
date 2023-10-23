@@ -52,7 +52,7 @@ class RequestHandler : AbstractRequestHandler() {
         AddRequest {
             for (p in MenuProperty.profiles())
                 if (uuids.contains(p.uuid))
-                    it.add(p.serialize())
+                    it.add(p.toRequest())
         }.send()
     }
 

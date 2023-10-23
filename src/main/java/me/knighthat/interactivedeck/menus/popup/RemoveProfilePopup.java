@@ -51,7 +51,7 @@ public final class RemoveProfilePopup extends ProfilePopup {
     protected void loadProfile( @NotNull Profile profile ) {
         String msg = "<html>You are about to remove profile %s (%s). Do you want to continue?</html>";
         String uuid = ShortUUID.from( profile.getUuid() );
-        message.setText( msg.formatted( profile.displayName(), uuid ) );
+        message.setText( msg.formatted( profile.getDisplayName(), uuid ) );
     }
 
     @Override
