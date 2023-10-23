@@ -26,7 +26,7 @@ public class PBoxRenderer extends JLabel implements ListCellRenderer<Profile> {
     public Component getListCellRendererComponent( JList<? extends Profile> list, Profile profile, int i, boolean isSelected, boolean cellHasFocus ) {
         String display = "No available profile";
         if (profile != null)
-            display = "%s (%s)".formatted( profile.displayName(), ShortUUID.from( profile.uuid ) );
+            display = "%s (%s)".formatted( profile.displayName(), ShortUUID.from( profile.getUuid() ) );
 
         super.setText( display );
         super.setBackground( isSelected ? list.getSelectionBackground() : list.getBackground() );

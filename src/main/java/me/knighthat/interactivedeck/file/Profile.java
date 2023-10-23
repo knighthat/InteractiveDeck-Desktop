@@ -16,6 +16,7 @@ package me.knighthat.interactivedeck.file;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.menus.MenuProperty;
@@ -33,10 +34,11 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+@Getter
 public class Profile implements SaveAsJson {
 
-    public final @NotNull UUID uuid;
-    public final boolean isDefault;
+    private final @NotNull UUID uuid;
+    private final boolean isDefault;
     private final @NotNull List<IButton> buttons;
     private @NotNull String displayName;
     private int columns;
@@ -120,20 +122,20 @@ public class Profile implements SaveAsJson {
         sendUpdate( json -> json.addProperty( "displayName", displayName ) );
     }
 
-    public void columns( int columns ) {
+    public void setColumns( int columns ) {
         // If new columns is equal to current rows, then do nothing
-        if (columns == columns())
+        if (columns == getColumns())
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if (columns > columns()) {
+        if (columns > getColumns()) {
             JsonArray added = addButtons( this.columns, columns, 0, this.rows );
             new AddRequest( uuid, added ).send();
         }
 
         // If new columns is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (columns < columns()) {
+        if (columns < getColumns()) {
             JsonArray deleted = removeButtons( button -> button.getPosX() >= columns );
             new RemoveRequest( uuid, deleted ).send();
         }
@@ -144,28 +146,20 @@ public class Profile implements SaveAsJson {
         sendUpdate( json -> json.addProperty( "columns", columns ) );
     }
 
-    public int columns() {
-        return this.columns;
-    }
-
-    /*
-     * Buttons
-     */
-
-    public void rows( int rows ) {
+    public void setRows( int rows ) {
         // If new rows is equal to current rows, then do nothing
-        if (rows == rows())
+        if (rows == getRows())
             return;
 
         // If new rows is greater than current rows, then add more buttons
-        if (rows > rows()) {
+        if (rows > getRows()) {
             JsonArray added = addButtons( 0, this.columns, this.rows, rows );
             new AddRequest( uuid, added ).send();
         }
 
         // If new rows is less than current row,
         // then remove excess buttons within profile and public list of buttons
-        if (rows < rows()) {
+        if (rows < getRows()) {
             JsonArray deleted = removeButtons( btn -> btn.getPosY() >= rows );
             new RemoveRequest( uuid, deleted ).send();
         }
@@ -176,22 +170,14 @@ public class Profile implements SaveAsJson {
         sendUpdate( json -> json.addProperty( "rows", rows ) );
     }
 
-    public int rows() {
-        return this.rows;
-    }
-
-    public void gap( int gap ) {
-        if (gap == gap())
+    public void setGap( int gap ) {
+        if (gap == getGap())
             return;
 
         Log.profileUpdate( displayName, "gap between buttons", this.gap, gap );
 
         this.gap = gap;
         sendUpdate( json -> json.addProperty( "gap", gap ) );
-    }
-
-    public int gap() {
-        return this.gap;
     }
 
     public @NotNull @Unmodifiable List<IButton> buttons() {

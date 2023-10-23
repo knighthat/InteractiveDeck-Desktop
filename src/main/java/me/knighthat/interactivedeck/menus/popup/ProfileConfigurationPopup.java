@@ -93,18 +93,18 @@ public final class ProfileConfigurationPopup extends ProfilePopup {
     @Override
     protected void loadProfile( @NotNull Profile profile ) {
         displayNameInput.setText( profile.displayName() );
-        columns.setValue( profile.columns() );
-        rows.setValue( profile.rows() );
-        gap.setValue( profile.gap() );
+        columns.setValue( profile.getColumns() );
+        rows.setValue( profile.getRows() );
+        gap.setValue( profile.getGap() );
         displayNameInput.requestFocus();
     }
 
     @Override
     protected void positiveButtonClickEvent( @NotNull MouseEvent event ) {
         profile.displayName( displayNameInput.getText() );
-        profile.columns( validate( columns.getValue(), 1 ) );
-        profile.rows( validate( rows.getValue(), 1 ) );
-        profile.gap( validate( gap.getValue(), 0 ) );
+        profile.setColumns( validate( columns.getValue(), 1 ) );
+        profile.setRows( validate( rows.getValue(), 1 ) );
+        profile.setGap( validate( gap.getValue(), 0 ) );
 
         MainMenu menu = (MainMenu) getOwner();
         menu.profileSection().updateList();

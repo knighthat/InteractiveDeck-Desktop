@@ -84,7 +84,7 @@ public class WorkingDirectory {
                 MenuProperty.add( profile );
 
                 String msg = "Loaded: %s (%s)";
-                msg = String.format( msg, profile.displayName(), profile.uuid );
+                msg = String.format( msg, profile.displayName(), profile.getUuid() );
                 Log.info( msg );
             } );
         }
