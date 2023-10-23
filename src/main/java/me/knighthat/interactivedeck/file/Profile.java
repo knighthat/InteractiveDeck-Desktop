@@ -90,7 +90,7 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
 
     Profile( @NotNull String displayName, boolean isDefault ) {
         this( UUID.randomUUID(), isDefault, new ArrayList<>( 8 ), displayName, 4, 2, 3 );
-        addButtons( 0, getColumns(), 0, getRows() );
+        addButtons( 0, 0, getColumns(), getRows() );
     }
 
     public Profile( @NotNull UUID uuid, boolean isDefault, @NotNull List<IButton> buttons, @NotNull String displayName, int columns, int rows, int gap ) {
