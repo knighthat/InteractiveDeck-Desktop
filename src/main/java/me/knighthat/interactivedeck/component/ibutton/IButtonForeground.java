@@ -59,11 +59,7 @@ public final class IButtonForeground extends BChild {
                 font.getSize() == oldFont.getSize())
             return;
 
-        String fontFormat = "[f=%s,s=%s,w=%s]";
-        String oldFontStr = fontFormat.formatted( oldFont.getFamily(), oldFont.getSize(), oldFont.getStyle() );
-        String newFontStr = fontFormat.formatted( font.getFamily(), font.getSize(), font.getStyle() );
-        logAndSendUpdate( "font", oldFontStr, newFontStr );
-
+        logAndSendUpdate( "font", oldFont, font );
         setFont( font );
     }
 
