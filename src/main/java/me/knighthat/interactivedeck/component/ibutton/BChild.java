@@ -15,6 +15,7 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import me.knighthat.interactivedeck.utils.ColorUtils;
+import me.knighthat.interactivedeck.utils.FontUtils;
 import me.knighthat.lib.component.LiveComponent;
 import me.knighthat.lib.connection.request.TargetedRequest;
 import me.knighthat.lib.json.JsonSerializable;
@@ -31,7 +32,8 @@ abstract class BChild extends JLabel implements JsonSerializable, LiveComponent 
 
     private static final @NotNull Dimension DIMENSION = new Dimension( 120, 120 );
 
-    @NotNull IButton owner;
+    @NotNull
+    IButton owner;
 
     public BChild( @NotNull IButton owner ) {
         this.owner = owner;
@@ -52,7 +54,14 @@ abstract class BChild extends JLabel implements JsonSerializable, LiveComponent 
     public TargetedRequest.Target getTarget() {return TargetedRequest.Target.BUTTON;}
 
     @Override
-    public void sendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {LiveComponent.DefaultImpls.sendUpdate( this, property, oldValue, newValue );}
+    public void sendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {
+        if (oldValue instanceof Font oldFont)
+            oldValue = FontUtils.toJson( oldFont );
+        if (newValue instanceof Font newFont)
+            newValue = FontUtils.toJson( newFont );
+
+        LiveComponent.DefaultImpls.sendUpdate( this, property, oldValue, newValue );
+    }
 
     @Override
     public void logAndSendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {
@@ -65,5 +74,12 @@ abstract class BChild extends JLabel implements JsonSerializable, LiveComponent 
     }
 
     @Override
-    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {Log.buttonUpdate( getUuid(), property, oldValue, newValue );}
+    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {
+        if (oldValue instanceof Font oldFont)
+            oldValue = "[f=%s,s=%s,w=%s]".formatted( oldFont.getFamily(), oldFont.getSize(), oldFont.getStyle() );
+        if (newValue instanceof Font newFont)
+            newValue = "[f=%s,s=%s,w=%s]".formatted( newFont.getFamily(), newFont.getSize(), newFont.getStyle() );
+
+        Log.buttonUpdate( getUuid(), property, oldValue, newValue );
+    }
 }
