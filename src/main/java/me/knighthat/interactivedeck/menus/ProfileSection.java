@@ -77,7 +77,7 @@ public class ProfileSection extends JPanel implements Flexible {
             @Override
             public void mouseClicked( MouseEvent e ) {
                 Profile selected = (Profile) profiles.getSelectedItem();
-                if (selected == null || selected.isDefault)
+                if (selected == null || selected.isDefault())
                     return;
                 RemoveProfilePopup.INSTANCE.present( selected );
             }

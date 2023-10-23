@@ -131,7 +131,7 @@ public class Profiles {
         Profile profile = new Profile( "Main", true );
 
         String msg = "Default profile %s (%s) is created!";
-        Log.info( msg.formatted( profile.displayName(), profile.uuid ) );
+        Log.info( msg.formatted( profile.displayName(), profile.getUuid() ) );
 
         return profile;
     }
@@ -140,7 +140,7 @@ public class Profiles {
         Profile profile = new Profile( displayName, false );
 
         String msg = "Profile %s (%s) is created!";
-        Log.info( msg.formatted( displayName, profile.uuid ) );
+        Log.info( msg.formatted( displayName, profile.getUuid() ) );
 
         new AddRequest( array -> array.add( profile.serialize() ) ).send();
 

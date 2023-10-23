@@ -39,7 +39,7 @@ public class GotoPageTaskConfigurator extends TaskConfigurator {
     @Override
     public @Nullable Object[] taskParams() {
         Profile profile = (Profile) profilesList.getSelectedItem();
-        return profile == null ? null : new Object[]{ profile.uuid };
+        return profile == null ? null : new Object[]{ profile.getUuid() };
     }
 
     @Override

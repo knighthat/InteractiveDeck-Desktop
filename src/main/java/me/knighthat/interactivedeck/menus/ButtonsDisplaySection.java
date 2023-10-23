@@ -57,8 +57,8 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.weightx = 0.0D;
         constraints.weighty = 0.0D;
-        constraints.ipadx = profile.gap();
-        constraints.ipady = profile.gap();
+        constraints.ipadx = profile.getGap();
+        constraints.ipady = profile.getGap();
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.fill = GridBagConstraints.BOTH;
 

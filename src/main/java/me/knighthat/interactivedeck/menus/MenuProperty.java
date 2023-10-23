@@ -42,7 +42,7 @@ public class MenuProperty {
     public static @NotNull Optional<Profile> profile( @NotNull UUID uuid ) {
         Profile profile = null;
         for (Profile p : profiles())
-            if (p.uuid.equals( uuid )) {
+            if (p.getUuid().equals( uuid )) {
                 profile = p;
                 break;
             }
@@ -53,7 +53,7 @@ public class MenuProperty {
         INTERNAL.profiles.add( profile );
         INTERNAL.buttons.addAll( profile.buttons() );
 
-        if (profile.isDefault)
+        if (profile.isDefault())
             DEFAULT = profile;
     }
 
@@ -85,7 +85,7 @@ public class MenuProperty {
     }
 
     public static void active( @NotNull Profile profile ) {
-        String shortUuid = ShortUUID.from( profile.uuid );
+        String shortUuid = ShortUUID.from( profile.getUuid() );
         String info = "Now showing %s (%s) with %s button(s)";
         Log.info( info.formatted( profile.displayName(), shortUuid, profile.buttons().size() ) );
 
