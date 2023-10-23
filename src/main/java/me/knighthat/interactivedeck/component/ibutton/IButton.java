@@ -14,7 +14,6 @@
 
 package me.knighthat.interactivedeck.component.ibutton;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import me.knighthat.interactivedeck.menus.MenuProperty;
@@ -138,7 +137,7 @@ public class IButton extends JComponent implements InteractiveButton, JsonSerial
 
     @NotNull
     @Override
-    public JsonElement toRequest() {
+    public JsonObject toRequest() {
         JsonObject json = serialize();
         json.add( "icon", back.toRequest() );
         return json;
