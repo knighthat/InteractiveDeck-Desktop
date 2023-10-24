@@ -89,7 +89,7 @@ public class WorkingDirectory {
 
         if (loadedProfile == 0) {
             Log.warn( "No profile found. Creating new one..." );
-            MenuProperty.add( Profile.createDefault() );
+            MenuProperty.add( new Profile( "Main", true ) );
         }
 
         Log.deb( "Found " + loadedProfile + " profile(s)" );
