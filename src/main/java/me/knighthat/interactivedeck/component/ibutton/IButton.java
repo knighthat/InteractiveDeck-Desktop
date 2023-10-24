@@ -113,9 +113,6 @@ public class IButton extends JComponent implements InteractiveButton, JsonSerial
     public void logAndSendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {EventLogging.DefaultImpls.logAndSendUpdate( this, property, oldValue, newValue );}
 
     @Override
-    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {Log.buttonUpdate( uuid, property, oldValue, newValue );}
-
-    @Override
     public void remove() {MenuProperty.remove( this );}
 
     @NotNull
@@ -123,10 +120,13 @@ public class IButton extends JComponent implements InteractiveButton, JsonSerial
     public TargetedRequest.Target getTarget() {return TargetedRequest.Target.BUTTON;}
 
     @Override
+    public void logUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {Log.buttonUpdate( uuid, property, oldValue, newValue );}
+
+    @Override
     public void sendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {LiveComponent.DefaultImpls.sendUpdate( this, property, oldValue, newValue );}
 
     @Override
-    public void update( JsonObject json ) {
+    public void update( @NotNull JsonObject json ) {
         if (json.has( "icon" ))
             back.update( json.getAsJsonObject( "icon" ) );
         if (json.has( "label" ))
