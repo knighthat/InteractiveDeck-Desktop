@@ -34,11 +34,13 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@Getter
 public class Profile extends AbstractProfile<IButton> implements SaveAsJson, RequestJson {
 
     private static @NotNull Profile fromJson( @NotNull JsonObject json ) {
@@ -50,7 +52,12 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
         String uuidString = json.get( "uuid" ).getAsString();
         boolean isDefault = json.get( "default" ).getAsBoolean();
 
-        Profile profile = new Profile( UUID.fromString( uuidString ), isDefault );
+        Profile profile =
+                new Profile(
+                        UUID.fromString( uuidString ),
+                        isDefault,
+                        ""
+                );
         profile.update( json );
 
         return profile;
@@ -63,39 +70,21 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
         return fromJson( json.getAsJsonObject() );
     }
 
-    public static @NotNull Profile createDefault() {
-        Profile profile = new Profile( "Main", true );
-
-        String msg = "Default profile %s (%s) is created!";
-        Log.info( msg.formatted( profile.getDisplayName(), profile.uuid ) );
-
-        return profile;
-    }
-
-    public static @NotNull Profile create( @NotNull String displayName ) {
-        Profile profile = new Profile( displayName, false );
-
-        String msg = "Profile %s (%s) is created!";
-        Log.info( msg.formatted( displayName, profile.uuid ) );
-
-        new AddRequest( array -> array.add( profile.serialize() ) ).send();
-
-        return profile;
-    }
-
     @Getter
     private final @NotNull UUID uuid;
 
-    Profile( @NotNull UUID uuid, boolean isDefault ) {this( uuid, isDefault, new ArrayList<>(), "", 4, 2, 3 );}
-
-    Profile( @NotNull String displayName, boolean isDefault ) {
-        this( UUID.randomUUID(), isDefault, new ArrayList<>( 8 ), displayName, 4, 2, 3 );
+    public Profile( @NotNull String displayName, boolean isDefault ) {
+        this( UUID.randomUUID(), isDefault, displayName );
         addButtons( 0, 0, getColumns(), getRows() );
     }
 
-    public Profile( @NotNull UUID uuid, boolean isDefault, @NotNull List<IButton> buttons, @NotNull String displayName, int columns, int rows, int gap ) {
-        super( isDefault, buttons, displayName, columns, rows, gap );
+    public Profile( @NotNull UUID uuid, boolean isDefault, @NotNull String displayName ) {
+        super( isDefault, new ArrayList<>(), displayName, 4, 2, 3 );
         this.uuid = uuid;
+
+        String profileType = isDefault ? "default profile" : "profile";
+        String log = "Created %s \"%s\" (%s)";
+        Log.info( log.formatted( profileType, displayName, uuid ) );
     }
 
     private @NotNull JsonArray addButtons( int fromX, int fromY, int toX, int toY ) {
