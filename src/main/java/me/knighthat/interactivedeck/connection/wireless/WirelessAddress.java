@@ -24,17 +24,21 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+import static me.knighthat.interactivedeck.settings.Settings.SETTINGS;
 
 public class WirelessAddress {
 
     private static final @NotNull String DEF_IP = "0.0.0.0";
 
     static @Nullable InetAddress get() {
-        if (SETTINGS.address().equals( DEF_IP ))
+        if (SETTINGS.getAddress().equals( DEF_IP ))
             try {
-                return InetAddress.getByAddress( SETTINGS.addressInBytes() );
+
+                byte[] bytes = SETTINGS.addressInBytes();
+                return InetAddress.getByAddress( bytes );
+
             } catch (UnknownHostException e) {
+
                 return null;
             }
 
@@ -45,13 +49,13 @@ public class WirelessAddress {
                 Enumeration<InetAddress> iAddresses = nif.getInetAddresses();
                 while (iAddresses.hasMoreElements()) {
                     InetAddress address = iAddresses.nextElement();
-                    if (address.getHostAddress().equals( SETTINGS.address() ))
+                    if (address.getHostAddress().equals( SETTINGS.getAddress() ))
                         return address;
                 }
             }
-            Log.warn( "There is no interface has address " + SETTINGS.address() );
+            Log.warn( "There is no interface has address " + SETTINGS.getAddress() );
             Log.warn( "Reversing address to " + DEF_IP );
-            SETTINGS.address( DEF_IP );
+            SETTINGS.setAddress( DEF_IP );
             return get();
         } catch (SocketException e) {
             Log.exc( "", e, false );

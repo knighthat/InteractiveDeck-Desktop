@@ -28,7 +28,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+import static me.knighthat.interactivedeck.settings.Settings.SETTINGS;
 import static me.knighthat.lib.connection.Connection.Status;
 
 public class WirelessController extends Thread {
@@ -85,8 +85,8 @@ public class WirelessController extends Thread {
             Connection.setStatus( Status.DISCONNECTED );
 
         while (!Thread.interrupted())
-            try (ServerSocket socket = new ServerSocket( SETTINGS.port(), 1, IP )) {
-                String message = "Listening on: " + SETTINGS.fullAddress();
+            try (ServerSocket socket = new ServerSocket( SETTINGS.getPort(), 1, IP )) {
+                String message = "Listening on: " + SETTINGS.addressWithPort();
                 Log.info( message );
                 NotificationCenter.setConstantMessage( message );
 
@@ -95,7 +95,7 @@ public class WirelessController extends Thread {
             } catch (IOException e) {
                 setName( "NET" );
                 //TODO Implement proper handler
-                Log.exc( "Could not start listening on " + SETTINGS.fullAddress(), e, true );
+                Log.exc( "Could not start listening on " + SETTINGS.addressWithPort(), e, true );
 
                 Connection.setStatus( Status.ERROR );
                 interrupt();

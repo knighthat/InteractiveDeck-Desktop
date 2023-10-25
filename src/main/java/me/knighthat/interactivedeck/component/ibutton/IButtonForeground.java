@@ -15,6 +15,7 @@
 package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.settings.Settings;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.interactivedeck.utils.FontUtils;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public final class IButtonForeground extends BChild {
 
@@ -30,7 +30,7 @@ public final class IButtonForeground extends BChild {
         super( owner );
         setHorizontalAlignment( JLabel.CENTER );
         setForeground( Color.WHITE );
-        setFont( SETTINGS.defaultButtonFont() );
+        setFont( Settings.SETTINGS.getDefaultButtonFont() );
     }
 
     public void text( @NotNull String text ) {

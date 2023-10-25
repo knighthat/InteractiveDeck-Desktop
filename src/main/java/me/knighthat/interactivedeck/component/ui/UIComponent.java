@@ -14,15 +14,15 @@
 
 package me.knighthat.interactivedeck.component.ui;
 
+import me.knighthat.interactivedeck.settings.Settings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 public class UIComponent {
 
     public static void applyPresets( @NotNull JComponent component ) {
-        component.setFont( SETTINGS.UIFont() );
+        component.setFont( Settings.SETTINGS.getUiFont() );
     }
 }

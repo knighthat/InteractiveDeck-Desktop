@@ -29,7 +29,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.StringJoiner;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+import static me.knighthat.interactivedeck.settings.Settings.SETTINGS;
 
 public class AppSettingsPopup extends YesNoPopup {
 
@@ -214,7 +214,7 @@ public class AppSettingsPopup extends YesNoPopup {
                 label -> {
                     setDimension( label, 250, 50 );
 
-                    Font font = new Font( SETTINGS.UIFont().getFamily(), Font.ITALIC, 9 );
+                    Font font = new Font( SETTINGS.getUiFont().getFamily(), Font.ITALIC, 9 );
                     label.setFont( font );
                     label.setForeground( Color.BLACK );
 
@@ -233,28 +233,28 @@ public class AppSettingsPopup extends YesNoPopup {
         StringJoiner builder = new StringJoiner( "." );
         for (JTextField input : addressInputs)
             builder.add( input.getText() );
-        SETTINGS.address( builder.toString() );
+        SETTINGS.setAddress( builder.toString() );
 
         int port = Integer.parseInt( portInput.getText() );
-        SETTINGS.port( port );
+        SETTINGS.setPort( port );
 
         Object bufferSize = bufferInput.getSelectedItem();
         if (bufferSize != null)
-            SETTINGS.bufferSize( (int) bufferSize );
+            SETTINGS.setBufferSize( (int) bufferSize );
 
         Color selectedColor = ColorUtils.fromHex( selectedColorInput.getText() );
-        SETTINGS.selectedColor( selectedColor );
+        SETTINGS.setSelectedColor( selectedColor );
 
         Object uiFontFamily = UIFontInput.getSelectedItem();
         if (uiFontFamily != null) {
             Font font = new Font( (String) uiFontFamily, Font.PLAIN, 14 );
-            SETTINGS.UIFont( font );
+            SETTINGS.setUiFont( font );
         }
 
         Object defBtnFontFamily = defaultButtonFontInput.getSelectedItem();
         if (defBtnFontFamily != null) {
             Font font = new Font( (String) defBtnFontFamily, Font.PLAIN, 14 );
-            SETTINGS.defaultButtonFont( font );
+            SETTINGS.setDefaultButtonFont( font );
         }
     }
 
@@ -262,22 +262,22 @@ public class AppSettingsPopup extends YesNoPopup {
     public void present() {
         super.present();
 
-        String[] ipArray = SETTINGS.address().split( "\\." );
+        byte[] ipArray = SETTINGS.addressInBytes();
         for (int i = 0 ; i < ipArray.length ; i++)
-            addressInputs[i].setText( ipArray[i] );
+            addressInputs[i].setText( String.valueOf( ipArray[i] ) );
 
-        String port = String.valueOf( SETTINGS.port() );
+        String port = String.valueOf( SETTINGS.getPort() );
         portInput.setText( port );
 
-        bufferInput.setSelectedItem( SETTINGS.bufferSize() );
+        bufferInput.setSelectedItem( SETTINGS.getBufferSize() );
 
-        String selectedHex = ColorUtils.toHex( SETTINGS.selectedColor() );
+        String selectedHex = ColorUtils.toHex( SETTINGS.getSelectedColor() );
         selectedColorInput.setText( selectedHex.substring( 1 ) );
 
-        String UIFontFamily = SETTINGS.UIFont().getFamily();
+        String UIFontFamily = SETTINGS.getUiFont().getFamily();
         UIFontInput.setSelectedItem( UIFontFamily );
 
-        String defBtnFont = SETTINGS.defaultButtonFont().getFamily();
+        String defBtnFont = SETTINGS.getDefaultButtonFont().getFamily();
         defaultButtonFontInput.setSelectedItem( defBtnFont );
 
         setLocationRelativeTo( getOwner() );
