@@ -15,8 +15,8 @@
 package me.knighthat.interactivedeck.component.plist;
 
 
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.persistent.Persistent;
+import me.knighthat.interactivedeck.profile.Profile;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

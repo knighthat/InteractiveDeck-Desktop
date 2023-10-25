@@ -15,8 +15,8 @@
 package me.knighthat.interactivedeck.menus.popup;
 
 import me.knighthat.interactivedeck.component.ui.UILabel;
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.menus.MainMenu;
+import me.knighthat.interactivedeck.profile.Profile;
 import me.knighthat.lib.util.ShortUUID;
 import org.jetbrains.annotations.NotNull;
 

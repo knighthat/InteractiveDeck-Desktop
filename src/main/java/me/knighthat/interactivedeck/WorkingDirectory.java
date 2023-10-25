@@ -14,8 +14,8 @@
 
 package me.knighthat.interactivedeck;
 
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.persistent.Persistent;
+import me.knighthat.interactivedeck.profile.Profile;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;

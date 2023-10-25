@@ -14,7 +14,7 @@
 
 package me.knighthat.interactivedeck.menus.popup;
 
-import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.profile.Profile;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

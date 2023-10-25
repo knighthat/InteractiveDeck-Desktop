@@ -16,8 +16,8 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.persistent.Persistent;
+import me.knighthat.interactivedeck.profile.Profile;
 import me.knighthat.lib.logging.Log;
 import me.knighthat.lib.observable.Observable;
 import me.knighthat.lib.util.ShortUUID;

@@ -15,7 +15,7 @@
 package me.knighthat.interactivedeck.component.plist;
 
 
-import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.profile.Profile;
 import me.knighthat.lib.util.ShortUUID;
 
 import javax.swing.*;

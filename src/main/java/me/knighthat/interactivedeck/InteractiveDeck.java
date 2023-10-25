@@ -15,7 +15,6 @@ package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
-import me.knighthat.interactivedeck.file.Profile;
 import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.logging.Logger;
@@ -23,6 +22,7 @@ import me.knighthat.interactivedeck.menus.MainMenu;
 import me.knighthat.interactivedeck.menus.NotificationCenter;
 import me.knighthat.interactivedeck.menus.popup.*;
 import me.knighthat.interactivedeck.persistent.Persistent;
+import me.knighthat.interactivedeck.profile.Profile;
 import me.knighthat.lib.json.Json;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
