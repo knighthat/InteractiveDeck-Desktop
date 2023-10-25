@@ -24,6 +24,7 @@ import me.knighthat.interactivedeck.menus.popup.AddProfilePopup;
 import me.knighthat.interactivedeck.menus.popup.AppSettingsPopup;
 import me.knighthat.interactivedeck.menus.popup.ProfileConfigurationPopup;
 import me.knighthat.interactivedeck.menus.popup.RemoveProfilePopup;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class ProfileSection extends JPanel implements Flexible {
             if (!( event instanceof ProfileEvent pEvent ))
                 return;
             if (pEvent.updateActive)
-                MenuProperty.active( (Profile) event.getItem() );
+                Persistent.setActive( (Profile) event.getItem() );
         } );
 
         // Add profile button
@@ -87,7 +88,7 @@ public class ProfileSection extends JPanel implements Flexible {
         configProfileButton.addMouseListener( new MouseAdapter() {
             @Override
             public void mouseClicked( MouseEvent e ) {
-                MenuProperty.active().ifPresent( ProfileConfigurationPopup.INSTANCE::present );
+                Persistent.getActive().ifPresent( ProfileConfigurationPopup.INSTANCE::present );
             }
         } );
 
@@ -97,7 +98,7 @@ public class ProfileSection extends JPanel implements Flexible {
             public void mouseClicked( MouseEvent e ) {AppSettingsPopup.INSTANCE.present();}
         } );
 
-        MenuProperty.observeActive( ( oldP, newP ) -> {
+        Persistent.observeActive( ( oldP, newP ) -> {
             if (newP != null)
                 profiles.setSelectedProfile( newP, false );
         } );
@@ -141,23 +142,23 @@ public class ProfileSection extends JPanel implements Flexible {
     // </editor-fold>
 
     public void addProfile( @NotNull Profile profile ) {
-        if (MenuProperty.profiles().contains( profile ))
+        if (Persistent.getProfiles().contains( profile ))
             return;
 
-        MenuProperty.add( profile );
+        Persistent.add( profile );
         profiles.addItem( profile );
-        MenuProperty.active( profile );
+        Persistent.setActive( profile );
     }
 
     public void removeProfile( @NotNull Profile profile ) {
-        if (!MenuProperty.profiles().contains( profile ))
+        if (!Persistent.getProfiles().contains( profile ))
             return;
 
         profiles.removeItem( profile );
-        MenuProperty.active().ifPresent( p -> {
+        Persistent.getActive().ifPresent( p -> {
             if (p != profile)
                 return;
-            MenuProperty.active( MenuProperty.defaultProfile() );
+            Persistent.setActive( Persistent.getDefaultProfile() );
         } );
         profile.remove();
     }

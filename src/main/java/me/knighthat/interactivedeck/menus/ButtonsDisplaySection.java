@@ -17,6 +17,7 @@ package me.knighthat.interactivedeck.menus;
 import me.knighthat.interactivedeck.component.Flexible;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.file.Profile;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.lib.logging.Log;
 import me.knighthat.lib.observable.Observable;
 import me.knighthat.lib.util.ShortUUID;
@@ -47,7 +48,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
                 menu.buttonModifiers().setVisible( false );
         } );
 
-        MenuProperty.observeActive( ( oldP, newP ) -> {
+        Persistent.observeActive( ( oldP, newP ) -> {
             if (newP != null)
                 updateButtons( newP );
         } );
@@ -75,9 +76,9 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
         }, () -> this.selected.setValue( selected ) );
 
-        String pName = MenuProperty.profile( selected.getProfile() )
-                                   .map( Profile::getDisplayName )
-                                   .orElse( ShortUUID.from( selected.getUuid() ) );
+        String pName = Persistent.findProfile( selected.getProfile() )
+                                 .map( Profile::getDisplayName )
+                                 .orElse( ShortUUID.from( selected.getUuid() ) );
         String log = "Button at [x=%s, y=%s] of profile \"%s\" clicked.";
         Log.deb( log.formatted( selected.getPosX(), selected.getPosY(), pName ) );
     }

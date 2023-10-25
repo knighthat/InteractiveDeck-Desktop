@@ -18,14 +18,13 @@ import me.knighthat.interactivedeck.component.ibutton.IButton;
 import me.knighthat.interactivedeck.component.plist.ProfilesComboBox;
 import me.knighthat.interactivedeck.component.ui.UILabel;
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.task.GotoPage;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Optional;
 
 public class GotoPageTaskConfigurator extends TaskConfigurator {
 
@@ -59,17 +58,18 @@ public class GotoPageTaskConfigurator extends TaskConfigurator {
 
     @Override
     public void updateSelectedButton( @NotNull IButton button ) {
-        MenuProperty.active().ifPresent( profilesList::reloadExcept );
+        Persistent.getActive().ifPresent( profilesList::reloadExcept );
 
-        if (profilesList.getModel().getSize() > 0) {
-            if (!( button.getTask() instanceof GotoPage gotoPage ))
-                return;
-            Optional<Profile> optionalProfile = MenuProperty.profile( gotoPage.target() );
-            if (optionalProfile.isPresent())
-                profilesList.setSelectedItem( optionalProfile.get() );
-            else
-                profilesList.setSelectedIndex( 0 );
-        } else
+        if (profilesList.getModel().getSize() == 0) {
             profilesList.setEnabled( false );
+            return;
+        }
+
+        if (button.getTask() instanceof GotoPage gotoPage)
+            Persistent.findProfile( gotoPage.target() )
+                      .ifPresentOrElse(
+                              profilesList::setSelectedItem,
+                              profilesList::selectDefaultProfile
+                      );
     }
 }

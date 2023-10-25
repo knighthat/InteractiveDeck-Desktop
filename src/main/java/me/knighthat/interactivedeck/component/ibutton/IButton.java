@@ -16,7 +16,7 @@ package me.knighthat.interactivedeck.component.ibutton;
 
 import com.google.gson.JsonObject;
 import lombok.Getter;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.task.Task;
 import me.knighthat.lib.component.LiveComponent;
 import me.knighthat.lib.component.ibutton.InteractiveButton;
@@ -113,7 +113,7 @@ public class IButton extends JComponent implements InteractiveButton, JsonSerial
     public void logAndSendUpdate( @NotNull String property, @Nullable Object oldValue, @Nullable Object newValue ) {EventLogging.DefaultImpls.logAndSendUpdate( this, property, oldValue, newValue );}
 
     @Override
-    public void remove() {MenuProperty.remove( this );}
+    public void remove() {Persistent.remove( this );}
 
     @NotNull
     @Override

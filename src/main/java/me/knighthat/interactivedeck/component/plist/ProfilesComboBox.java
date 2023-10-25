@@ -16,7 +16,7 @@ package me.knighthat.interactivedeck.component.plist;
 
 
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -25,13 +25,13 @@ import java.awt.event.ItemEvent;
 public class ProfilesComboBox extends JComboBox<Profile> {
 
     public ProfilesComboBox() {
-        super( MenuProperty.profileArray() );
+        super( Persistent.profileArray() );
         this.setRenderer( new PBoxRenderer() );
     }
 
     public void reload() {
         removeAll();
-        Profile[] profiles = MenuProperty.profileArray();
+        Profile[] profiles = Persistent.profileArray();
         setModel( new DefaultComboBoxModel<>( profiles ) );
         revalidate();
         repaint();
@@ -47,6 +47,8 @@ public class ProfilesComboBox extends JComboBox<Profile> {
         ItemEvent iEvent = new ProfileEvent( this, 701, selectedItemReminder, 2, updateActive );
         super.fireItemStateChanged( iEvent );
     }
+
+    public void selectDefaultProfile() {setSelectedItem( Persistent.getDefaultProfile() );}
 
     @Override
     public void setSelectedItem( Object anObject ) {

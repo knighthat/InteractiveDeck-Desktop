@@ -15,6 +15,7 @@ package me.knighthat.interactivedeck.menus;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.menus.modifier.ButtonModifierContainer;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.svg.SVGParser;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +30,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author knighthat
  */
-public class MainMenu extends javax.swing.JFrame {
+public class MainMenu extends JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private ButtonModifierContainer buttonModifier;
@@ -51,15 +52,10 @@ public class MainMenu extends javax.swing.JFrame {
     private void addEventListeners() {
         addWindowListener( new WindowAdapter() {
             @Override
-            public void windowOpened( WindowEvent e ) {
-                // Show default profile
-                MenuProperty.active( MenuProperty.defaultProfile() );
-            }
+            public void windowOpened( WindowEvent e ) {Persistent.setActive( Persistent.getDefaultProfile() );}
 
             @Override
-            public void windowClosed( WindowEvent e ) {
-                buttonsDisplaySection.unselectAll();
-            }
+            public void windowClosed( WindowEvent e ) {buttonsDisplaySection.unselectAll();}
         } );
     }
 

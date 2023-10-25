@@ -21,7 +21,7 @@ import com.google.gson.JsonParser;
 import lombok.Getter;
 import me.knighthat.interactivedeck.WorkingDirectory;
 import me.knighthat.interactivedeck.component.ibutton.IButton;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.lib.connection.request.AddRequest;
 import me.knighthat.lib.connection.request.RemoveRequest;
 import me.knighthat.lib.connection.request.RequestJson;
@@ -94,7 +94,7 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
             for (int x = fromX ; x < toX ; x++) {
                 IButton button = new IButton( uuid, x, y );
                 getButtons().add( button );
-                MenuProperty.add( button );
+                Persistent.add( button );
                 added.add( button.serialize() );
             }
 
@@ -113,8 +113,8 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
             if (!conditions.test( button ))
                 continue;
 
-            buttons.remove();
-            MenuProperty.remove( button );
+            buttons.remove();       // Removes button from profile's button list
+            button.remove();        // Execute removal procedure from IButton
             deleted.add( button.getUuid().toString() );
         }
 
@@ -261,7 +261,7 @@ public class Profile extends AbstractProfile<IButton> implements SaveAsJson, Req
         if (file.exists() && !file.delete())
             Log.err( "Could not delete " + getFullName() );
 
-        MenuProperty.remove( this );
+        Persistent.remove( this );
 
         String log = "Deleted profile %s (%s) with %s buttons!";
         Log.info( log.formatted( getDisplayName(), uuid, deletedSize ) );

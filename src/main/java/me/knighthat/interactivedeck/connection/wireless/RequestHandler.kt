@@ -13,8 +13,8 @@ package me.knighthat.interactivedeck.connection.wireless
 import me.knighthat.interactivedeck.connection.ActionHandler
 import me.knighthat.interactivedeck.connection.Client
 import me.knighthat.interactivedeck.file.Profile
-import me.knighthat.interactivedeck.menus.MenuProperty
 import me.knighthat.interactivedeck.menus.NotificationCenter
+import me.knighthat.interactivedeck.persistent.Persistent
 import me.knighthat.lib.connection.Connection
 import me.knighthat.lib.connection.request.*
 import me.knighthat.lib.exception.RequestException
@@ -50,7 +50,7 @@ class RequestHandler : AbstractRequestHandler() {
                 }
 
         AddRequest {
-            for (p in MenuProperty.profiles())
+            for (p in Persistent.getProfiles())
                 if (uuids.contains(p.uuid))
                     it.add(p.toRequest())
         }.send()
@@ -65,7 +65,10 @@ class RequestHandler : AbstractRequestHandler() {
 
         Connection.setStatus(Connection.Status.CONNECTED)
 
-        val uuids = MenuProperty.profiles().map(Profile::getFileName).toTypedArray()
+        val uuids =
+                Persistent.getProfiles()
+                        .map(Profile::getFileName)
+                        .toTypedArray()
         PairRequest(
                 JsonArrayConverter.fromStringArray(uuids)
         ).send()
