@@ -15,7 +15,7 @@
 package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.file.Profile;
-import me.knighthat.interactivedeck.menus.MenuProperty;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.utils.GlobalVars;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
@@ -73,7 +73,7 @@ public class WorkingDirectory {
             try {
 
                 Profile profile = Profile.fromFile( file );
-                MenuProperty.add( profile );
+                Persistent.add( profile );
 
                 String log = "Loaded profile: %s (%s)";
                 Log.info( log.formatted( profile.getDisplayName(), profile.getUuid() ) );
@@ -89,7 +89,7 @@ public class WorkingDirectory {
 
         if (loadedProfile == 0) {
             Log.warn( "No profile found. Creating new one..." );
-            MenuProperty.add( new Profile( "Main", true ) );
+            Persistent.add( new Profile( "Main", true ) );
         }
 
         Log.deb( "Found " + loadedProfile + " profile(s)" );

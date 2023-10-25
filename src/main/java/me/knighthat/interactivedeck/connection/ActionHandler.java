@@ -14,10 +14,9 @@
 
 package me.knighthat.interactivedeck.connection;
 
-import me.knighthat.interactivedeck.component.ibutton.IButton;
+import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.task.ExecutableTask;
 import me.knighthat.lib.connection.action.AbstractActionHandler;
-import me.knighthat.lib.memory.Persistent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -27,10 +26,7 @@ public class ActionHandler extends AbstractActionHandler {
     @Override
     protected void handlePress( @NotNull UUID uuid ) {
         Persistent.findButton( uuid )
-                  .ifPresent( interactiveButton -> {
-                      if (!( interactiveButton instanceof IButton button ))
-                          return;
-
+                  .ifPresent( button -> {
                       if (button.getTask() instanceof ExecutableTask executable)
                           executable.execute();
                   } );
