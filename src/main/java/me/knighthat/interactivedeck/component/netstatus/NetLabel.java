@@ -15,13 +15,12 @@
 package me.knighthat.interactivedeck.component.netstatus;
 
 import me.knighthat.interactivedeck.component.Flexible;
+import me.knighthat.interactivedeck.settings.Settings;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.lib.connection.Connection;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 final class NetLabel extends JLabel implements Flexible {
 
@@ -29,7 +28,7 @@ final class NetLabel extends JLabel implements Flexible {
         setDimension( this, 100, 30 );
         setOpaque( false );
 
-        setFont( SETTINGS.UIFont() );
+        setFont( Settings.SETTINGS.getUiFont() );
         setText( Connection.getStatus() );
     }
 

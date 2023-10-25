@@ -17,13 +17,13 @@ package me.knighthat.interactivedeck.component.ibutton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.knighthat.interactivedeck.settings.Settings;
 import me.knighthat.interactivedeck.utils.ColorUtils;
 import me.knighthat.lib.connection.request.RequestJson;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 import static me.knighthat.interactivedeck.utils.ColorUtils.DEFAULT_DARK;
 
 public final class IButtonBackground extends BChild implements RequestJson {
@@ -88,7 +88,7 @@ public final class IButtonBackground extends BChild implements RequestJson {
         g2d.setColor( getBackground() );
         g2d.fillRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
-        g2d.setColor( isSelected ? SETTINGS.selectedColor() : getForeground() );
+        g2d.setColor( isSelected ? Settings.SETTINGS.getSelectedColor() : getForeground() );
         g2d.drawRoundRect( 0, 0, width, height, borderRadius.width, borderRadius.height );
 
         super.paintComponent( g );

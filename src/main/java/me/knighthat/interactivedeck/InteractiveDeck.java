@@ -15,7 +15,6 @@ package me.knighthat.interactivedeck;
 
 import me.knighthat.interactivedeck.component.icon.Icons;
 import me.knighthat.interactivedeck.connection.wireless.WirelessController;
-import me.knighthat.interactivedeck.file.Settings;
 import me.knighthat.interactivedeck.font.FontFactory;
 import me.knighthat.interactivedeck.logging.Logger;
 import me.knighthat.interactivedeck.menus.MainMenu;
@@ -23,6 +22,7 @@ import me.knighthat.interactivedeck.menus.NotificationCenter;
 import me.knighthat.interactivedeck.menus.popup.*;
 import me.knighthat.interactivedeck.persistent.Persistent;
 import me.knighthat.interactivedeck.profile.Profile;
+import me.knighthat.interactivedeck.settings.Settings;
 import me.knighthat.lib.json.Json;
 import me.knighthat.lib.logging.Log;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +32,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
-
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
 
 /**
  * @author knighthat
@@ -134,7 +132,7 @@ public class InteractiveDeck {
     private void off() {
         // Save settings and profiles
         try {
-            Json.dump( SETTINGS, WorkingDirectory.path() );
+            Json.dump( Settings.SETTINGS, WorkingDirectory.path() );
 
             for (Profile profile : Persistent.getProfiles())
                 Json.dump( profile, WorkingDirectory.path() );

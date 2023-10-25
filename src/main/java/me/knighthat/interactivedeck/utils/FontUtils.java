@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-import static me.knighthat.interactivedeck.file.Settings.SETTINGS;
+import static me.knighthat.interactivedeck.settings.Settings.SETTINGS;
 
 public class FontUtils {
 
@@ -37,14 +37,14 @@ public class FontUtils {
     @Contract( pure = true )
     public static @NotNull Font fromJson( @NotNull JsonElement json ) {
         if (!( json instanceof JsonObject jObj ))
-            return SETTINGS.UIFont();
+            return SETTINGS.getUiFont();
 
         // Font family
         String family;
         try {
             family = jObj.get( "name" ).getAsString();
         } catch (IllegalStateException | NullPointerException e) {
-            family = SETTINGS.UIFont().getFamily();
+            family = SETTINGS.getUiFont().getFamily();
         }
 
         // Font size
@@ -52,7 +52,7 @@ public class FontUtils {
         try {
             size = jObj.get( "size" ).getAsInt();
         } catch (IllegalStateException | NullPointerException e) {
-            size = SETTINGS.UIFont().getSize();
+            size = SETTINGS.getUiFont().getSize();
         }
 
         // Font style
@@ -65,7 +65,7 @@ public class FontUtils {
                 default -> Font.PLAIN;
             };
         } catch (IllegalStateException | NullPointerException e) {
-            style = SETTINGS.UIFont().getStyle();
+            style = SETTINGS.getUiFont().getStyle();
         }
 
         return new Font( family, style, size );
