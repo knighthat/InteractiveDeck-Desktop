@@ -154,6 +154,7 @@ class Profile(
             }
 
             logAndSendUpdate("columns", columns, value)
+            field = value
         }
 
     override var displayName = super.displayName
@@ -162,6 +163,7 @@ class Profile(
             if (displayName == value) return
 
             logAndSendUpdate("displayName", displayName, value)
+            field = value
         }
 
     override var gap = super.gap
@@ -170,6 +172,7 @@ class Profile(
             if (gap == value) return
 
             logAndSendUpdate("gap", gap, value)
+            field = value
         }
 
     override var rows = super.rows
@@ -191,6 +194,7 @@ class Profile(
             }
 
             logAndSendUpdate("rows", rows, value)
+            field = value
         }
 
     override val fileExtension = "profile"
