@@ -12,9 +12,9 @@ package me.knighthat.interactivedeck.connection.wireless
 
 import me.knighthat.interactivedeck.connection.ActionHandler
 import me.knighthat.interactivedeck.connection.Client
-import me.knighthat.interactivedeck.file.Profile
 import me.knighthat.interactivedeck.menus.NotificationCenter
 import me.knighthat.interactivedeck.persistent.Persistent
+import me.knighthat.interactivedeck.profile.Profile
 import me.knighthat.lib.connection.Connection
 import me.knighthat.lib.connection.request.*
 import me.knighthat.lib.exception.RequestException
@@ -43,11 +43,11 @@ class RequestHandler : AbstractRequestHandler() {
     override fun handleAddRequest(request: AddRequest) {
         val uuids = HashSet<UUID>()
         request.payload
-                .asJsonArray
-                .forEach {
-                    val uuid = UUID.fromString(it.asString)
-                    uuids.add(uuid)
-                }
+            .asJsonArray
+            .forEach {
+                val uuid = UUID.fromString(it.asString)
+                uuids.add(uuid)
+            }
 
         AddRequest {
             for (p in Persistent.getProfiles())
@@ -66,11 +66,12 @@ class RequestHandler : AbstractRequestHandler() {
         Connection.setStatus(Connection.Status.CONNECTED)
 
         val uuids =
-                Persistent.getProfiles()
-                        .map(Profile::getFileName)
-                        .toTypedArray()
+                Persistent
+                    .getProfiles()
+                    .map(Profile::fileName)
+                    .toTypedArray()
         PairRequest(
-                JsonArrayConverter.fromStringArray(uuids)
+            JsonArrayConverter.fromStringArray(uuids)
         ).send()
     }
 
