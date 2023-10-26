@@ -43,7 +43,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
             MainMenu menu = (MainMenu) getTopLevelAncestor();
             if (button != null) {
                 menu.buttonModifiers().updateSelectedButton( button );
-                button.getBack().toggleSelect();
+                button.toggleSelect();
             } else
                 menu.buttonModifiers().setVisible( false );
         } );
@@ -71,7 +71,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
 
         this.selected.getValue().ifPresentOrElse( currentlySelected -> {
 
-            currentlySelected.getBack().toggleSelect();
+            currentlySelected.toggleSelect();
             this.selected.setValue( currentlySelected == selected ? null : selected );
 
         }, () -> this.selected.setValue( selected ) );
@@ -108,7 +108,7 @@ public class ButtonsDisplaySection extends JPanel implements Flexible {
     }
 
     public void unselectAll() {
-        selected.getValue().ifPresent( button -> button.getBack().toggleSelect() );
+        selected.getValue().ifPresent( IButton::toggleSelect );
         selected.setValue( null );
     }
 }
