@@ -87,4 +87,9 @@ public class FontUtils {
 
         return json;
     }
+
+    @Contract( pure = true )
+    public static @NotNull String format( @NotNull Font font ) {
+        return "[f=%s,s=%s,w=%s]".formatted( font.getFamily(), font.getSize(), font.getStyle() );
+    }
 }
