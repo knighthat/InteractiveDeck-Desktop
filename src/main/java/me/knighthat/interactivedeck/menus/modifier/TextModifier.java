@@ -58,20 +58,20 @@ public class TextModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
     }
 
     private void applyFont( @Nullable String family, @Nullable Integer style, @Nullable Integer size ) {
-        Font curFont = button.getFront().getFont();
+        Font curFont = button.getStyler();
         Font newFont = new Font(
                 family == null ? curFont.getFamily() : family,
                 style == null ? curFont.getStyle() : style,
                 size == null ? curFont.getSize() : size
         );
-        button.getFront().font( newFont );
+        button.setStyler( newFont );
     }
 
     @Override
     protected void loadProperties( @NotNull IButton button ) {
-        labelInput.setText( button.getFront().getText() );
+        labelInput.setText( button.getLabel() );
 
-        Font curFont = button.getFront().getFont();
+        Font curFont = button.getStyler();
         fontSelector.setSelectedItem( curFont.getFamily() );
         sizeSpinner.setValue( curFont.getSize() );
         boldButton.setSelected( curFont.isBold() );
@@ -105,7 +105,7 @@ public class TextModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
         addContent(
                 labelInput,
                 c -> labelInput.addChangeEvent(
-                        event -> button.getFront().text( labelInput.getText() ) ),
+                        event -> button.setLabel( labelInput.getText() ) ),
                 constraints -> {
                     constraints.gridy = 1;
                     constraints.gridwidth = 3;
