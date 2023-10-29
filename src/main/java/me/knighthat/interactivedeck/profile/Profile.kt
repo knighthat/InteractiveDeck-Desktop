@@ -68,19 +68,22 @@ class Profile(
 
     init {
         val profileType = if (isDefault) "default profile" else "profile"
-        Log.info("Created $profileType \"$displayName\" ($uuid)")
+        Log.deb("Created $profileType \"$displayName\" ($uuid)")
     }
 
-    constructor(displayName: String, isDefault: Boolean) : this(UUID.randomUUID(), isDefault, displayName)
+    constructor(displayName: String, isDefault: Boolean) : this(UUID.randomUUID(), isDefault, displayName) {
+        addButtons(0, 0, columns, rows)
+    }
 
     private fun addButtons(fromX: Int, fromY: Int, toX: Int, toY: Int): JsonArray {
         val added = JsonArray()
-        for (y in fromY until toY) for (x in fromX until toX) {
-            val button = IButton(uuid, x, y)
-            buttons.add(button)
-            Persistent.add(button)
-            added.add(button.serialize())
-        }
+        for (y in fromY until toY)
+            for (x in fromX until toX) {
+                val button = IButton(uuid, x, y)
+                buttons.add(button)
+                Persistent.add(button)
+                added.add(button.serialize())
+            }
         Log.info("Added ${added.size()} button(s) to profile \"$displayName\" ($uuid)")
         return added
     }
