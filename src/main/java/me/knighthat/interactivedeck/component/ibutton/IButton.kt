@@ -164,6 +164,7 @@ class IButton(
      */
     override fun toRequest(): JsonObject {
         val json = serialize()
+        json.addProperty("profile", profile.toString())
         json.add("icon", back.toRequest())
         return json
     }
