@@ -23,7 +23,10 @@ public class NetStatus {
     public static @NotNull NetLabel LABEL = new NetLabel();
 
     static {
-        Connection.whenConnectionStatusChanged( NetStatus::updateStatus );
+        Connection.whenConnectionStatusChanged( ( oldValue, newValue ) -> {
+            if (newValue != null)
+                NetStatus.updateStatus( newValue );
+        } );
     }
 
     public static void updateStatus( @NotNull Connection.Status status ) {
