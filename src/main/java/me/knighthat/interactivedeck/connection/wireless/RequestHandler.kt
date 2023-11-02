@@ -20,7 +20,6 @@ import me.knighthat.lib.connection.request.*
 import me.knighthat.lib.exception.RequestException
 import me.knighthat.lib.json.JsonArrayConverter
 import me.knighthat.lib.logging.Log
-import java.util.*
 
 class RequestHandler : AbstractRequestHandler() {
 
@@ -41,19 +40,16 @@ class RequestHandler : AbstractRequestHandler() {
     override fun handleActionRequest(request: ActionRequest) = actionHandler.process(request.action)
 
     override fun handleAddRequest(request: AddRequest) {
-        val uuids = HashSet<UUID>()
-        request.payload
-            .asJsonArray
-            .forEach {
-                val uuid = UUID.fromString(it.asString)
-                uuids.add(uuid)
-            }
+        val uuids = JsonArrayConverter.toStringArray(request.payload)
+        val profiles = ArrayList<Profile>(uuids.size)
 
-        AddRequest {
-            for (p in Persistent.getProfiles())
-                if (uuids.contains(p.uuid))
-                    it.add(p.toRequest())
-        }.send()
+        for (profile in Persistent.getProfiles()) {
+            val uuidStr = profile.uuid.toString()
+            if (uuids.contains(uuidStr))
+                profiles.add(profile)
+        }
+
+        AddRequest(Persistent.getProfiles().toTypedArray()).send()
     }
 
     override fun handlePairRequest(request: Request) {
@@ -63,7 +59,7 @@ class RequestHandler : AbstractRequestHandler() {
         Log.info("Pairing approved!")
         logClientInfo()
 
-        Connection.setStatus(Connection.Status.CONNECTED)
+        Connection.status = Connection.Status.CONNECTED
 
         val uuids =
                 Persistent

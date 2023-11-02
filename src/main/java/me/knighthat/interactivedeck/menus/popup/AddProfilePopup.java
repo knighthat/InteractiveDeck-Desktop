@@ -45,9 +45,7 @@ public final class AddProfilePopup extends YesNoPopup {
         Profile profile = new Profile( fromUser, false );
         ( (MainMenu) getOwner() ).profileSection().addProfile( profile );
 
-        new AddRequest(
-                array -> array.add( profile.toRequest() )
-        ).send();
+        new AddRequest( new Profile[]{ profile } ).send();
 
         finish();
     }

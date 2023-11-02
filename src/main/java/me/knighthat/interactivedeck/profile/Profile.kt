@@ -20,10 +20,12 @@ import me.knighthat.interactivedeck.persistent.Persistent
 import me.knighthat.lib.connection.request.AddRequest
 import me.knighthat.lib.connection.request.RemoveRequest
 import me.knighthat.lib.connection.request.RequestJson
+import me.knighthat.lib.connection.request.TargetedRequest
 import me.knighthat.lib.exception.ProfileFormatException
 import me.knighthat.lib.json.SaveAsJson
 import me.knighthat.lib.logging.Log
 import me.knighthat.lib.profile.AbstractProfile
+import me.knighthat.lib.util.ShortUUID
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -75,21 +77,26 @@ class Profile(
         addButtons(0, 0, columns, rows)
     }
 
-    private fun addButtons(fromX: Int, fromY: Int, toX: Int, toY: Int): JsonArray {
-        val added = JsonArray()
+    private fun addButtons(fromX: Int, fromY: Int, toX: Int, toY: Int) {
+        val added = HashSet<IButton>()
+
         for (y in fromY until toY)
             for (x in fromX until toX) {
+
                 val button = IButton(uuid, x, y)
                 buttons.add(button)
                 Persistent.add(button)
-                added.add(button.serialize())
+                added.add(button)
+
             }
-        Log.info("Added ${added.size()} button(s) to profile \"$displayName\" ($uuid)")
-        return added
+
+        Log.info("Added ${added.size} button(s) to profile \"$displayName\" (${ShortUUID.from(uuid)})")
+        AddRequest(added.toTypedArray()).send()
     }
 
-    private fun removeButtons(conditions: (IButton) -> Boolean): JsonArray {
-        val deleted = JsonArray()
+    private fun removeButtons(conditions: (IButton) -> Boolean): Int {
+        val deleted = HashSet<IButton>()
+
         val buttons = buttons.iterator()
         while (buttons.hasNext()) {
             val button = buttons.next()
@@ -97,10 +104,13 @@ class Profile(
                 continue
             buttons.remove()        // Removes button from profile's button list
             button.remove()         // Execute removal procedure from IButton
-            deleted.add(button.uuid.toString())
+            deleted.add(button)
         }
-        Log.info("Deleted ${deleted.size()} button(s) from profile \"$displayName\" ($uuid)")
-        return deleted
+
+        Log.info("Deleted ${deleted.size} button(s) from profile \"$displayName\" ($uuid)")
+        RemoveRequest(TargetedRequest.Target.BUTTON, deleted.toTypedArray()).send()
+
+        return deleted.size
     }
 
     /**
@@ -144,17 +154,13 @@ class Profile(
             if (columns == value) return
 
             // If new columns are greater than current rows, then add more buttons
-            if (columns < value) {
-                val added = addButtons(columns, 0, value, rows)
-                AddRequest(uuid, added).send()
-            }
+            if (columns < value)
+                addButtons(columns, 0, value, rows)
 
             // If new columns are less than current rows,
             // then remove all buttons outside of this range.
-            if (columns > value) {
-                val deleted = removeButtons { it.posX >= value }
-                RemoveRequest(uuid, deleted).send()
-            }
+            if (columns > value)
+                removeButtons { it.posX >= value }
 
             logAndSendUpdate("columns", columns, value)
             field = value
@@ -184,17 +190,13 @@ class Profile(
             if (rows == value) return
 
             // If new rows are greater than current rows, then add more buttons
-            if (rows < value) {
-                val added = addButtons(0, rows, columns, value)
-                AddRequest(uuid, added).send()
-            }
+            if (rows < value)
+                addButtons(0, rows, columns, value)
 
             // If new rows are less than current rows,
             // then remove all buttons outside of this range.
-            if (rows > value) {
-                val deleted = removeButtons { it.posY >= value }
-                RemoveRequest(uuid, deleted).send()
-            }
+            if (rows > value)
+                removeButtons { it.posY >= value }
 
             logAndSendUpdate("rows", rows, value)
             field = value
@@ -222,7 +224,7 @@ class Profile(
     }
 
     override fun remove() {
-        val deletedSize: Int = removeButtons { true }.size()
+        val deletedSize: Int = removeButtons { true }
 
         val file = File(WorkingDirectory.path(), fileName)
         if (file.exists() && !file.delete()) Log.err("Could not delete ${getFullName()}")
@@ -230,7 +232,7 @@ class Profile(
         Persistent.remove(this)
 
         Log.info("Deleted profile \"$displayName\" ($uuid) with $deletedSize buttons!")
-        RemoveRequest { array: JsonArray -> array.add(uuid.toString()) }.send()
+        RemoveRequest(TargetedRequest.Target.PROFILE) { it.add(uuid.toString()) }
     }
 
     override fun serialize(): JsonElement = getProfileFormat(IButton::serialize)
