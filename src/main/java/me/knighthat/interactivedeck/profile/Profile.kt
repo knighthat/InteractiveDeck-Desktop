@@ -100,7 +100,7 @@ class Profile(
         val buttons = buttons.iterator()
         while (buttons.hasNext()) {
             val button = buttons.next()
-            if (conditions(button))
+            if (!conditions(button))
                 continue
             buttons.remove()        // Removes button from profile's button list
             button.remove()         // Execute removal procedure from IButton
