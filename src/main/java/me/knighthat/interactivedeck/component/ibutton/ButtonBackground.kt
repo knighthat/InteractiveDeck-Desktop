@@ -55,6 +55,11 @@ internal class ButtonBackground(owner: UUID) : ButtonSubclass(owner), RequestJso
             foreground = value
         }
 
+    init {
+        background = ColorUtils.DEFAULT_DARK
+        foreground = ColorUtils.DEFAULT_DARK
+    }
+
     override fun paintComponent(g: Graphics?) {
         val width = width - 1
         val height = height - 1
