@@ -232,7 +232,9 @@ class Profile(
         Persistent.remove(this)
 
         Log.info("Deleted profile \"$displayName\" ($uuid) with $deletedSize buttons!")
-        RemoveRequest(TargetedRequest.Target.PROFILE) { it.add(uuid.toString()) }
+        RemoveRequest(TargetedRequest.Target.PROFILE) {
+            it.add(uuid.toString())
+        }.send()
     }
 
     override fun serialize(): JsonElement = getProfileFormat(IButton::serialize)
