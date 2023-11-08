@@ -18,6 +18,7 @@ import me.knighthat.lib.component.ibutton.InteractiveButton
 import me.knighthat.lib.connection.request.RequestJson
 import me.knighthat.lib.json.JsonSerializable
 import me.knighthat.lib.logging.Log
+import me.knighthat.lib.task.ClientTask
 import me.knighthat.lib.util.ShortUUID
 import java.awt.Color
 import java.awt.Container
@@ -166,6 +167,8 @@ class IButton(
         val json = serialize()
         json.addProperty("profile", profile.toString())
         json.add("icon", back.toRequest())
+        if (task !is ClientTask)
+            json.remove("task")
         return json
     }
 

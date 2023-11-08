@@ -15,11 +15,12 @@
 package me.knighthat.interactivedeck.task;
 
 import com.google.gson.JsonObject;
+import me.knighthat.lib.task.ClientTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public record GotoPage( @NotNull UUID target ) implements Task {
+public record GotoPage( @NotNull UUID target ) implements Task, ClientTask {
 
     @Override
     public @NotNull JsonObject serialize() {
