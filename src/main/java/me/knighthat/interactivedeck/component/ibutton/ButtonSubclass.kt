@@ -14,6 +14,7 @@ import me.knighthat.interactivedeck.utils.ColorUtils
 import me.knighthat.interactivedeck.utils.FontUtils
 import me.knighthat.lib.component.LiveComponent
 import me.knighthat.lib.connection.request.TargetedRequest
+import me.knighthat.lib.json.JsonArrayConverter
 import me.knighthat.lib.json.JsonSerializable
 import me.knighthat.lib.logging.Log
 import java.awt.Color
@@ -25,6 +26,7 @@ import javax.swing.JLabel
 internal abstract class ButtonSubclass(override val uuid: UUID) : JLabel(), JsonSerializable, LiveComponent {
 
     companion object {
+
         /**
          * Default button's dimension
          */
@@ -43,45 +45,38 @@ internal abstract class ButtonSubclass(override val uuid: UUID) : JLabel(), Json
     override val target = TargetedRequest.Target.BUTTON
 
     override fun sendUpdate(property: String, oldValue: Any?, newValue: Any?) {
-        super.sendUpdate(
-            property,
-            when (oldValue) {
-                is Font -> FontUtils.toJson(oldValue)
-                else    -> oldValue
-            },
-            when (newValue) {
-                is Font -> FontUtils.toJson(newValue)
-                else    -> newValue
-            }
+        super.sendUpdate(property, when (oldValue) {
+            is Font      -> FontUtils.toJson(oldValue)
+            is ByteArray -> JsonArrayConverter.fromByteArray(oldValue)
+            else         -> oldValue
+        }, when (newValue) {
+            is Font      -> FontUtils.toJson(newValue)
+            is ByteArray -> JsonArrayConverter.fromByteArray(newValue)
+            else         -> newValue
+        }
         )
     }
 
     override fun logUpdate(property: String, oldValue: Any?, newValue: Any?) {
-        Log.buttonUpdate(
-            uuid,
-            property,
-            when (oldValue) {
-                is Font -> FontUtils.format(oldValue)
-                else    -> oldValue
-            },
-            when (newValue) {
-                is Font -> FontUtils.format(newValue)
-                else    -> newValue
-            }
+        Log.buttonUpdate(uuid, property, when (oldValue) {
+            is Font -> FontUtils.format(oldValue)
+            else    -> oldValue
+        }, when (newValue) {
+            is Font -> FontUtils.format(newValue)
+            else    -> newValue
+        }
         )
     }
 
     override fun logAndSendUpdate(property: String, oldValue: Any?, newValue: Any?) {
-        super.logAndSendUpdate(
-            property,
-            when (oldValue) {
-                is Color -> ColorUtils.toJson(oldValue)
-                else     -> oldValue
-            },
-            when (newValue) {
-                is Color -> ColorUtils.toJson(newValue)
-                else     -> newValue
-            }
+        super.logAndSendUpdate(property, when (oldValue) {
+            is Color -> ColorUtils.toJson(oldValue)
+            else     -> oldValue
+        }, when (newValue) {
+            is Color -> ColorUtils.toJson(newValue)
+            else     -> newValue
+        }
+
         )
     }
 }

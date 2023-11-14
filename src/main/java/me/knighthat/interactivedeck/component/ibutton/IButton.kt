@@ -35,6 +35,7 @@ class IButton(
 ) : Container(), InteractiveButton, JsonSerializable, RequestJson {
 
     companion object {
+
         /**
          * Turns [JsonObject] to [IButton] instance.
          *
@@ -47,21 +48,18 @@ class IButton(
          */
         @Throws(IOException::class)
         fun fromJson(profile: UUID, json: JsonObject): IButton {
-            if (!json.has("x"))
-                throw IOException("Missing coordinate \"x\"")
-            if (!json.has("y"))
-                throw IOException("Missing coordinate \"y\"")
+            if (!json.has("x")) throw IOException("Missing coordinate \"x\"")
+            if (!json.has("y")) throw IOException("Missing coordinate \"y\"")
 
             val x = json["x"].asInt
             val y = json["y"].asInt
-            val uuid: UUID =
-                    if (json.has("uuid")) {
-                        val idString = json["uuid"].asString
-                        UUID.fromString(idString)
-                    } else {
-                        Log.warn("Button [x=$x,y=$y] from profile $profile does not have an UUID, assigning new one.")
-                        UUID.randomUUID()
-                    }
+            val uuid: UUID = if (json.has("uuid")) {
+                val idString = json["uuid"].asString
+                UUID.fromString(idString)
+            } else {
+                Log.warn("Button [x=$x,y=$y] from profile $profile does not have an UUID, assigning new one.")
+                UUID.randomUUID()
+            }
 
             val button = IButton(uuid, profile, x, y)
             button.update(json)
@@ -100,12 +98,16 @@ class IButton(
             front.fontColor = value
         }
     var task: Task? = null
-        set(value) {
-            // If the new task is the same as the current one, then do nothing
+        set(value) { // If the new task is the same as the current one, then do nothing
             if (Objects.equals(task, value)) return
 
             logAndSendUpdate("task", task, value)
             field = value
+        }
+    var iconPath: String?
+        get() = back.iconPath
+        set(value) {
+            back.iconPath = value
         }
 
     init {
@@ -128,8 +130,7 @@ class IButton(
         for (entry in json.entrySet()) {
 
             val value = entry.value
-            if (value !is JsonObject)
-                continue
+            if (value !is JsonObject) continue
 
             when (entry.key) {
                 "icon"  -> back.update(value)
@@ -167,8 +168,7 @@ class IButton(
         val json = serialize()
         json.addProperty("profile", profile.toString())
         json.add("icon", back.toRequest())
-        if (task !is ClientTask)
-            json.remove("task")
+        if (task !is ClientTask) json.remove("task")
         return json
     }
 
@@ -200,8 +200,7 @@ class IButton(
         json.addProperty("uuid", uuid.toString())
         json.addProperty("x", posX)
         json.addProperty("y", posY)
-        if (task != null)
-            json.add("task", task!!.serialize())
+        if (task != null) json.add("task", task!!.serialize())
         json.add("icon", back.serialize())
         json.add("label", front.serialize())
 

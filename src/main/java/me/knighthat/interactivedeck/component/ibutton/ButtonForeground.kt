@@ -48,11 +48,7 @@ internal class ButtonForeground(owner: UUID) : ButtonSubclass(owner) {
     var styler: Font
         get() = font
         set(value) {
-            if (
-                styler.family == value.family
-                && styler.style == value.style
-                && styler.size == value.size
-            ) return
+            if (styler.family == value.family && styler.style == value.style && styler.size == value.size) return
 
             logAndSendUpdate("font", styler, value)
             font = value
@@ -60,8 +56,7 @@ internal class ButtonForeground(owner: UUID) : ButtonSubclass(owner) {
 
     var fontColor: Color
         get() = foreground
-        set(value) {
-            // If new color has the same values as old one, then do nothing
+        set(value) { // If new color has the same values as old one, then do nothing
             if (fontColor == value) return
 
             logAndSendUpdate("foreground", fontColor, value)

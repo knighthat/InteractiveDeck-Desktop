@@ -13,15 +13,18 @@ package me.knighthat.interactivedeck.component.ibutton
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import me.knighthat.interactivedeck.component.icon.ExternalIcon
 import me.knighthat.interactivedeck.settings.Settings
 import me.knighthat.interactivedeck.utils.ColorUtils
 import me.knighthat.lib.connection.request.RequestJson
 import java.awt.*
 import java.util.*
+import javax.swing.ImageIcon
 
 internal class ButtonBackground(owner: UUID) : ButtonSubclass(owner), RequestJson {
 
     companion object {
+
         /**
          * The curve of button's background
          */
@@ -37,8 +40,7 @@ internal class ButtonBackground(owner: UUID) : ButtonSubclass(owner), RequestJso
 
     var fill: Color
         get() = background
-        set(value) {
-            // If new color has the same values as old one, then do nothing
+        set(value) { // If new color has the same values as old one, then do nothing
             if (fill == value) return
 
             logAndSendUpdate("background", fill, value)
@@ -47,12 +49,31 @@ internal class ButtonBackground(owner: UUID) : ButtonSubclass(owner), RequestJso
 
     var border: Color
         get() = foreground
-        set(value) {
-            // If new color has the same values as old one, then do nothing
+        set(value) { // If new color has the same values as old one, then do nothing
             if (border == value) return
 
             logAndSendUpdate("border", border, value)
             foreground = value
+        }
+
+    var iconPath: String? = null
+        set(value) { // If the new path equals to the old one, then do nothing
+            if (field == value) return
+
+            var newValue: Any? = value
+
+            if (value != null) {
+                if (ExternalIcon.verifyPath(value)) {
+                    newValue = ExternalIcon.getImageBytes(value)
+
+                    val bufferedImage = ExternalIcon.fromPath(value, DIMENSION)
+                    icon = ImageIcon(bufferedImage)
+                } else return
+            }
+
+            logUpdate("icon", field, value)
+            sendUpdate("symbol", field, newValue)
+            field = value
         }
 
     init {
@@ -80,8 +101,7 @@ internal class ButtonBackground(owner: UUID) : ButtonSubclass(owner), RequestJso
         for (entry in json.entrySet()) {
 
             val value = entry.value
-            if (value !is JsonArray)
-                continue
+            if (value !is JsonArray) continue
 
             val color = ColorUtils.fromJson(value)
             when (entry.key) {
