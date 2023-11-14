@@ -27,17 +27,17 @@ import org.w3c.dom.svg.SVGDocument;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraints> {
 
-    private final @NotNull BufferedImage bufferedIcon;
+    private final @NotNull BufferedImage     bufferedIcon;
     private final @NotNull HexColorTextField bdInput;
     private final @NotNull HexColorTextField bgInput;
     private final @NotNull HexColorTextField fgInput;
-    private final @NotNull Insets sectionSpacing;
+    private final @NotNull JTextField        iconPathInput;
+    private final @NotNull Insets            sectionSpacing;
 
     public IconModifier() {
         SVGDocument document = Icons.INTERNAL.COLOR_PALETTE;
@@ -50,13 +50,15 @@ public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
         this.bgInput = new HexColorTextField();
         this.fgInput = new HexColorTextField();
 
+        this.iconPathInput = new JTextField();
+
         this.sectionSpacing = new Insets( 0, 0, 40, 0 );
     }
 
     private void addSection( @NotNull String name, @NotNull HexColorTextField input, int gridy ) {
         addContent(
                 new UILabel( name ),
-                label -> ( (JLabel) label ).setLabelFor( input ),
+                label -> ((JLabel) label).setLabelFor( input ),
                 constraints -> {
                     constraints.gridy = gridy;
                     constraints.anchor = GridBagConstraints.LINE_START;
@@ -94,12 +96,20 @@ public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
 
     private void applyColor( @NotNull HexColorTextField input ) {
         Color color = input.getBackground();
-        if (input == fgInput)
+        if (input == fgInput) {
             button.setFontColor( color );
-        else if (input == bgInput)
+        } else if (input == bgInput) {
             button.setFill( color );
-        else
+        } else {
             button.setBorder( color );
+        }
+    }
+
+    private void updateIconPath() {
+        String text = iconPathInput.getText();
+        if (!text.isBlank()) {
+            button.setIconPath( text );
+        }
     }
 
     @Override
@@ -126,5 +136,41 @@ public class IconModifier extends ModifierPanel<GridBagLayout, GridBagConstraint
         addSection( "Foreground", fgInput, 0 );
         addSection( "Background", bgInput, 2 );
         addSection( "Border", bdInput, 4 );
+
+        addContent(
+                new UILabel( "Icon path" ),
+                label -> ((JLabel) label).setLabelFor( iconPathInput ),
+                constraints -> {
+                    constraints.gridy = 6;
+                    constraints.anchor = GridBagConstraints.LINE_START;
+                }
+        );
+        addContent(
+                iconPathInput,
+                c -> {
+                    setDimension( c, 200, 40 );
+
+                    iconPathInput.addFocusListener( new FocusAdapter() {
+                        @Override
+                        public void focusLost( FocusEvent e ) {
+                            updateIconPath();
+                        }
+                    } );
+                    iconPathInput.addKeyListener( new KeyAdapter() {
+                        @Override
+                        public void keyPressed( KeyEvent e ) {
+                            if (e.getKeyCode() == 10) {
+                                updateIconPath();
+                            }
+                        }
+                    } );
+                },
+                constraints -> {
+                    constraints.gridy = 7;
+                    constraints.gridwidth = 2;
+                    constraints.fill = GridBagConstraints.HORIZONTAL;
+                    constraints.insets = sectionSpacing;
+                }
+        );
     }
 }
