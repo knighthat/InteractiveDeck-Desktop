@@ -26,11 +26,13 @@ import java.io.*;
 @SuppressWarnings("all")
 public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializable {
 
+    // START: Static fields/functions
     /*
      * Fields must have its name and value aligned to other fields.
      * Except for when it does not have modifier list.
      */
     static        boolean yes  = true;
+    // END: Static fields/functions
     private final int     var2 = 0;
     String var1 = "";
 
@@ -38,16 +40,16 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
      * - Opening & closing one the same line.
      * - Should have no space inside braces.
      */
-    void emptyFunction() {}
+    void emptyFunction() { }
 
     /*
      * - Any declaration with braces '{}' and does not contain
      *   any code should be groupped to one line.
      */
     void emptyDeclaration() {
-        Runnable runnable = () -> {};
+        Runnable runnable = () -> { };
 
-        Object obj = new Object() {};
+        Object obj = new Object() { };
     }
 
     /*
@@ -109,9 +111,9 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
      * opening brace at the end of its declaration regardless the length.
      */
     void bracePlacements() {
-        Runnable runnable = () -> {};
+        Runnable runnable = () -> { };
 
-        Object obj = new Object() {};
+        Object obj = new Object() { };
 
         if ( true ) {
         }
@@ -121,7 +123,7 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
      * A function with multiple throws is required to keep everything on one line.
      * If there are more than five, consider making a more general exception class.
      */
-    void functionWithThrowKeyword() throws IllegalArgumentException, IllegalStateException, InvalidClassException {}
+    void functionWithThrowKeyword() throws IllegalArgumentException, IllegalStateException, InvalidClassException { }
 
     /*
      * This rule is not enfored, but take it into your consideration
@@ -218,6 +220,8 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
                 3;
     }
 
+    void oneLiner() { Class<Void> v = Void.TYPE; }
+
     /*
      * Enum class must have its values on each line instead of one line.
      */
@@ -253,7 +257,7 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
             int var2,
             boolean var3,
             long var4
-    ) {}
+    ) { }
 
     static class SubClass {
         /*
@@ -274,8 +278,8 @@ public class JavaCodeWrappingFormat extends Error implements Cloneable, Serializ
                 int var9,
                 int var10,
                 int var11
-        ) {}
+        ) { }
 
-        SubClass returnTheClass() {return this;}
+        SubClass returnTheClass() { return this; }
     }
 }

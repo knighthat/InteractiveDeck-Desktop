@@ -51,14 +51,14 @@ public abstract class Arrangement {
     /**
      * Static methods
      */
-    static void sta_me() {}
+    static void sta_me() { }
 
-    private static void pri_sta_me() {}
+    private static void pri_sta_me() { }
 
-    protected static void pro_sta_me() {}
+    protected static void pro_sta_me() { }
 
-    public static void pub_sta_me() {}
-// END: Static fields/functions
+    public static void pub_sta_me() { }
+    // END: Static fields/functions
 
     /*
      * Final fields
@@ -78,9 +78,9 @@ public abstract class Arrangement {
     /*
      * Class constructor
      */
-    private Arrangement( HexColorTextField textField ) {}
+    private Arrangement( HexColorTextField textField ) { }
 
-    public Arrangement() {}
+    public Arrangement() { }
 
     /*
      * Abstract methods
@@ -92,22 +92,22 @@ public abstract class Arrangement {
     /*
      * Methods
      */
-    void me() {}
+    void me() { }
 
-    private void pri_me() {}
+    private void pri_me() { }
 
-    protected void pro_me() {}
+    protected void pro_me() { }
 
-    public void pub_me() {}
+    public void pub_me() { }
 
     /*
      * Overridden methods
      */
     @Override
-    public int hashCode() {return super.hashCode();}
+    public int hashCode() { return super.hashCode(); }
 
     @Override
-    public String toString() {return super.toString();}
+    public String toString() { return super.toString(); }
 
     /*
      * Enums
@@ -123,29 +123,29 @@ public abstract class Arrangement {
     /*
      * Interfaces
      */
-    public interface PubInter {}
+    public interface PubInter { }
 
-    protected interface ProInter {}
+    protected interface ProInter { }
 
-    private interface PriInter {}
+    private interface PriInter { }
 
-    interface Inter {}
+    interface Inter { }
 
     /*
      * Static classes
      */
-    public static class PubStaClass {}
+    public static class PubStaClass { }
 
-    protected static class ProStaClass {}
+    protected static class ProStaClass { }
 
-    private static class PriStaClass {}
+    private static class PriStaClass { }
 
     /*
      * Classes
      */
-    public class PubClass {}
+    public class PubClass { }
 
-    protected class ProClass {}
+    protected class ProClass { }
 
-    private class PriClass {}
+    private class PriClass { }
 }
